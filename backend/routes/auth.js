@@ -36,4 +36,17 @@ router.post('/login', [
   res.json({ token, user: { id: user.id, email: user.email, role: user.role } });
 });
 
+// Forgot password endpoint (placeholder implementation)
+router.post('/forgot-password', async (req, res) => {
+  const { email } = req.body;
+  if (!email) {
+    return res.status(400).json({ error: 'Email is required' });
+  }
+  // In a real implementation, you would:
+  // 1. Check if email exists
+  // 2. Generate reset token
+  // 3. Send email with reset link
+  res.json({ message: 'If this email exists, a reset link has been sent.' });
+});
+
 module.exports = router; 

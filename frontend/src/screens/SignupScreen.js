@@ -14,7 +14,7 @@ export default function SignupScreen({ navigation }) {
       return;
     }
     try {
-      const res = await axios.post('http://YOUR_BACKEND_URL/api/signup', { email, password, role });
+      const res = await axios.post('http://localhost:3001/api/signup', { email, password, role });
       Alert.alert('Signup Success', 'You can now log in.');
       navigation.navigate('Login');
     } catch (err) {

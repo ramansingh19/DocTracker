@@ -9,7 +9,7 @@ document.addEventListener('DOMContentLoaded', function () {
     forgotSuccess.classList.add('hidden');
     const email = document.getElementById('email').value.trim();
     try {
-      const res = await fetch('http://YOUR_BACKEND_URL/api/forgot-password', {
+      const res = await fetch('http://localhost:3001/api/forgot-password', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email })

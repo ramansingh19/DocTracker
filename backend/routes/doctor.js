@@ -59,4 +59,16 @@ router.get('/doctor/status', authMiddleware, async (req, res) => {
   });
 });
 
+// Get all doctors (for admin interface)
+router.get('/doctors', async (req, res) => {
+  try {
+    const { Pool } = require('pg');
+    const pool = new Pool({ connectionString: process.env.DATABASE_URL });
+    const result = await pool.query('SELECT id, email, role, status, last_eta, location_sharing_enabled FROM users WHERE role = $1', ['doctor']);
+    res.json(result.rows);
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to fetch doctors' });
+  }
+});
+
 module.exports = router; 

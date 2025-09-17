@@ -29,7 +29,7 @@ export default function DoctorDashboard({ token }) {
     setLocation(coords);
     try {
       const res = await axios.post(
-        'http://YOUR_BACKEND_URL/api/doctor/update-location',
+        'http://localhost:3001/api/doctor/update-location',
         { lat: coords.latitude, lng: coords.longitude },
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -42,7 +42,7 @@ export default function DoctorDashboard({ token }) {
   const handleStatusUpdate = async () => {
     try {
       await axios.post(
-        'http://YOUR_BACKEND_URL/api/doctor/update-status',
+        'http://localhost:3001/api/doctor/update-status',
         { status },
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -56,7 +56,7 @@ export default function DoctorDashboard({ token }) {
     setSharing(value);
     try {
       await axios.post(
-        'http://YOUR_BACKEND_URL/api/doctor/location-sharing',
+        'http://localhost:3001/api/doctor/location-sharing',
         { enabled: value },
         { headers: { Authorization: `Bearer ${token}` } }
       );

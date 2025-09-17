@@ -9,7 +9,7 @@ export default function PatientStatusScreen({ doctorId, patientId }) {
   const [position, setPosition] = useState(null);
 
   useEffect(() => {
-    const socket = io('http://YOUR_BACKEND_URL');
+    const socket = io('http://localhost:5002');
     socket.on('queueUpdate', data => {
       if (data.doctorId === doctorId) {
         setStatus(data.status);

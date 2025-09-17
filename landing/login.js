@@ -11,7 +11,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const password = document.getElementById('password').value.trim();
     const role = document.getElementById('role').value;
     try {
-      const res = await fetch('http://YOUR_BACKEND_URL/api/login', {
+      const res = await fetch('http://localhost:3001/api/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password })

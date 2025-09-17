@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react';
 export default function DoctorSchedule() {
   const [doctors, setDoctors] = useState([]);
   useEffect(() => {
-    axios.get('http://YOUR_BACKEND_URL/api/doctors').then(res => setDoctors(res.data));
+    axios.get('http://localhost:3001/api/doctors').then(res => setDoctors(res.data));
   }, []);
   return (
     <table>

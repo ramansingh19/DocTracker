@@ -10,7 +10,7 @@ export default function LoginScreen({ navigation }) {
 
   const handleLogin = async () => {
     try {
-      const res = await axios.post('http://YOUR_BACKEND_URL/api/login', { email, password });
+      const res = await axios.post('http://localhost:3001/api/login', { email, password });
       // Save token, navigate to dashboard
       Alert.alert('Login Success', `Welcome ${res.data.user.role}`);
     } catch (err) {
