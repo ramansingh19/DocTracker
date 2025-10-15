@@ -9,10 +9,11 @@ const LandingPage = () => {
         <div className="nav-container">
           <div className="nav-logo">
             <div className="logo-icon">
-              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <img src="https://i.pinimg.com/736x/3b/df/57/3bdf5702d98a357455ff4027786c3d96.jpg" alt="" />
+              {/* <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M12 2L13.09 8.26L20 9L13.09 9.74L12 16L10.91 9.74L4 9L10.91 8.26L12 2Z" fill="currentColor"/>
                 <path d="M12 18L13.09 14.26L20 13L13.09 12.74L12 6L10.91 12.74L4 13L10.91 14.26L12 18Z" fill="currentColor"/>
-              </svg>
+              </svg> */}
             </div>
             <span className="nav-title">DocTracker</span>
           </div>
@@ -53,7 +54,8 @@ const LandingPage = () => {
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
                   <path d="M8 5V19L19 12L8 5Z" fill="currentColor"/>
                 </svg>
-                <span>Watch Demo</span>
+                <a href="https://www.youtube.com/watch?v=VRGFnhOpQU0&pp=ygUTbWVpY2FsIHJlbHRlZCB2aWRvcw%3D%3D" target='blank'><span>Watch Demo</span></a>
+                
               </button>
             </div>
             <div className="hero-stats">
