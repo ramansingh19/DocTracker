@@ -32,15 +32,56 @@ const DoctorDashboard = () => {
     alert('Status updated successfully!');
   };
 
+  // const handleLocationSharing = async (enabled) => {
+  //   setLocationSharing(enabled);
+  //   if (enabled) {
+  //     // Simulate location sharing
+  //     setEta('15 minutes');
+  //   } else {
+  //     setEta('N/A');
+  //   }
+  // };
+
   const handleLocationSharing = async (enabled) => {
-    setLocationSharing(enabled);
-    if (enabled) {
-      // Simulate location sharing
-      setEta('15 minutes');
+  setLocationSharing(enabled);
+
+  if (enabled) {
+    if (navigator.geolocation) {
+      // Start watching location
+      const watchId = navigator.geolocation.watchPosition(
+        (position) => {
+          setLocation({
+            lat: position.coords.latitude,
+            lng: position.coords.longitude,
+          });
+
+          // Example: set a fake ETA for now
+          setEta('15 minutes');
+        },
+        (error) => {
+          console.error("Error getting location:", error);
+          setEta('Location Error');
+        },
+        { enableHighAccuracy: true }
+      );
+
+      // Save watchId so we can clear it later
+      localStorage.setItem("watchId", watchId);
     } else {
-      setEta('N/A');
+      alert("Geolocation not supported by this browser.");
     }
-  };
+  } else {
+    // Stop sharing location
+    const watchId = localStorage.getItem("watchId");
+    if (watchId) {
+      navigator.geolocation.clearWatch(Number(watchId));
+      localStorage.removeItem("watchId");
+    }
+
+    setEta('N/A');
+  }
+};
+
 
   const handleLogout = () => {
     localStorage.removeItem('user');
@@ -95,21 +136,21 @@ const DoctorDashboard = () => {
               <h3>Current Status</h3>
               <div className="status-indicator">
                 <div className={`status-dot ${status}`}></div>
-                <span>{status.replace('_', ' ')}</span>
+                <span>{status.replace('_'  ,  ' ')}</span>
               </div>
             </div>
-            <select 
-              value={status} 
+            <select
+              value={status}
               onChange={(e) => setStatus(e.target.value)}
               className="status-select"
             >
-              <option value="available">Available</option>
+              <option value="available">Available  </option>
               <option value="in_transit">In Transit</option>
               <option value="consulting">Consulting</option>
               <option value="in_ot">In OT</option>
               <option value="busy">Busy</option>
             </select>
-            <button 
+            <button
               onClick={handleStatusUpdate}
               disabled={isUpdating}
               className="update-btn"
@@ -122,7 +163,7 @@ const DoctorDashboard = () => {
               ) : (
                 <>
                   <span>Update Status</span>
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
                     <path d="M5 12H19M19 12L12 5M19 12L12 19" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                   </svg>
                 </>
@@ -166,7 +207,13 @@ const DoctorDashboard = () => {
             <div className="patient-list">
               <div className="patient-item">
                 <div className="patient-info">
-                  <span className="patient-name">John Doe</span>
+                  <span className="patient-name">John sin</span>
+                  <span className="patient-time">9:00 AM</span>
+                  <span className="patient-name">Rahul Kumar</span>
+                  <span className="patient-time">9:15 AM</span>
+                  <span className="patient-name">Gungun Kumari</span>
+                  <span className="patient-time">10:00 AM</span>
+                  <span className="patient-name">Raman Kumar</span>
                   <span className="patient-time">10:00 AM</span>
                 </div>
                 <span className="patient-status waiting">Waiting</span>

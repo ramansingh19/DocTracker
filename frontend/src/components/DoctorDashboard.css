@@ -116,7 +116,7 @@
 
 .dashboard-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
   gap: 2rem;
 }
 
@@ -125,7 +125,7 @@
 .patients-card,
 .stats-card {
   background: white;
-  border-radius: 20px;
+  border-radius: 1rem;
   padding: 2rem;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
   border: 1px solid rgba(0, 0, 0, 0.05);
@@ -181,7 +181,7 @@
 .status-indicator {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 1rem;
 }
 
 .status-dot {
@@ -390,18 +390,21 @@ input:checked + .slider:before {
   display: flex;
   flex-direction: column;
   gap: 0.25rem;
+  
 }
 
 .patient-name {
   font-weight: 600;
   color: #1a1a1a;
   font-size: 0.95rem;
+  padding: 1rem ;
 }
 
 .patient-time {
   color: #64748b;
   font-size: 0.8rem;
   font-weight: 500;
+  
 }
 
 .patient-status {
