@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import IndustryFeatures from './IndustryFeatures';
 import './LandingPage.css';
 
 const LandingPage = () => {
@@ -45,7 +46,7 @@ const LandingPage = () => {
             </p>
             <div className="hero-actions">
               <Link to="/login" className="cta-button primary">
-                <span>Start Free Trial</span>
+                <span>Get Started</span>
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
                   <path d="M5 12H19M19 12L12 5M19 12L12 19" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                 </svg>
@@ -55,8 +56,46 @@ const LandingPage = () => {
                   <path d="M8 5V19L19 12L8 5Z" fill="currentColor"/>
                 </svg>
                 <a href="https://www.youtube.com/watch?v=VRGFnhOpQU0&pp=ygUTbWVpY2FsIHJlbHRlZCB2aWRvcw%3D%3D" target='blank'><span>Watch Demo</span></a>
-                
               </button>
+            </div>
+            
+            {/* Role Selection Section */}
+            <div className="role-selection">
+              <h3>Choose Your Role</h3>
+              <div className="role-buttons">
+                <Link to="/doctor-landing" className="role-btn doctor">
+                  <div className="role-icon">👨‍⚕️</div>
+                  <div className="role-content">
+                    <h4>For Doctors</h4>
+                    <p>Manage your schedule, update status, and track patients</p>
+                  </div>
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                    <path d="M5 12H19M19 12L12 5M19 12L12 19" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+                </Link>
+                
+                <Link to="/patient-landing" className="role-btn patient">
+                  <div className="role-icon">👤</div>
+                  <div className="role-content">
+                    <h4>For Patients</h4>
+                    <p>Track your queue position and doctor availability</p>
+                  </div>
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                    <path d="M5 12H19M19 12L12 5M19 12L12 19" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+                </Link>
+                
+                <Link to="/admin-landing" className="role-btn admin">
+                  <div className="role-icon">👨‍💼</div>
+                  <div className="role-content">
+                    <h4>For Administrators</h4>
+                    <p>Monitor system performance and manage operations</p>
+                  </div>
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                    <path d="M5 12H19M19 12L12 5M19 12L12 19" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+                </Link>
+              </div>
             </div>
             <div className="hero-stats">
               <div className="stat">
@@ -205,6 +244,8 @@ const LandingPage = () => {
           </div>
         </div>
       </section>
+
+      <IndustryFeatures />
 
       <footer className="footer">
         <div className="container">

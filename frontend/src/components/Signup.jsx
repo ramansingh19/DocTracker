@@ -45,14 +45,30 @@ const Signup = () => {
     // Simulate API call delay
     await new Promise(resolve => setTimeout(resolve, 1000));
 
-    // Mock successful signup
+    // Check if user already exists
+    const existingUsers = JSON.parse(localStorage.getItem('registeredUsers') || '[]');
+    const userExists = existingUsers.some(user => user.email === formData.email);
+
+    if (userExists) {
+      setError('User with this email already exists');
+      setLoading(false);
+      return;
+    }
+
+    // Create new user with password
     const newUser = {
       email: formData.email,
+      password: formData.password, // Store the password
       role: formData.role,
-      name: formData.role === 'doctor' ? 'Dr. ' + formData.email.split('@')[0] : formData.email.split('@')[0]
+      name: formData.role === 'doctor' ? 'Dr. ' + formData.email.split('@')[0] : formData.email.split('@')[0],
+      createdAt: new Date().toISOString()
     };
 
-    // Store user data
+    // Add to registered users
+    const updatedUsers = [...existingUsers, newUser];
+    localStorage.setItem('registeredUsers', JSON.stringify(updatedUsers));
+
+    // Store current user data for immediate login
     localStorage.setItem('user', JSON.stringify(newUser));
     localStorage.setItem('isAuthenticated', 'true');
 
@@ -117,6 +133,7 @@ const Signup = () => {
               required
               placeholder="Enter your email"
               className="form-input"
+              autoComplete="email"
             />
           </div>
 
@@ -132,6 +149,7 @@ const Signup = () => {
               placeholder="Create a strong password"
               minLength="8"
               className="form-input"
+              autoComplete="new-password"
             />
           </div>
 
@@ -146,6 +164,7 @@ const Signup = () => {
               required
               placeholder="Confirm your password"
               className="form-input"
+              autoComplete="new-password"
             />
           </div>
 
