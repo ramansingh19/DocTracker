@@ -28,9 +28,9 @@ const LandingPage = () => {
       </nav>
 
       <section className="hero">
-        <div className="hero-background">
+        {/* <div className="hero-background">
           <div className="hero-particles"></div>
-        </div>
+        </div> */}
         <div className="hero-container">
           <div className="hero-content">
             <div className="hero-badge">

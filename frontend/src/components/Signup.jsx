@@ -119,6 +119,7 @@ const Signup = () => {
             >
               <option value="doctor">Doctor</option>
               <option value="admin">Admin</option>
+              <option value="patient">Patient</option>
             </select>
           </div>
 
