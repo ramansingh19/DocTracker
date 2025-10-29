@@ -268,7 +268,7 @@ const LandingPage = () => {
                 <a href="#features">Features</a>
                 <a href="#how-it-works">How It Works</a>
                 <a href="#">Pricing</a>
-                <a href="#">API</a>
+                
               </div>
               <div className="footer-column">
                 <h4>Company</h4>
@@ -287,14 +287,14 @@ const LandingPage = () => {
             </div>
           </div>
           <div className="footer-bottom">
-            <p>&copy; 2024 DocTracker. All rights reserved.</p>
+            <p>&copy; 2025 DocTracker. All rights reserved.</p>
             <div className="footer-social">
               <a href="#">Twitter</a>
-              <a href="#">LinkedIn</a>
-              <a href="#">GitHub</a>
+              <a href="www.linkedin.com/in/raman-kumar0" target='blank'>LinkedIn</a>
+              <a href="https://github.com/ramansingh19 " target='blank'>GitHub</a>
             </div>
           </div>
-        </div>
+        </div> 
       </footer>
     </div>
   );

@@ -6,6 +6,37 @@ const AdminDashboard = () => {
   const [user, setUser] = useState(null);
   const [doctors, setDoctors] = useState([]);
   const [patients, setPatients] = useState([]);
+  const [showAddDoctorForm , setShowAddDoctorForm] = useState(false);
+  const [newDoctor , setNewDoctor] = useState({
+    name : "",
+    profession : "",
+    specialty : "",
+  })
+  const handleAddDoctor = () => {
+  if (!newDoctor.name || !newDoctor.profession || !newDoctor.specialty) {
+    alert("Please fill all fields!");
+    return;
+  }
+
+  const newEntry = {
+    id: doctors.length + 1,
+    name: newDoctor.name,
+    specialty: newDoctor.specialty,
+    status: "available",
+    eta: "N/A",
+    patients: 0,
+  };
+
+  const updatedDoctors = [...doctors, newEntry];
+  setDoctors(updatedDoctors);
+
+  localStorage.setItem("doctors", JSON.stringify(updatedDoctors));
+
+  setShowAddDoctorForm(false);
+  setNewDoctor({ name: "", profession: "", specialty: "" });
+};
+
+  
   const [stats, setStats] = useState({
     totalDoctors: 0,
     activeDoctors: 0,
@@ -23,25 +54,27 @@ const AdminDashboard = () => {
     setUser(JSON.parse(userData));
 
     // Mock data
-    const mockDoctors = [
-      { id: 1, name: 'Dr. Aman  Kumar', status: 'available', eta: '5 min', patients: 8, specialty: 'Cardiology' },
-      { id: 2, name: 'Dr. John snow', status: 'consulting', eta: 'N/A', patients: 12, specialty: 'Orthopedics' },
-      { id: 3, name: 'Dr. Nikita verma', status: 'in_transit', eta: '15 min', patients: 5, specialty: 'Pediatrics' },
-      { id: 4, name: 'Dr. Ravi Gupta', status: 'available', eta: 'N/A', patients: 3, specialty: 'Neurology' }
-    ];
+    const storedDoctors = localStorage.getItem("doctors");
+  const doctorsData = storedDoctors ? JSON.parse(storedDoctors) : [
+    { id: 1, name: 'Dr. Aman Kumar', status: 'available', eta: '5 min', patients: 8, specialty: 'Cardiology' },
+    { id: 2, name: 'Dr. John Snow', status: 'consulting', eta: 'N/A', patients: 12, specialty: 'Orthopedics' },
+    { id: 3, name: 'Dr. Nikita Verma', status: 'in_transit', eta: '15 min', patients: 5, specialty: 'Pediatrics' },
+    { id: 4, name: 'Dr. Ravi Gupta', status: 'available', eta: 'N/A', patients: 3, specialty: 'Neurology' },
+  ];
 
     const mockPatients = [
       { id: 1, name: 'John Doe', doctor: 'Dr. Sarah Johnson', status: 'waiting', waitTime: '30 min' },
+
       { id: 2, name: 'Jane Smith', doctor: 'Dr. Michael Chen', status: 'in_consultation', waitTime: 'N/A' },
       { id: 3, name: 'Mike Johnson', doctor: 'Dr. Sarah Johnson', status: 'waiting', waitTime: '45 min' },
       { id: 4, name: 'Sarah Wilson', doctor: 'Dr. Emily', status: 'waiting', waitTime: '20 min' }
     ];
 
-    setDoctors(mockDoctors);
+    setDoctors(doctorsData);
     setPatients(mockPatients);
     setStats({
-      totalDoctors: mockDoctors.length,
-      activeDoctors: mockDoctors.filter(d => d.status !== 'offline').length,
+      totalDoctors: doctorsData.length,
+      activeDoctors: doctorsData.filter(d => d.status !== 'offline').length,
       totalPatients: mockPatients.length,
       waitingPatients: mockPatients.filter(p => p.status === 'waiting').length
     });
@@ -201,15 +234,47 @@ const AdminDashboard = () => {
           </div>
         </div>
 
+
         <div className="management-section">
           <h2>Quick Actions</h2>
           <div className="action-buttons">
-            <button  className="action-btn primary">
+            <button  className="action-btn primary"  onClick={() => setShowAddDoctorForm(true)}>
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
                 <path d="M12 5V19M5 12H19" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
               </svg>
-              <span>Add Doctor</span>
-            </button>
+              <span >Add Doctor</span>
+              </button>
+{/* Popup Form */}
+{showAddDoctorForm && (
+  <div className="modal-overlay">
+    <div className="modal">
+      <h3>Add New Doctor</h3>
+      <input
+        type="text"
+        placeholder="Doctor Name"
+        value={newDoctor.name}
+        onChange={(e) => setNewDoctor({ ...newDoctor, name: e.target.value })}
+      />
+      <input
+        type="text"
+        placeholder="Profession"
+        value={newDoctor.profession}
+        onChange={(e) => setNewDoctor({ ...newDoctor, profession: e.target.value })}
+      />
+      <input
+        type="text"
+        placeholder="Specialization"
+        value={newDoctor.specialty}
+        onChange={(e) => setNewDoctor({ ...newDoctor, specialty: e.target.value })}
+      />
+      <div className="modal-actions">
+        <button onClick={handleAddDoctor}>Save</button>
+        <button className="cancel" onClick={() => setShowAddDoctorForm(false)}>Cancel</button>
+      </div>
+    </div>
+  </div>
+)}
+
             <button className="action-btn secondary">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
                 <path d="M8 7V3C8 2.44772 8.44772 2 9 2H15C15.5523 2 16 2.44772 16 3V7M8 7H6C4.89543 7 4 7.89543 4 9V19C4 20.1046 4.89543 21 6 21H18C19.1046 21 20 20.1046 20 19V9C20 7.89543 19.1046 7 18 7H16M8 7H16" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
