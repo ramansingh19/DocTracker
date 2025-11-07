@@ -55,7 +55,7 @@ const LandingPage = () => {
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
                   <path d="M8 5V19L19 12L8 5Z" fill="currentColor"/>
                 </svg>
-                <a href="https://www.youtube.com/watch?v=VRGFnhOpQU0&pp=ygUTbWVpY2FsIHJlbHRlZCB2aWRvcw%3D%3D" target='blank'><span>Watch Demo</span></a>
+                <a href="https://www.youtube.com/watch?v=8QyBBqlKkbQ" target='blank'><span>Watch Demo</span></a>
               </button>
             </div>
             
@@ -244,6 +244,8 @@ const LandingPage = () => {
           </div>
         </div>
       </section>
+
+      
 
       <IndustryFeatures />
 
