@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import IndustryFeatures from './IndustryFeatures';
+import ContactPage from './Contactpage';
 import './LandingPage.css';
 
 const LandingPage = () => {
@@ -21,7 +22,7 @@ const LandingPage = () => {
           <div className="nav-links">
             <a href="#features" className="nav-link">Features</a>
             <a href="#how-it-works" className="nav-link">How It Works</a>
-            <a href="#contact" className="nav-link">Contact</a>
+            <a href="#ContactPage" className="nav-link">Contact</a>
             <Link to="/login" className="login-btn">Get Started</Link>
           </div>
         </div>
@@ -248,6 +249,7 @@ const LandingPage = () => {
       
 
       <IndustryFeatures />
+      <ContactPage/>
 
       <footer className="footer">
         <div className="container">

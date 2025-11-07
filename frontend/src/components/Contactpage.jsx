@@ -35,7 +35,7 @@ export default function ContactPage() {
     try {
       // Replace the URL below with your real backend endpoint.
       // If you don't have a backend, consider using a service like Formspree, Getform, or a simple mailto fallback.
-      const res = await fetch("/api/contact", {
+      const res = await fetch("https://formspree.io/f/<your_form_id>/api/contact", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(form),
@@ -54,8 +54,8 @@ export default function ContactPage() {
   }
 
   return (
-    <main className="dt-contact-root">
-      <section className="dt-contact-card" aria-labelledby="contact-heading">
+    <main id="ContactPage" className="dt-contact-root">
+  <section id="ContactPage" className="dt-contact-card" aria-labelledby="contact-heading">
         <div className="dt-contact-left">
           <h1 id="contact-heading">Contact DoctorTracker</h1>
           <p className="lead">Questions about integration, pricing, or help with tracking — drop us a message.</p>
@@ -63,22 +63,22 @@ export default function ContactPage() {
           <ul className="contact-info" aria-label="Office contact information">
             <li>
               <strong>Office:</strong>
-              <span>+91 98765 43210</span>
+              <span>+91 78568 46471</span>
             </li>
             <li>
               <strong>Email:</strong>
-              <a href="mailto:support@doctracker.example">support@doctracker.example</a>
+              <a href="mailto:support@doctracker.example">raman.01kumar1@gmail.com</a>
             </li>
             <li>
               <strong>Address:</strong>
-              <span>123 Health Park, Hyderabad, India</span>
+              <span>123 Health Park, Noida New Delhi, India</span>
             </li>
           </ul>
 
           <div className="socials" aria-hidden>
             <a className="btn-ghost" href="#">Twitter</a>
-            <a className="btn-ghost" href="#">LinkedIn</a>
-            <a className="btn-ghost" href="#">GitHub</a>
+            <a className="btn-ghost" href="www.linkedin.com/in/raman-kumar0">LinkedIn</a>
+            <a className="btn-ghost" href="https://github.com/ramansingh19">GitHub</a>
           </div>
         </div>
 
@@ -136,4 +136,5 @@ export default function ContactPage() {
     </main>
   );
 }
+
 
