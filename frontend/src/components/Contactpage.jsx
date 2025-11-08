@@ -1,5 +1,5 @@
 
-import React, { useState } from "react";
+import { useState } from "react";
 import "./ContactPage.css";
 
 export default function ContactPage() {
@@ -35,7 +35,7 @@ export default function ContactPage() {
     try {
       // Replace the URL below with your real backend endpoint.
       // If you don't have a backend, consider using a service like Formspree, Getform, or a simple mailto fallback.
-      const res = await fetch("https://formspree.io/f/<your_form_id>/api/contact", {
+      const res = await fetch("https://formspree.io/f/meovjgjz", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(form),

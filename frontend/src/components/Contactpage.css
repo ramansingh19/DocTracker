@@ -1,5 +1,5 @@
 :root{
-  --bg:#212121;
+  --bg:#fff;
   --card:#ffffff;
   --accent:#0b6cf0;
   --muted:#6b7280;
@@ -10,8 +10,7 @@
 .dt-contact-root{font-family:Inter, ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
   color:#0f172a; 
   background:var(--bg); 
-  padding:20rem;
-  min-height:  90vh;; 
+  padding: 5rem;
   box-sizing:border-box}
 
 .dt-contact-card{max-width:1100px;
