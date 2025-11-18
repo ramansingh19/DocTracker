@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import './Login.css';
+import authService, { clearSession, getStoredUser } from '../services/authService';
 
 const Login = () => {
   const [formData, setFormData] = useState({
@@ -30,23 +31,12 @@ const Login = () => {
   }, []);
 
   // Get users from localStorage (registered users)
-  const getRegisteredUsers = () => {
-    const users = localStorage.getItem('registeredUsers');
-    return users ? JSON.parse(users) : [];
-  };
-
-  // Mock user data for demonstration (fallback)
-  const mockUsers = [
-    { email: 'doctor@example.com', password: 'password123', role: 'doctor', name: 'Dr. Smith' },
-    { email: 'admin@example.com', password: 'password123', role: 'admin', name: 'Admin User' },
-    { email: 'patient@example.com', password: 'password123', role: 'patient', name: 'Patient User' }
-  ];
-
   const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value
-    });
+    const { name, type, value, checked } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: type === 'checkbox' ? checked : value
+    }));
     setError('');
   };
 
@@ -55,37 +45,30 @@ const Login = () => {
     setLoading(true);
     setError('');
 
-    // Simulate API call delay
-    await new Promise(resolve => setTimeout(resolve, 1000));
+    try {
+      const { user } = await authService.login({
+        email: formData.email,
+        password: formData.password,
+      });
 
-    // Get all users (registered + mock)
-    const registeredUsers = getRegisteredUsers();
-    const allUsers = [...mockUsers, ...registeredUsers];
+      if (user.role !== formData.role) {
+        setError(`Your account is registered as ${user.role}. Please switch the role selector.`);
+        clearSession();
+        setLoading(false);
+        return;
+      }
 
-    // Find user with matching credentials
-    const user = allUsers.find(u => 
-      u.email === formData.email && 
-      u.password === formData.password && 
-      u.role === formData.role
-    );
-
-    if (user) {
-      // Store user data in localStorage
-      localStorage.setItem('user', JSON.stringify(user));
-      localStorage.setItem('isAuthenticated', 'true');
-      
       // Save credentials if "Remember Me" is checked
       if (formData.rememberMe) {
         localStorage.setItem('savedEmail', formData.email);
-        localStorage.setItem('savedRole', formData.role);
+        localStorage.setItem('savedRole', user.role);
         localStorage.setItem('rememberMe', 'true');
       } else {
         localStorage.removeItem('savedEmail');
         localStorage.removeItem('savedRole');
         localStorage.removeItem('rememberMe');
       }
-      
-      // Navigate based on role
+
       switch (user.role) {
         case 'doctor':
           navigate('/doctor-dashboard');
@@ -99,11 +82,15 @@ const Login = () => {
         default:
           navigate('/');
       }
-    } else {
-      setError('Invalid credentials or role mismatch');
+    } catch (err) {
+      const storedUser = getStoredUser();
+      if (!storedUser) {
+        clearSession();
+      }
+      setError(err.message || 'Unable to sign in. Please try again.');
+    } finally {
+      setLoading(false);
     }
-    
-    setLoading(false);
   };
 
   return (

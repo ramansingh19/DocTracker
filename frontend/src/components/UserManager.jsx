@@ -1,36 +1,45 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import './UserManager.css';
+import userService from '../services/userService';
+import authService, { getStoredUser } from '../services/authService';
 
 const UserManager = () => {
   const [users, setUsers] = useState([]);
   const [showManager, setShowManager] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+  const currentUser = getStoredUser();
+
+  const loadUsers = useCallback(async () => {
+    setLoading(true);
+    setError('');
+    try {
+      const result = await userService.fetchUsers({ limit: 50 });
+      setUsers(result.data || []);
+    } catch (err) {
+      setError(err.message || 'Failed to load users');
+      if (err.status === 401) {
+        authService.clearSession();
+      }
+      setUsers(currentUser ? [currentUser] : []);
+    } finally {
+      setLoading(false);
+    }
+  }, [currentUser]);
 
   useEffect(() => {
-    loadUsers();
-  }, []);
+    if (showManager) {
+      loadUsers();
+    }
+  }, [showManager, loadUsers]);
 
-  const loadUsers = () => {
-    const registeredUsers = JSON.parse(localStorage.getItem('registeredUsers') || '[]');
-    const mockUsers = [
-      { email: 'doctor@example.com', password: 'password123', role: 'doctor', name: 'Dr. Smith', isMock: true },
-      { email: 'admin@example.com', password: 'password123', role: 'admin', name: 'Admin User', isMock: true },
-      { email: 'patient@example.com', password: 'password123', role: 'patient', name: 'Patient User', isMock: true }
-    ];
-    setUsers([...mockUsers, ...registeredUsers]);
-  };
-
-  const clearAllUsers = () => {
-    localStorage.removeItem('registeredUsers');
-    localStorage.removeItem('user');
-    localStorage.removeItem('isAuthenticated');
-    loadUsers();
-  };
-
-  const deleteUser = (email) => {
-    const registeredUsers = JSON.parse(localStorage.getItem('registeredUsers') || '[]');
-    const updatedUsers = registeredUsers.filter(user => user.email !== email);
-    localStorage.setItem('registeredUsers', JSON.stringify(updatedUsers));
-    loadUsers();
+  const removeUser = async (userId) => {
+    try {
+      await userService.deleteUser(userId);
+      await loadUsers();
+    } catch (err) {
+      setError(err.message || 'Unable to delete user');
+    }
   };
 
   if (!showManager) {
@@ -44,6 +53,8 @@ const UserManager = () => {
       </button>
     );
   }
+
+  const isAdmin = currentUser?.role === 'admin';
 
   return (
     <div className="user-manager">
@@ -64,14 +75,19 @@ const UserManager = () => {
             <span className="stat-label">Total Users</span>
           </div>
           <div className="stat">
-            <span className="stat-number">{users.filter(u => !u.isMock).length}</span>
-            <span className="stat-label">Registered</span>
+            <span className="stat-number">{users.filter(u => u.role === 'doctor').length}</span>
+            <span className="stat-label">Doctors</span>
           </div>
         </div>
 
+        {error && <div className="error-message">{error}</div>}
+
+        {loading ? (
+          <div className="loading">Loading users...</div>
+        ) : (
         <div className="user-list">
           {users.map((user, index) => (
-            <div key={index} className={`user-item ${user.isMock ? 'mock-user' : 'registered-user'}`}>
+            <div key={user._id || index} className="user-item registered-user">
               <div className="user-info">
                 <div className="user-avatar">
                   {user.role === 'doctor' ? '👨‍⚕️' : user.role === 'admin' ? '👨‍💼' : '👤'}
@@ -83,29 +99,27 @@ const UserManager = () => {
                 </div>
               </div>
               <div className="user-actions">
-                {user.isMock ? (
-                  <span className="mock-badge">Demo</span>
-                ) : (
+                {isAdmin && currentUser?.email !== user.email ? (
                   <button 
                     className="delete-btn"
-                    onClick={() => deleteUser(user.email)}
+                    onClick={() => removeUser(user._id)}
                   >
                     Delete
                   </button>
+                ) : (
+                  <span className="mock-badge">{user.role}</span>
                 )}
               </div>
             </div>
           ))}
         </div>
+        )}
 
-        <div className="user-manager-actions">
-          <button 
-            className="clear-all-btn"
-            onClick={clearAllUsers}
-          >
-            Clear All Registered Users
-          </button>
-        </div>
+        {!isAdmin && (
+          <div className="user-manager-actions">
+            <p className="info-message">Admin access required for full user management.</p>
+          </div>
+        )}
       </div>
     </div>
   );

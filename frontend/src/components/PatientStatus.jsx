@@ -1,23 +1,24 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './PatientStatus.css';
+import authService, { getStoredUser } from '../services/authService';
 
 const PatientStatus = () => {
   const [user, setUser] = useState(null);
   const [doctorStatus, setDoctorStatus] = useState('available');
-  const [eta, setEta] = useState('N/A');
+  const [eta] = useState('N/A');
   const [queuePosition, setQueuePosition] = useState(3);
-  const [estimatedWaitTime, setEstimatedWaitTime] = useState('45 minutes');
-  const [isConnected, setIsConnected] = useState(true);
+  const [estimatedWaitTime] = useState('45 minutes');
+  const [isConnected] = useState(true);
   const navigate = useNavigate();
 
   useEffect(() => {
-    const userData = localStorage.getItem('user');
-    if (!userData) {
+    const storedUser = getStoredUser();
+    if (!storedUser) {
       navigate('/login');
       return;
     }
-    setUser(JSON.parse(userData));
+    setUser(storedUser);
 
     // Mock real-time updates
     const interval = setInterval(() => {
@@ -35,8 +36,7 @@ const PatientStatus = () => {
   }, [navigate]);
 
   const handleLogout = () => {
-    localStorage.removeItem('user');
-    localStorage.removeItem('isAuthenticated');
+    authService.clearSession();
     navigate('/login');
   };
 

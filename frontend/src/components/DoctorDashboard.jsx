@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './DoctorDashboard.css';
+import authService, { getStoredUser } from '../services/authService';
 
 const DoctorDashboard = () => {
   const [user, setUser] = useState(null);
@@ -12,12 +13,12 @@ const DoctorDashboard = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const userData = localStorage.getItem('user');
-    if (!userData) {
+    const storedUser = getStoredUser();
+    if (!storedUser) {
       navigate('/login');
       return;
     }
-    setUser(JSON.parse(userData));
+    setUser(storedUser);
 
     // Mock location - in real app, this would use GPS
     setLocation({ lat: 28.6139, lng: 77.2090 }); // Delhi coordinates
@@ -84,8 +85,7 @@ const DoctorDashboard = () => {
 
 
   const handleLogout = () => {
-    localStorage.removeItem('user');
-    localStorage.removeItem('isAuthenticated');
+    authService.clearSession();
     navigate('/login');
   };
 

@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import './Signup.css';
+import authService from '../services/authService';
 
 const Signup = () => {
   const [formData, setFormData] = useState({
+    name: '',
     email: '',
     password: '',
     confirmPassword: '',
@@ -42,52 +44,33 @@ const Signup = () => {
       return;
     }
 
-    // Simulate API call delay
-    await new Promise(resolve => setTimeout(resolve, 1000));
+    try {
+      await authService.register({
+        name: formData.name,
+        email: formData.email,
+        password: formData.password,
+        role: formData.role,
+      });
 
-    // Check if user already exists
-    const existingUsers = JSON.parse(localStorage.getItem('registeredUsers') || '[]');
-    const userExists = existingUsers.some(user => user.email === formData.email);
+      setSuccess('Account created successfully! Redirecting...');
 
-    if (userExists) {
-      setError('User with this email already exists');
+      setTimeout(() => {
+        switch (formData.role) {
+          case 'doctor':
+            navigate('/doctor-dashboard');
+            break;
+          case 'admin':
+            navigate('/admin-dashboard');
+            break;
+          default:
+            navigate('/login');
+        }
+      }, 1500);
+    } catch (err) {
+      setError(err.message || 'Unable to create account. Please try again.');
+    } finally {
       setLoading(false);
-      return;
     }
-
-    // Create new user with password
-    const newUser = {
-      email: formData.email,
-      password: formData.password, // Store the password
-      role: formData.role,
-      name: formData.role === 'doctor' ? 'Dr. ' + formData.email.split('@')[0] : formData.email.split('@')[0],
-      createdAt: new Date().toISOString()
-    };
-
-    // Add to registered users
-    const updatedUsers = [...existingUsers, newUser];
-    localStorage.setItem('registeredUsers', JSON.stringify(updatedUsers));
-
-    // Store current user data for immediate login
-    localStorage.setItem('user', JSON.stringify(newUser));
-    localStorage.setItem('isAuthenticated', 'true');
-
-    setSuccess('Account created successfully! Redirecting...');
-    
-    setTimeout(() => {
-      switch (formData.role) {
-        case 'doctor':
-          navigate('/doctor-dashboard');
-          break;
-        case 'admin':
-          navigate('/admin-dashboard');
-          break;
-        default:
-          navigate('/login');
-      }
-    }, 1500);
-
-    setLoading(false);
   };
 
   return (
@@ -121,6 +104,21 @@ const Signup = () => {
               <option value="admin">Admin</option>
               <option value="patient">Patient</option>
             </select>
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="name">Full Name</label>
+            <input
+              type="text"
+              id="name"
+              name="name"
+              value={formData.name}
+              onChange={handleChange}
+              required
+              placeholder="Enter your name"
+              className="form-input"
+              autoComplete="name"
+            />
           </div>
 
           <div className="form-group">

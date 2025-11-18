@@ -9,15 +9,15 @@ const DataVisualization = ({ type = 'dashboard', userRole = 'admin' }) => {
   useEffect(() => {
     // Simulate data loading
     setIsLoading(true);
-    
+
     setTimeout(() => {
-      const mockData = generateMockData(type, userRole);
+      const mockData = generateMockData();
       setData(mockData);
       setIsLoading(false);
     }, 1000);
   }, [type, userRole, timeRange]);
 
-  const generateMockData = (type, role) => {
+  const generateMockData = () => {
     const baseData = {
       patientFlow: {
         labels: ['6AM', '9AM', '12PM', '3PM', '6PM', '9PM'],

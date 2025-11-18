@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './AdminDashboard.css';
+import authService, { getStoredUser } from '../services/authService';
 
 const AdminDashboard = () => {
   const [user, setUser] = useState(null);
@@ -46,12 +47,12 @@ const AdminDashboard = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const userData = localStorage.getItem('user');
-    if (!userData) {
+    const storedUser = getStoredUser();
+    if (!storedUser) {
       navigate('/login');
       return;
     }
-    setUser(JSON.parse(userData));
+    setUser(storedUser);
 
     // Mock data
     const storedDoctors = localStorage.getItem("doctors");
@@ -81,8 +82,7 @@ const AdminDashboard = () => {
   }, [navigate]);
 
   const handleLogout = () => {
-    localStorage.removeItem('user');
-    localStorage.removeItem('isAuthenticated');
+    authService.clearSession();
     navigate('/login');
   };
 

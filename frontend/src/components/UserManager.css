@@ -211,6 +211,7 @@
 .user-manager-actions {
   border-top: 1px solid #e5e7eb;
   padding-top: 1rem;
+  text-align: center;
 }
 
 .clear-all-btn {
@@ -228,6 +229,32 @@
 .clear-all-btn:hover {
   transform: translateY(-1px);
   box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3);
+}
+
+.error-message {
+  margin-bottom: 1rem;
+  padding: 0.75rem 1rem;
+  background: #fee2e2;
+  border: 1px solid #f87171;
+  color: #b91c1c;
+  border-radius: 8px;
+  font-size: 0.85rem;
+}
+
+.info-message {
+  font-size: 0.8rem;
+  color: #475569;
+  background: #e0f2fe;
+  border: 1px solid #38bdf8;
+  padding: 0.75rem;
+  border-radius: 8px;
+}
+
+.loading {
+  text-align: center;
+  padding: 1.5rem 0;
+  font-size: 0.9rem;
+  color: #475569;
 }
 
 /* Responsive Design */
