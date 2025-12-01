@@ -8,7 +8,7 @@ const PatientStatus = () => {
   const [doctorStatus, setDoctorStatus] = useState('available');
   const [eta] = useState('N/A');
   const [queuePosition, setQueuePosition] = useState(3);
-  const [estimatedWaitTime] = useState('45 minutes');
+  const [estimatedWaitTime] = useState('1 hour');
   const [isConnected] = useState(true);
   const navigate = useNavigate();
 

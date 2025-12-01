@@ -93,6 +93,17 @@ const DoctorDashboard = () => {
     return <div className="loading">Loading...</div>;
   }
 
+  //patient list item 
+  const patients = [
+  { name: "John sin", time: "9:00 AM", status: "waiting" },
+  { name: "Rahul Kumar", time: "9:15 AM", status: "waiting" },
+  { name: "Gungun Kumari", time: "10:00 AM", status: "waiting" },
+  { name: "Raman Kumar", time: "10:00 AM", status: "waiting" },
+  { name: "Jane Smith", time: "10:30 AM", status: "waiting" },
+  { name: "Mike Johnson", time: "11:00 AM", status: "upcoming" },
+  
+];
+
   return (
     <div className="doctor-dashboard">
       <header className="dashboard-header">
@@ -199,48 +210,28 @@ const DoctorDashboard = () => {
             )}
           </div>
 
-          <div className="patients-card">
-            <div className="card-header">
-              <h3>Today's Patients</h3>
-              <span className="patient-count">12 Total</span>
-            </div>
-            <div className="patient-list">
-              <div className="patient-item">
-                <div className="patient-info">
-                  <span className="patient-name">John sin</span>
-                  <span className="patient-time">9:00 AM</span>
-                  <span className="patient-name">Rahul Kumar</span>
-                  <span className="patient-time">9:15 AM</span>
-                  <span className="patient-name">Gungun Kumari</span>
-                  <span className="patient-time">10:00 AM</span>
-                  <span className="patient-name">Raman Kumar</span>
-                  <span className="patient-time">10:00 AM</span>
-                </div>
-                <span className="patient-status waiting">Waiting</span>
-              </div>
-              <div className="patient-item">
-                <div className="patient-info">
-                  <span className="patient-name">Jane Smith</span>
-                  <span className="patient-time">10:30 AM</span>
-                </div>
-                <span className="patient-status waiting">Waiting</span>
-              </div>
-              <div className="patient-item">
-                <div className="patient-info">
-                  <span className="patient-name">Mike Johnson</span>
-                  <span className="patient-time">11:00 AM</span>
-                </div>
-                <span className="patient-status upcoming">Upcoming</span>
-              </div>
-              <div className="patient-item">
-                <div className="patient-info">
-                  <span className="patient-name">Sarah Wilson</span>
-                  <span className="patient-time">11:30 AM</span>
-                </div>
-                <span className="patient-status upcoming">Upcoming</span>
-              </div>
-            </div>
-          </div>
+{/* patients card items  */}
+  <div className="patients-card">
+  <div className="card-header">
+    <h3>Today's Patients</h3>
+    <span className="patient-count">{patients.length} Total</span>
+  </div>
+
+  <div className="patient-list">
+    {patients.map((p, index) => (
+      <div className="patient-item" key={index}>
+        <div className="patient-info">
+          <span className="patient-name">{p.name}</span>
+          <span className="patient-time">{p.time}</span>
+        </div>
+        <span className={`patient-status ${p.status}`}>
+          {p.status.charAt(0).toUpperCase() + p.status.slice(1)}
+        </span>
+      </div>
+    ))}
+  </div>
+</div>
+
 
           <div className="stats-card">
             <div className="card-header">
