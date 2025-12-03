@@ -1,4 +1,4 @@
-import Doctor from "../models/Doctor.js";
+// import Doctor from "../models/Doctor.js";
 
 export const updateLocation = async (req, res) => {
   try {
