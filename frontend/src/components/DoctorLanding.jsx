@@ -1,50 +1,64 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import './DoctorLanding.css';
 
 const DoctorLanding = () => {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (isMenuOpen && !event.target.closest('.nav-container')) {
+        setIsMenuOpen(false);
+      }
+    };
+    document.addEventListener('click', handleClickOutside);
+    return () => document.removeEventListener('click', handleClickOutside);
+  }, [isMenuOpen]);
+
   return (
-    <div className="doctor-landing">
-      <nav className="navbar">
-        <div className="nav-container">
-          <div className="nav-logo">
-            <div className="logo-icon">
-              <span>👨‍⚕️</span>
-            </div>
-            <span className="nav-title">DocTracker - Doctor Portal</span>
+    <div className="font-sans bg-white text-gray-900 leading-relaxed overflow-x-hidden">
+      <nav className="fixed top-0 left-0 right-0 bg-white/95 backdrop-blur-xl border-b border-black/5 z-[1000] py-4 transition-all duration-300">
+        <div className="nav-container max-w-[1200px] mx-auto px-8 flex justify-between items-center relative md:px-6">
+          <div className="flex items-center gap-3 text-2xl font-bold text-gray-900">
+            <div className="w-10 h-10 bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-xl flex items-center justify-center text-xl">👨‍⚕️</div>
+            <span>DocTracker - Doctor Portal</span>
           </div>
-          <div className="nav-links">
-            <Link to="/" className="nav-link">Home</Link>
-            <Link to="/login" className="login-btn">Login</Link>
+          <button 
+            className={`flex flex-col justify-around w-[30px] h-[30px] bg-transparent border-0 cursor-pointer p-0 z-[1001] relative md:flex lg:hidden ${isMenuOpen ? 'active' : ''}`}
+            onClick={() => setIsMenuOpen(!isMenuOpen)}
+            aria-label="Toggle menu"
+            aria-expanded={isMenuOpen}
+          >
+            <span className={`w-full h-[3px] bg-gray-900 rounded transition-all duration-300 origin-center ${isMenuOpen ? 'rotate-45 translate-y-[8px]' : ''}`}></span>
+            <span className={`w-full h-[3px] bg-gray-900 rounded transition-all duration-300 origin-center ${isMenuOpen ? 'opacity-0 -translate-x-5' : ''}`}></span>
+            <span className={`w-full h-[3px] bg-gray-900 rounded transition-all duration-300 origin-center ${isMenuOpen ? '-rotate-45 -translate-y-[8px]' : ''}`}></span>
+          </button>
+          <div className={`flex items-center gap-8 lg:gap-6 md:fixed md:top-[70px] md:left-0 md:right-0 md:bg-white/98 md:backdrop-blur-xl md:flex-col md:items-start md:p-8 md:gap-6 md:shadow-lg md:border-b md:border-black/5 md:transition-all md:duration-300 md:z-[999] ${isMenuOpen ? 'md:translate-y-0 md:opacity-100 md:visible' : 'md:-translate-y-full md:opacity-0 md:invisible'}`}>
+            <Link to="/" className="text-slate-500 no-underline font-medium hover:text-emerald-500 transition-colors md:text-lg md:py-3 md:w-full md:border-b md:border-black/5" onClick={() => setIsMenuOpen(false)}>Home</Link>
+            <Link to="/login" className="bg-gradient-to-br from-emerald-500 to-emerald-600 text-white px-6 py-3 rounded-xl no-underline font-semibold transition-all duration-300 shadow-[0_4px_15px_rgba(16,185,129,0.3)] hover:-translate-y-0.5 hover:shadow-[0_8px_25px_rgba(16,185,129,0.4)] md:w-full md:text-center" onClick={() => setIsMenuOpen(false)}>Login</Link>
           </div>
         </div>
       </nav>
 
-      <section className="hero">
-        <div className="hero-background">
-          <div className="hero-particles"></div>
-        </div>
-        <div className="hero-container">
-          <div className="hero-content">
-            <div className="hero-badge">
-              <span>👨‍⚕️ Doctor Portal</span>
-            </div>
-            <h1 className="hero-title">
+      <section className="pt-32 pb-24 bg-gradient-to-br from-emerald-50 to-emerald-100 relative overflow-hidden md:pt-28 md:pb-16">
+        <div className="max-w-[1200px] mx-auto px-8 grid grid-cols-2 gap-16 items-center relative z-[2] md:grid-cols-1 md:gap-10 md:text-center md:px-6">
+          <div className="max-w-[600px]">
+            <div className="inline-block bg-emerald-500/10 text-emerald-600 px-4 py-2 rounded-full text-sm font-semibold mb-6 border border-emerald-500/20">👨‍⚕️ Doctor Portal</div>
+            <h1 className="text-5xl font-extrabold leading-tight mb-6 text-gray-900 md:text-4xl">
               Streamline Your Medical Practice with
-              <span className="gradient-text"> Smart Technology</span>
+              <span className="bg-gradient-to-br from-emerald-500 to-emerald-600 bg-clip-text text-transparent"> Smart Technology</span>
             </h1>
-            <p className="hero-description">
+            <p className="text-xl text-slate-500 mb-10 leading-relaxed md:text-base">
               Manage your schedule, update patient status, share your location, and optimize your workflow 
               with our comprehensive doctor management platform. Focus on what matters most - patient care.
             </p>
-            <div className="hero-actions">
-              <Link to="/login" className="cta-button primary">
+            <div className="flex gap-4 flex-wrap md:flex-col md:gap-4">
+              <Link to="/login" className="inline-flex items-center gap-2 px-8 py-4 rounded-xl font-semibold no-underline transition-all duration-300 bg-gradient-to-br from-emerald-500 to-emerald-600 text-white shadow-[0_4px_15px_rgba(16,185,129,0.3)] hover:-translate-y-0.5 hover:shadow-[0_8px_25px_rgba(16,185,129,0.4)] md:w-full md:justify-center">
                 <span>Access Dashboard</span>
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
                   <path d="M5 12H19M19 12L12 5M19 12L12 19" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                 </svg>
               </Link>
-              <Link to="/signup" className="cta-button secondary">
+              <Link to="/signup" className="inline-flex items-center gap-2 px-8 py-4 rounded-xl font-semibold no-underline transition-all duration-300 border-2 border-emerald-500 text-emerald-500 bg-white hover:bg-emerald-500 hover:text-white hover:-translate-y-0.5 md:w-full md:justify-center">
                 <span>Create Account</span>
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
                   <path d="M16 21V19C16 17.9391 15.5786 16.9217 14.8284 16.1716C14.0783 15.4214 13.0609 15 12 15H5C3.93913 15 2.92172 15.4214 2.17157 16.1716C1.42143 16.9217 1 17.9391 1 19V21" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
@@ -55,53 +69,43 @@ const DoctorLanding = () => {
               </Link>
             </div>
           </div>
-          <div className="hero-visual">
-            <div className="dashboard-preview">
-              <div className="preview-header">
-                <div className="preview-dots">
-                  <span></span><span></span><span></span>
+          <div className="flex justify-center md:mt-10">
+            <div className="bg-white rounded-[20px] shadow-[0_20px_40px_rgba(0,0,0,0.1)] overflow-hidden w-full max-w-[400px]">
+              <div className="bg-slate-50 px-6 py-4 flex items-center justify-between border-b border-slate-200">
+                <div className="flex gap-2">
+                  <span className="w-2 h-2 rounded-full bg-red-500"></span>
+                  <span className="w-2 h-2 rounded-full bg-amber-500"></span>
+                  <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
                 </div>
-                <div className="preview-title">Doctor Dashboard</div>
+                <span className="font-semibold text-gray-700 text-sm">Doctor Dashboard</span>
               </div>
-              <div className="preview-content">
-                <div className="preview-card active">
-                  <div className="card-header">
-                    <span className="card-icon">📅</span>
-                    <div className="card-info">
-                      <h4>Today's Schedule</h4>
-                      <p>12 patients • 8:00 AM - 5:00 PM</p>
+              <div className="p-6 flex flex-col gap-4">
+                <div className="bg-gradient-to-br from-emerald-50 to-emerald-100 rounded-xl p-4 border-2 border-emerald-200">
+                  <div className="flex items-center gap-3 mb-3">
+                    <span className="text-2xl">📅</span>
+                    <div className="flex-1">
+                      <h4 className="m-0 text-sm font-semibold text-gray-900">Today's Schedule</h4>
+                      <p className="m-0 text-xs text-slate-500">12 patients • 8:00 AM - 5:00 PM</p>
                     </div>
-                    <div className="status-indicator online"></div>
+                    <div className="w-2 h-2 rounded-full bg-emerald-500"></div>
                   </div>
-                  <div className="card-stats">
-                    <div className="stat-item">
-                      <span className="stat-value">8</span>
-                      <span className="stat-label">Completed</span>
-                    </div>
-                    <div className="stat-item">
-                      <span className="stat-value">4</span>
-                      <span className="stat-label">Pending</span>
-                    </div>
+                  <div className="flex gap-4">
+                    <div className="text-center flex-1"><span className="block text-sm font-bold text-emerald-500">8</span><span className="text-[0.625rem] text-slate-500">Completed</span></div>
+                    <div className="text-center flex-1"><span className="block text-sm font-bold text-emerald-500">4</span><span className="text-[0.625rem] text-slate-500">Pending</span></div>
                   </div>
                 </div>
-                <div className="preview-card">
-                  <div className="card-header">
-                    <span className="card-icon">📍</span>
-                    <div className="card-info">
-                      <h4>Location Sharing</h4>
-                      <p>ETA: 15 minutes to hospital</p>
+                <div className="bg-slate-50 rounded-xl p-4 border-2 border-transparent">
+                  <div className="flex items-center gap-3 mb-3">
+                    <span className="text-2xl">📍</span>
+                    <div className="flex-1">
+                      <h4 className="m-0 text-sm font-semibold text-gray-900">Location Sharing</h4>
+                      <p className="m-0 text-xs text-slate-500">ETA: 15 minutes to hospital</p>
                     </div>
-                    <div className="status-indicator transit"></div>
+                    <div className="w-2 h-2 rounded-full bg-blue-500"></div>
                   </div>
-                  <div className="card-stats">
-                    <div className="stat-item">
-                      <span className="stat-value">Live</span>
-                      <span className="stat-label">GPS Tracking</span>
-                    </div>
-                    <div className="stat-item">
-                      <span className="stat-value">5</span>
-                      <span className="stat-label">Patients Notified</span>
-                    </div>
+                  <div className="flex gap-4">
+                    <div className="text-center flex-1"><span className="block text-sm font-bold text-emerald-500">Live</span><span className="text-[0.625rem] text-slate-500">GPS Tracking</span></div>
+                    <div className="text-center flex-1"><span className="block text-sm font-bold text-emerald-500">5</span><span className="text-[0.625rem] text-slate-500">Patients Notified</span></div>
                   </div>
                 </div>
               </div>
@@ -110,160 +114,86 @@ const DoctorLanding = () => {
         </div>
       </section>
 
-      <section className="features">
-        <div className="container">
-          <div className="section-header">
-            <h2 className="section-title">Doctor-Focused Features</h2>
-            <p className="section-subtitle">
+      <section className="py-24 bg-white md:py-16">
+        <div className="max-w-[1200px] mx-auto px-8 md:px-6">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl font-bold text-gray-900 mb-4">Doctor-Focused Features</h2>
+            <p className="text-xl text-slate-500 max-w-[600px] mx-auto">
               Everything you need to manage your practice efficiently
             </p>
           </div>
-          <div className="features-grid">
-            <div className="feature-card">
-              <div className="feature-icon">
-                <svg width="48" height="48" viewBox="0 0 24 24" fill="none">
-                  <path d="M9 12L11 14L15 10M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                </svg>
+          <div className="grid grid-cols-[repeat(auto-fit,minmax(350px,1fr))] gap-8 md:grid-cols-1">
+            <div className="bg-white rounded-2xl p-8 border border-slate-200 shadow-[0_4px_15px_rgba(0,0,0,0.08)] transition-all duration-300 hover:-translate-y-1 border-t-4 border-t-emerald-500">
+              <div className="w-16 h-16 bg-gradient-to-br from-emerald-100 to-emerald-200 rounded-xl flex items-center justify-center mb-6 text-3xl">
+                🤖
               </div>
-              <h3>Smart Schedule Management</h3>
-              <p>AI-powered scheduling optimization, automatic patient reminders, and intelligent time slot allocation.</p>
-              <div className="feature-highlight">
+              <h3 className="text-xl font-semibold text-gray-900 mb-4">Smart Schedule Management</h3>
+              <p className="text-slate-500 mb-6 leading-relaxed">AI-powered scheduling optimization, automatic patient reminders, and intelligent time slot allocation.</p>
+              <div className="inline-block bg-emerald-500/10 text-emerald-600 px-3 py-1 rounded-full text-xs font-semibold">
                 <span>🤖 AI-Powered</span>
               </div>
             </div>
-            <div className="feature-card">
-              <div className="feature-icon">
-                <svg width="48" height="48" viewBox="0 0 24 24" fill="none">
-                  <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                  <path d="M2 17L12 22L22 17" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                  <path d="M2 12L12 17L22 12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                </svg>
+            {[
+              { icon: '⚡', title: 'Real-Time Status Updates', desc: 'Update your availability status instantly. Patients get notified automatically when you\'re available.', tag: '⚡ Instant Updates' },
+              { icon: '📍', title: 'GPS Location Sharing', desc: 'Share your location with patients for accurate ETA updates. Privacy controls ensure you\'re always in control.', tag: '🔒 Privacy Protected' },
+              { icon: '📋', title: 'Patient Queue Management', desc: 'View and manage your patient queue in real-time. Prioritize urgent cases and optimize consultation flow.', tag: '📋 Smart Queue' },
+              { icon: '📊', title: 'Analytics & Insights', desc: 'Track your performance metrics, patient satisfaction scores, and optimize your practice efficiency.', tag: '📊 Data-Driven' },
+              { icon: '🚨', title: 'Emergency Alerts', desc: 'Receive instant notifications for emergency cases and urgent patient requests. Never miss critical situations.', tag: '🚨 Priority Alerts' },
+            ].map((f, i) => (
+              <div key={i} className="bg-white rounded-2xl p-8 border border-slate-200 shadow-[0_4px_15px_rgba(0,0,0,0.08)] transition-all duration-300 hover:-translate-y-1 border-t-4 border-t-emerald-500">
+                <div className="w-16 h-16 bg-gradient-to-br from-emerald-100 to-emerald-200 rounded-xl flex items-center justify-center mb-6 text-3xl">{f.icon}</div>
+                <h3 className="text-xl font-semibold text-gray-900 mb-4">{f.title}</h3>
+                <p className="text-slate-500 mb-6 leading-relaxed">{f.desc}</p>
+                <div className="inline-block bg-emerald-500/10 text-emerald-600 px-3 py-1 rounded-full text-xs font-semibold">{f.tag}</div>
               </div>
-              <h3>Real-Time Status Updates</h3>
-              <p>Update your availability status instantly. Patients get notified automatically when you're available.</p>
-              <div className="feature-highlight">
-                <span>⚡ Instant Updates</span>
-              </div>
-            </div>
-            <div className="feature-card">
-              <div className="feature-icon">
-                <svg width="48" height="48" viewBox="0 0 24 24" fill="none">
-                  <path d="M21 10C21 17 12 23 12 23S3 17 3 10C3 7.61305 3.94821 5.32387 5.63604 3.63604C7.32387 1.94821 9.61305 1 12 1C14.3869 1 16.6761 1.94821 18.3639 3.63604C20.0518 5.32387 21 7.61305 21 10Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                  <path d="M12 13C13.6569 13 15 11.6569 15 10C15 8.34315 13.6569 7 12 7C10.3431 7 9 8.34315 9 10C9 11.6569 10.3431 13 12 13Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                </svg>
-              </div>
-              <h3>GPS Location Sharing</h3>
-              <p>Share your location with patients for accurate ETA updates. Privacy controls ensure you're always in control.</p>
-              <div className="feature-highlight">
-                <span>🔒 Privacy Protected</span>
-              </div>
-            </div>
-            <div className="feature-card">
-              <div className="feature-icon">
-                <svg width="48" height="48" viewBox="0 0 24 24" fill="none">
-                  <path d="M9 19C9 20.1046 9.89543 21 11 21H13C14.1046 21 15 20.1046 15 19V18H9V19Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                  <path d="M3 5C3 3.89543 3.89543 3 5 3H19C20.1046 3 21 3.89543 21 5V18C21 19.1046 20.1046 20 19 20H5C3.89543 20 3 19.1046 3 18V5Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                  <path d="M8 7H16" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                  <path d="M8 11H16" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                  <path d="M8 15H12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                </svg>
-              </div>
-              <h3>Patient Queue Management</h3>
-              <p>View and manage your patient queue in real-time. Prioritize urgent cases and optimize consultation flow.</p>
-              <div className="feature-highlight">
-                <span>📋 Smart Queue</span>
-              </div>
-            </div>
-            <div className="feature-card">
-              <div className="feature-icon">
-                <svg width="48" height="48" viewBox="0 0 24 24" fill="none">
-                  <path d="M9 19C9 20.1046 9.89543 21 11 21H13C14.1046 21 15 20.1046 15 19V18H9V19Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                  <path d="M3 5C3 3.89543 3.89543 3 5 3H19C20.1046 3 21 3.89543 21 5V18C21 19.1046 20.1046 20 19 20H5C3.89543 20 3 19.1046 3 18V5Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                  <path d="M8 7H16" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                  <path d="M8 11H16" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                  <path d="M8 15H12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                </svg>
-              </div>
-              <h3>Analytics & Insights</h3>
-              <p>Track your performance metrics, patient satisfaction scores, and optimize your practice efficiency.</p>
-              <div className="feature-highlight">
-                <span>📊 Data-Driven</span>
-              </div>
-            </div>
-            <div className="feature-card">
-              <div className="feature-icon">
-                <svg width="48" height="48" viewBox="0 0 24 24" fill="none">
-                  <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                  <path d="M8 12L10.5 14.5L16 9" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                </svg>
-              </div>
-              <h3>Emergency Alerts</h3>
-              <p>Receive instant notifications for emergency cases and urgent patient requests. Never miss critical situations.</p>
-              <div className="feature-highlight">
-                <span>🚨 Priority Alerts</span>
-              </div>
-            </div>
+            ))}
           </div>
         </div>
       </section>
 
-      <section className="cta-section">
-        <div className="container">
-          <div className="cta-content">
-            <h2>Ready to Transform Your Practice?</h2>
-            <p>Join thousands of doctors who have already improved their efficiency and patient satisfaction.</p>
-            <div className="cta-buttons">
-              <Link to="/login" className="cta-button primary large">
-                <span>Access Doctor Dashboard</span>
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-                  <path d="M5 12H19M19 12L12 5M19 12L12 19" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                </svg>
-              </Link>
-              <Link to="/signup" className="cta-button secondary large">
-                <span>Create Doctor Account</span>
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-                  <path d="M16 21V19C16 17.9391 15.5786 16.9217 14.8284 16.1716C14.0783 15.4214 13.0609 15 12 15H5C3.93913 15 2.92172 15.4214 2.17157 16.1716C1.42143 16.9217 1 17.9391 1 19V21" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                  <path d="M8.5 11C10.7091 11 12.5 9.20914 12.5 7C12.5 4.79086 10.7091 3 8.5 3C6.29086 3 4.5 4.79086 4.5 7C4.5 9.20914 6.29086 11 8.5 11Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                  <path d="M20 8V14" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                  <path d="M23 11H17" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                </svg>
-              </Link>
-            </div>
+      <section className="py-24 bg-gradient-to-br from-emerald-50 to-emerald-100 md:py-16">
+        <div className="max-w-[1200px] mx-auto px-8 text-center">
+          <h2 className="text-4xl font-bold text-gray-900 mb-4">Ready to Transform Your Practice?</h2>
+          <p className="text-xl text-slate-500 mb-10 max-w-[600px] mx-auto">Join thousands of doctors who have already improved their efficiency and patient satisfaction.</p>
+          <div className="flex gap-4 justify-center flex-wrap">
+            <Link to="/login" className="inline-flex items-center gap-2 px-10 py-5 rounded-xl font-semibold no-underline bg-gradient-to-br from-emerald-500 to-emerald-600 text-white shadow-[0_4px_15px_rgba(16,185,129,0.3)] hover:-translate-y-0.5 transition-all duration-300">Access Doctor Dashboard<svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M5 12H19M19 12L12 5M19 12L12 19" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg></Link>
+            <Link to="/signup" className="inline-flex items-center gap-2 px-10 py-5 rounded-xl font-semibold no-underline border-2 border-emerald-500 text-emerald-500 bg-white hover:bg-emerald-500 hover:text-white hover:-translate-y-0.5 transition-all duration-300">Create Doctor Account<svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M16 21V19C16 17.9391 15.5786 16.9217 14.8284 16.1716C14.0783 15.4214 13.0609 15 12 15H5C3.93913 15 2.92172 15.4214 2.17157 16.1716C1.42143 16.9217 1 17.9391 1 19V21" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/><path d="M8.5 11C10.7091 11 12.5 9.20914 12.5 7C12.5 4.79086 10.7091 3 8.5 3C6.29086 3 4.5 4.79086 4.5 7C4.5 9.20914 6.29086 11 8.5 11Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/><path d="M20 8V14" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/><path d="M23 11H17" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg></Link>
           </div>
         </div>
       </section>
 
-      <footer className="footer">
-        <div className="container">
-          <div className="footer-content">
-            <div className="footer-brand">
-              <div className="footer-logo">
-                <div className="logo-icon">
-                  <span>👨‍⚕️</span>
-                </div>
+      <footer className="bg-gray-900 text-white pt-16 pb-8">
+        <div className="max-w-[1200px] mx-auto px-8 md:px-6">
+          <div className="grid grid-cols-[1fr_2fr] gap-16 mb-12 md:grid-cols-1 md:gap-8 md:text-center">
+            <div className="max-w-[400px]">
+              <div className="flex items-center gap-3 text-2xl font-bold mb-4">
+                <div className="w-10 h-10 bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-xl flex items-center justify-center">👨‍⚕️</div>
                 <span>DocTracker</span>
               </div>
-              <p>Empowering doctors with intelligent healthcare management tools.</p>
+              <p className="text-slate-400 leading-relaxed">Empowering doctors with intelligent healthcare management tools.</p>
             </div>
-            <div className="footer-links">
-              <div className="footer-column">
-                <h4>For Doctors</h4>
-                <Link to="/login">Login</Link>
-                <Link to="/signup">Sign Up</Link>
-                <Link to="/doctor-dashboard">Dashboard</Link>
-                <a href="#">Features</a>
+            <div className="grid grid-cols-2 gap-8 md:grid-cols-1">
+              <div>
+                <h4 className="text-base font-semibold mb-4">For Doctors</h4>
+                <div className="flex flex-col gap-2">
+                  <Link to="/login" className="text-slate-400 no-underline hover:text-emerald-500 transition-colors">Login</Link>
+                  <Link to="/signup" className="text-slate-400 no-underline hover:text-emerald-500 transition-colors">Sign Up</Link>
+                  <Link to="/doctor-dashboard" className="text-slate-400 no-underline hover:text-emerald-500 transition-colors">Dashboard</Link>
+                  <a href="#" className="text-slate-400 no-underline hover:text-emerald-500 transition-colors">Features</a>
+                </div>
               </div>
-              <div className="footer-column">
-                <h4>Support</h4>
-                <a href="#">Help Center</a>
-                <a href="#">Documentation</a>
-                <a href="#">Training</a>
-                <a href="#">Contact</a>
+              <div>
+                <h4 className="text-base font-semibold mb-4">Support</h4>
+                <div className="flex flex-col gap-2">
+                  <a href="#" className="text-slate-400 no-underline hover:text-emerald-500 transition-colors">Help Center</a>
+                  <a href="#" className="text-slate-400 no-underline hover:text-emerald-500 transition-colors">Documentation</a>
+                  <a href="#" className="text-slate-400 no-underline hover:text-emerald-500 transition-colors">Contact</a>
+                </div>
               </div>
             </div>
           </div>
-          <div className="footer-bottom">
-            <p>&copy; 2024 DocTracker. All rights reserved.</p>
+          <div className="pt-8 border-t border-gray-800 text-center">
+            <p className="text-slate-400 m-0">&copy; 2024 DocTracker. All rights reserved.</p>
           </div>
         </div>
       </footer>

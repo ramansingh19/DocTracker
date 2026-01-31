@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import './DataVisualization.css';
 
 const DataVisualization = ({ type = 'dashboard', userRole = 'admin' }) => {
   const [data, setData] = useState({});
@@ -83,9 +82,9 @@ const DataVisualization = ({ type = 'dashboard', userRole = 'admin' }) => {
   const renderChart = (chartType, chartData) => {
     if (isLoading) {
       return (
-        <div className="chart-loading">
-          <div className="loading-spinner"></div>
-          <p>Loading chart data...</p>
+        <div className="flex flex-col items-center justify-center h-[200px] text-slate-500">
+          <div className="w-10 h-10 border-4 border-gray-200 border-t-blue-500 rounded-full animate-spin mb-4"></div>
+          <p className="m-0">Loading chart data...</p>
         </div>
       );
     }
@@ -103,9 +102,9 @@ const DataVisualization = ({ type = 'dashboard', userRole = 'admin' }) => {
   };
 
   const LineChart = ({ data }) => (
-    <div className="line-chart">
-      <div className="chart-container">
-        <svg viewBox="0 0 400 200" className="chart-svg">
+    <div>
+      <div className="w-full h-[200px] flex items-center justify-center">
+        <svg viewBox="0 0 400 200" className="w-full h-full">
           <defs>
             <linearGradient id="lineGradient" x1="0%" y1="0%" x2="0%" y2="100%">
               <stop offset="0%" stopColor={data.datasets[0].backgroundColor} />
@@ -166,7 +165,7 @@ const DataVisualization = ({ type = 'dashboard', userRole = 'admin' }) => {
               x={60 + i * 50}
               y="190"
               textAnchor="middle"
-              className="chart-label"
+              className="fill-slate-500 text-xs"
             >
               {label}
             </text>
@@ -178,8 +177,8 @@ const DataVisualization = ({ type = 'dashboard', userRole = 'admin' }) => {
 
   const BarChart = ({ data }) => (
     <div className="bar-chart">
-      <div className="chart-container">
-        <svg viewBox="0 0 400 200" className="chart-svg">
+      <div className="w-full h-[200px] flex items-center justify-center">
+        <svg viewBox="0 0 400 200" className="w-full h-full">
           {data.datasets[0].data.map((value, i) => (
             <g key={i}>
               <rect
@@ -194,7 +193,7 @@ const DataVisualization = ({ type = 'dashboard', userRole = 'admin' }) => {
                 x={70 + i * 60}
                 y={150 - (value / 5) * 120}
                 textAnchor="middle"
-                className="chart-value"
+                className="fill-gray-700 text-xs font-medium"
               >
                 {value}
               </text>
@@ -202,7 +201,7 @@ const DataVisualization = ({ type = 'dashboard', userRole = 'admin' }) => {
                 x={70 + i * 60}
                 y="190"
                 textAnchor="middle"
-                className="chart-label"
+                className="fill-slate-500 text-xs"
               >
                 {data.labels[i]}
               </text>
@@ -214,9 +213,9 @@ const DataVisualization = ({ type = 'dashboard', userRole = 'admin' }) => {
   );
 
   const DoughnutChart = ({ data }) => (
-    <div className="doughnut-chart">
-      <div className="chart-container">
-        <svg viewBox="0 0 200 200" className="chart-svg">
+    <div>
+      <div className="w-full h-[200px] flex items-center justify-center">
+        <svg viewBox="0 0 200 200" className="w-full h-full">
           <circle
             cx="100"
             cy="100"
@@ -244,17 +243,17 @@ const DataVisualization = ({ type = 'dashboard', userRole = 'admin' }) => {
             x="100"
             y="100"
             textAnchor="middle"
-            className="chart-center-text"
+            className="fill-gray-700 text-sm font-semibold"
           >
             {data.datasets[0].data.reduce((a, b) => a + b, 0)}%
           </text>
         </svg>
       </div>
-      <div className="chart-legend">
+      <div className="flex flex-wrap gap-4 justify-center mt-4">
         {data.labels.map((label, i) => (
-          <div key={i} className="legend-item">
+          <div key={i} className="flex items-center gap-2">
             <div 
-              className="legend-color" 
+              className="w-4 h-4 rounded flex-shrink-0" 
               style={{ backgroundColor: data.datasets[0].backgroundColor[i] }}
             ></div>
             <span>{label}</span>
@@ -282,17 +281,17 @@ const DataVisualization = ({ type = 'dashboard', userRole = 'admin' }) => {
   const chartConfig = getChartConfig();
 
   return (
-    <div className="data-visualization">
-      <div className="chart-header">
-        <div className="chart-title">
+    <div className="bg-white rounded-2xl p-6 shadow-[0_4px_15px_rgba(0,0,0,0.08)] border border-black/5 transition-all duration-300 hover:shadow-[0_8px_25px_rgba(0,0,0,0.12)]">
+      <div className="flex justify-between items-start mb-6 pb-4 border-b border-gray-200">
+        <div>
           <h3>{chartConfig.title}</h3>
           <p>{chartConfig.subtitle}</p>
         </div>
-        <div className="chart-controls">
+        <div className="flex gap-2">
           <select 
             value={timeRange} 
             onChange={(e) => setTimeRange(e.target.value)}
-            className="time-selector"
+            className="px-3 py-2 border border-gray-300 rounded-lg bg-white text-sm text-gray-700 cursor-pointer transition-all duration-300 focus:outline-none focus:border-blue-500 focus:ring-[3px] focus:ring-blue-500/10"
           >
             <option value="1h">Last Hour</option>
             <option value="24h">Last 24 Hours</option>
@@ -302,28 +301,28 @@ const DataVisualization = ({ type = 'dashboard', userRole = 'admin' }) => {
         </div>
       </div>
       
-      <div className="chart-content">
+      <div className="mb-6">
         {renderChart(chartConfig.chartType, chartConfig.data)}
       </div>
       
-      <div className="chart-stats">
+      <div className="flex gap-6 flex-wrap">
         {chartConfig.data.datasets[0].data && (
-          <div className="stat-item">
-            <span className="stat-label">Average</span>
-            <span className="stat-value">
+          <div className="flex-1 min-w-[120px] p-4 bg-slate-50 rounded-xl">
+            <span className="block text-xs text-slate-500 font-medium uppercase mb-1">Average</span>
+            <span className="text-lg font-bold text-gray-900">
               {(chartConfig.data.datasets[0].data.reduce((a, b) => a + b, 0) / chartConfig.data.datasets[0].data.length).toFixed(1)}
             </span>
           </div>
         )}
-        <div className="stat-item">
-          <span className="stat-label">Peak</span>
-          <span className="stat-value">
+        <div className="flex-1 min-w-[120px] p-4 bg-slate-50 rounded-xl">
+          <span className="block text-xs text-slate-500 font-medium uppercase mb-1">Peak</span>
+          <span className="text-lg font-bold text-gray-900">
             {Math.max(...chartConfig.data.datasets[0].data)}
           </span>
         </div>
-        <div className="stat-item">
-          <span className="stat-label">Low</span>
-          <span className="stat-value">
+        <div className="flex-1 min-w-[120px] p-4 bg-slate-50 rounded-xl">
+          <span className="block text-xs text-slate-500 font-medium uppercase mb-1">Low</span>
+          <span className="text-lg font-bold text-gray-900">
             {Math.min(...chartConfig.data.datasets[0].data)}
           </span>
         </div>

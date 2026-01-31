@@ -1,5 +1,4 @@
-// Use environment variable or default to relative URL (when using Vite proxy)
-// For production, set VITE_API_BASE_URL to the full backend URL
+// API base URL - uses environment variable or defaults to relative path
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '/api';
 
 const defaultHeaders = {
@@ -45,16 +44,24 @@ async function request(path, { method = 'GET', body, headers = {}, auth = true }
     return data;
   } catch (error) {
     // Enhanced error handling for network errors
-    if (error.name === 'TypeError' && error.message.includes('fetch')) {
+    if (error.name === 'TypeError' && (error.message.includes('fetch') || error.message.includes('Failed to fetch'))) {
       console.error('Network Error:', {
         url,
         method,
         message: error.message,
         apiBaseUrl: API_BASE_URL
       });
+      
+      // More helpful error message
+      const isLocalDev = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+      if (isLocalDev && API_BASE_URL === '/api') {
+        throw new Error(
+          'Unable to connect to the backend server. Please make sure the backend server is running on port 5000.'
+        );
+      }
+      
       throw new Error(
-        `Cannot connect to backend server at ${API_BASE_URL}. ` +
-        `Please ensure the backend server is running on port 5000 (or check your VITE_API_BASE_URL environment variable).`
+        `Unable to connect to the server. Please check your connection and try again.`
       );
     }
     throw error;

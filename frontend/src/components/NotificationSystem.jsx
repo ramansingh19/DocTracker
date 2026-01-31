@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import './NotificationSystem.css';
 
 const NotificationSystem = ({ userRole = 'patient' }) => {
   const [notifications, setNotifications] = useState([]);
@@ -93,9 +92,9 @@ const NotificationSystem = ({ userRole = 'patient' }) => {
   };
 
   return (
-    <div className="notification-system">
+    <div className="relative inline-block">
       <button 
-        className="notification-bell"
+        className="relative bg-transparent border-0 cursor-pointer p-2 rounded-lg transition-all duration-300 text-slate-500 hover:bg-black/5 hover:text-gray-700"
         onClick={() => setIsVisible(!isVisible)}
         aria-label="Notifications"
       >
@@ -104,50 +103,50 @@ const NotificationSystem = ({ userRole = 'patient' }) => {
           <path d="M13.73 21C13.5542 21.3031 13.3019 21.5547 12.9982 21.7295C12.6946 21.9044 12.3504 21.9965 12 21.9965C11.6496 21.9965 11.3054 21.9044 11.0018 21.7295C10.6982 21.5547 10.4458 21.3031 10.27 21" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
         </svg>
         {unreadCount > 0 && (
-          <span className="notification-badge">{unreadCount}</span>
+          <span className="absolute top-0 right-0 bg-red-500 text-white text-xs font-semibold px-1.5 py-0.5 rounded-full min-w-[18px] h-[18px] flex items-center justify-center animate-pulse">{unreadCount}</span>
         )}
       </button>
 
       {isVisible && (
-        <div className="notification-dropdown">
-          <div className="notification-header">
-            <h3>Notifications</h3>
+        <div className="absolute top-full right-0 w-[400px] max-w-[90vw] bg-white rounded-xl shadow-[0_20px_40px_rgba(0,0,0,0.15)] border border-black/5 z-[1000] mt-2 animate-[slideDown_0.3s_ease-out] md:w-[calc(100vw-2rem)]">
+          <div className="flex justify-between items-center p-6 border-b border-gray-200 bg-gradient-to-br from-slate-50 to-slate-200 rounded-t-xl">
+            <h3 className="text-lg font-semibold text-gray-900 m-0">Notifications</h3>
             {unreadCount > 0 && (
-              <button onClick={markAllAsRead} className="mark-all-read">
+              <button onClick={markAllAsRead} className="bg-transparent border-0 text-blue-500 text-sm font-medium cursor-pointer px-2 py-1 rounded transition-all duration-300 hover:bg-blue-500/10">
                 Mark all as read
               </button>
             )}
           </div>
           
-          <div className="notification-list">
+          <div className="max-h-[400px] overflow-y-auto py-2">
             {notifications.length === 0 ? (
-              <div className="no-notifications">
-                <span>🔕</span>
-                <p>No notifications</p>
+              <div className="flex flex-col items-center justify-center py-12 px-6 text-gray-400">
+                <span className="text-3xl mb-2">🔕</span>
+                <p className="text-sm m-0">No notifications</p>
               </div>
             ) : (
               notifications.map(notification => (
                 <div 
                   key={notification.id}
-                  className={`notification-item ${notification.read ? 'read' : 'unread'}`}
+                  className={`flex items-start gap-3 px-6 py-4 cursor-pointer transition-all duration-300 relative border-l-[3px] hover:bg-black/[0.02] ${notification.read ? 'border-transparent' : 'bg-blue-500/[0.02] border-blue-500 hover:bg-blue-500/5'}`}
                   onClick={() => markAsRead(notification.id)}
                 >
-                  <div className="notification-icon" style={{ color: getNotificationColor(notification.type) }}>
+                  <div className="text-xl w-6 h-6 flex items-center justify-center flex-shrink-0" style={{ color: getNotificationColor(notification.type) }}>
                     {getNotificationIcon(notification.type)}
                   </div>
-                  <div className="notification-content">
-                    <div className="notification-title">{notification.title}</div>
-                    <div className="notification-message">{notification.message}</div>
-                    <div className="notification-time">{notification.time}</div>
+                  <div className="flex-1 min-w-0">
+                    <div className="text-sm font-semibold text-gray-900 mb-1 leading-snug">{notification.title}</div>
+                    <div className="text-xs text-slate-500 mb-1 leading-snug break-words">{notification.message}</div>
+                    <div className="text-xs text-gray-400 font-medium">{notification.time}</div>
                   </div>
-                  {!notification.read && <div className="unread-indicator"></div>}
+                  {!notification.read && <div className="absolute top-1/2 right-4 -translate-y-1/2 w-2 h-2 bg-blue-500 rounded-full animate-pulse"></div>}
                 </div>
               ))
             )}
           </div>
           
-          <div className="notification-footer">
-            <button className="view-all">View All Notifications</button>
+          <div className="p-6 border-t border-gray-200 bg-gradient-to-br from-slate-50 to-slate-200 rounded-b-xl">
+            <button className="w-full bg-gradient-to-br from-blue-500 to-blue-600 text-white border-0 py-3 px-4 rounded-lg font-semibold cursor-pointer transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_4px_15px_rgba(59,130,246,0.3)]">View All Notifications</button>
           </div>
         </div>
       )}

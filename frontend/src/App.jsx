@@ -1,6 +1,5 @@
 import React from 'react';
 import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
-import './App.css';
 import AdminDashboard from './components/AdminDashboard';
 import AdminLanding from './components/AdminLanding';
 import DoctorDashboard from './components/DoctorDashboard';
@@ -15,7 +14,7 @@ import UserManager from './components/UserManager';
 function App() {
   return (
     <Router>
-      <div className="App">
+      <div className="min-h-screen bg-slate-100">
         <Routes>
           <Route path="/" element={<LandingPage />} />
           <Route path="/doctor-landing" element={<DoctorLanding />} />
