@@ -1,111 +1,152 @@
-import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 
 const DoctorLanding = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   useEffect(() => {
     const handleClickOutside = (event) => {
-      if (isMenuOpen && !event.target.closest('.nav-container')) {
+      if (isMenuOpen && !event.target.closest(".nav-container")) {
         setIsMenuOpen(false);
       }
     };
-    document.addEventListener('click', handleClickOutside);
-    return () => document.removeEventListener('click', handleClickOutside);
+    document.addEventListener("click", handleClickOutside);
+    return () => document.removeEventListener("click", handleClickOutside);
   }, [isMenuOpen]);
 
   return (
-    <div className="font-sans bg-white text-gray-900 leading-relaxed overflow-x-hidden">
-      <nav className="fixed top-0 left-0 right-0 bg-white/95 backdrop-blur-xl border-b border-black/5 z-[1000] py-4 transition-all duration-300">
-        <div className="nav-container max-w-[1200px] mx-auto px-8 flex justify-between items-center relative md:px-6">
-          <div className="flex items-center gap-3 text-2xl font-bold text-gray-900">
-            <div className="w-10 h-10 bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-xl flex items-center justify-center text-xl">👨‍⚕️</div>
-            <span>DocTracker - Doctor Portal</span>
+    <div className="font-sans bg-[#f8fafc] text-slate-900 leading-relaxed overflow-x-hidden">
+      <nav className="fixed top-0 left-0 right-0 bg-white/80 backdrop-blur-md border-b border-slate-200/60 z-[1000] py-3 transition-all">
+        <div className="max-w-7xl mx-auto px-6 flex justify-between items-center">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 bg-gradient-to-br from-teal-500 to-teal-700 rounded-xl flex items-center justify-center shadow-lg shadow-teal-500/20">
+              <svg
+                width="22"
+                height="22"
+                viewBox="0 0 24 24"
+                fill="none"
+                className="text-white"
+              >
+                <path
+                  d="M12 2L13.09 8.26L20 9L13.09 9.74L12 16L10.91 9.74L4 9L10.91 8.26L12 2Z"
+                  fill="currentColor"
+                />
+              </svg>
+            </div>
+            <span className="text-xl font-black tracking-tight text-slate-900">
+              DocTracker <span className="text-teal-600 font-medium">Pro</span>
+            </span>
           </div>
-          <button 
-            className={`flex flex-col justify-around w-[30px] h-[30px] bg-transparent border-0 cursor-pointer p-0 z-[1001] relative md:flex lg:hidden ${isMenuOpen ? 'active' : ''}`}
-            onClick={() => setIsMenuOpen(!isMenuOpen)}
-            aria-label="Toggle menu"
-            aria-expanded={isMenuOpen}
-          >
-            <span className={`w-full h-[3px] bg-gray-900 rounded transition-all duration-300 origin-center ${isMenuOpen ? 'rotate-45 translate-y-[8px]' : ''}`}></span>
-            <span className={`w-full h-[3px] bg-gray-900 rounded transition-all duration-300 origin-center ${isMenuOpen ? 'opacity-0 -translate-x-5' : ''}`}></span>
-            <span className={`w-full h-[3px] bg-gray-900 rounded transition-all duration-300 origin-center ${isMenuOpen ? '-rotate-45 -translate-y-[8px]' : ''}`}></span>
-          </button>
-          <div className={`flex items-center gap-8 lg:gap-6 md:fixed md:top-[70px] md:left-0 md:right-0 md:bg-white/98 md:backdrop-blur-xl md:flex-col md:items-start md:p-8 md:gap-6 md:shadow-lg md:border-b md:border-black/5 md:transition-all md:duration-300 md:z-[999] ${isMenuOpen ? 'md:translate-y-0 md:opacity-100 md:visible' : 'md:-translate-y-full md:opacity-0 md:invisible'}`}>
-            <Link to="/" className="text-slate-500 no-underline font-medium hover:text-emerald-500 transition-colors md:text-lg md:py-3 md:w-full md:border-b md:border-black/5" onClick={() => setIsMenuOpen(false)}>Home</Link>
-            <Link to="/login" className="bg-gradient-to-br from-emerald-500 to-emerald-600 text-white px-6 py-3 rounded-xl no-underline font-semibold transition-all duration-300 shadow-[0_4px_15px_rgba(16,185,129,0.3)] hover:-translate-y-0.5 hover:shadow-[0_8px_25px_rgba(16,185,129,0.4)] md:w-full md:text-center" onClick={() => setIsMenuOpen(false)}>Login</Link>
+
+          <div className="hidden md:flex items-center gap-8">
+            <Link
+              to="/"
+              className="text-sm font-bold text-slate-500 hover:text-teal-600 transition-colors"
+            >
+              Platform
+            </Link>
+            <Link
+              to="/login"
+              className="text-sm font-bold text-slate-900 hover:text-teal-600 transition-colors"
+            >
+              Sign In
+            </Link>
+            <Link
+              to="/signup"
+              className="bg-slate-900 text-white px-5 py-2.5 rounded-xl text-sm font-bold hover:bg-teal-600 transition-all shadow-xl shadow-slate-900/10"
+            >
+              Get Started
+            </Link>
           </div>
         </div>
       </nav>
 
-      <section className="pt-32 pb-24 bg-gradient-to-br from-emerald-50 to-emerald-100 relative overflow-hidden md:pt-28 md:pb-16">
-        <div className="max-w-[1200px] mx-auto px-8 grid grid-cols-2 gap-16 items-center relative z-[2] md:grid-cols-1 md:gap-10 md:text-center md:px-6">
-          <div className="max-w-[600px]">
-            <div className="inline-block bg-emerald-500/10 text-emerald-600 px-4 py-2 rounded-full text-sm font-semibold mb-6 border border-emerald-500/20">👨‍⚕️ Doctor Portal</div>
-            <h1 className="text-5xl font-extrabold leading-tight mb-6 text-gray-900 md:text-4xl">
-              Streamline Your Medical Practice with
-              <span className="bg-gradient-to-br from-emerald-500 to-emerald-600 bg-clip-text text-transparent"> Smart Technology</span>
+      {/* Hero Section */}
+      <section className="pt-40 pb-24 bg-white relative overflow-hidden">
+        <div className="absolute top-0 right-0 w-1/2 h-full bg-slate-50 skew-x-[-12deg] translate-x-32 z-0 hidden lg:block"></div>
+
+        <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-2 gap-16 items-center relative z-10">
+          <div>
+            <div className="inline-flex items-center gap-2 bg-teal-50 text-teal-700 px-4 py-2 rounded-full text-xs font-black uppercase tracking-widest mb-8 border border-teal-100">
+              <span className="relative flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-teal-400 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-teal-500"></span>
+              </span>
+              Specialized Provider Portal
+            </div>
+            <h1 className="text-5xl lg:text-7xl font-black leading-[1.1] mb-8 text-slate-900 tracking-tight">
+              Modern Care. <br />
+              <span className="text-teal-600">Unified Workflow.</span>
             </h1>
-            <p className="text-xl text-slate-500 mb-10 leading-relaxed md:text-base">
-              Manage your schedule, update patient status, share your location, and optimize your workflow 
-              with our comprehensive doctor management platform. Focus on what matters most - patient care.
+            <p className="text-lg text-slate-500 mb-10 leading-relaxed max-w-xl">
+              The all-in-one operating system for medical professionals. Manage
+              patient flow, real-time telemetry, and practice analytics through
+              one intuitive interface.
             </p>
-            <div className="flex gap-4 flex-wrap md:flex-col md:gap-4">
-              <Link to="/login" className="inline-flex items-center gap-2 px-8 py-4 rounded-xl font-semibold no-underline transition-all duration-300 bg-gradient-to-br from-emerald-500 to-emerald-600 text-white shadow-[0_4px_15px_rgba(16,185,129,0.3)] hover:-translate-y-0.5 hover:shadow-[0_8px_25px_rgba(16,185,129,0.4)] md:w-full md:justify-center">
-                <span>Access Dashboard</span>
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-                  <path d="M5 12H19M19 12L12 5M19 12L12 19" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+            <div className="flex flex-col sm:flex-row gap-4">
+              <Link
+                to="/login"
+                className="px-8 py-5 bg-teal-600 text-white rounded-2xl font-bold text-lg shadow-2xl shadow-teal-600/30 hover:bg-teal-700 hover:-translate-y-1 transition-all flex items-center justify-center gap-3"
+              >
+                Open Dashboard
+                <svg
+                  width="20"
+                  height="20"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="3"
+                >
+                  <path d="M5 12h14M12 5l7 7-7 7" />
                 </svg>
               </Link>
-              <Link to="/signup" className="inline-flex items-center gap-2 px-8 py-4 rounded-xl font-semibold no-underline transition-all duration-300 border-2 border-emerald-500 text-emerald-500 bg-white hover:bg-emerald-500 hover:text-white hover:-translate-y-0.5 md:w-full md:justify-center">
-                <span>Create Account</span>
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-                  <path d="M16 21V19C16 17.9391 15.5786 16.9217 14.8284 16.1716C14.0783 15.4214 13.0609 15 12 15H5C3.93913 15 2.92172 15.4214 2.17157 16.1716C1.42143 16.9217 1 17.9391 1 19V21" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                  <path d="M8.5 11C10.7091 11 12.5 9.20914 12.5 7C12.5 4.79086 10.7091 3 8.5 3C6.29086 3 4.5 4.79086 4.5 7C4.5 9.20914 6.29086 11 8.5 11Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                  <path d="M20 8V14" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                  <path d="M23 11H17" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                </svg>
+              <Link
+                to="/signup"
+                className="px-8 py-5 bg-white text-slate-900 border-2 border-slate-100 rounded-2xl font-bold text-lg hover:border-teal-200 hover:bg-teal-50/30 transition-all flex items-center justify-center"
+              >
+                Create Provider Account
               </Link>
             </div>
           </div>
-          <div className="flex justify-center md:mt-10">
-            <div className="bg-white rounded-[20px] shadow-[0_20px_40px_rgba(0,0,0,0.1)] overflow-hidden w-full max-w-[400px]">
-              <div className="bg-slate-50 px-6 py-4 flex items-center justify-between border-b border-slate-200">
-                <div className="flex gap-2">
-                  <span className="w-2 h-2 rounded-full bg-red-500"></span>
-                  <span className="w-2 h-2 rounded-full bg-amber-500"></span>
-                  <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
-                </div>
-                <span className="font-semibold text-gray-700 text-sm">Doctor Dashboard</span>
+
+          {/* Floating Dashboard Preview */}
+          <div className="relative">
+            <div className="absolute inset-0 bg-teal-500/20 blur-[100px] rounded-full"></div>
+            <div className="relative bg-[#0f172a] rounded-[2rem] p-4 shadow-2xl border border-white/10 scale-105 lg:scale-110">
+              <div className="flex gap-1.5 mb-4 px-2">
+                <div className="w-3 h-3 rounded-full bg-red-500/20 border border-red-500/50"></div>
+                <div className="w-3 h-3 rounded-full bg-amber-500/20 border border-amber-500/50"></div>
+                <div className="w-3 h-3 rounded-full bg-emerald-500/20 border border-emerald-500/50"></div>
               </div>
-              <div className="p-6 flex flex-col gap-4">
-                <div className="bg-gradient-to-br from-emerald-50 to-emerald-100 rounded-xl p-4 border-2 border-emerald-200">
-                  <div className="flex items-center gap-3 mb-3">
-                    <span className="text-2xl">📅</span>
-                    <div className="flex-1">
-                      <h4 className="m-0 text-sm font-semibold text-gray-900">Today's Schedule</h4>
-                      <p className="m-0 text-xs text-slate-500">12 patients • 8:00 AM - 5:00 PM</p>
+              <div className="space-y-4">
+                <div className="bg-white/5 rounded-xl p-5 border border-white/5">
+                  <div className="flex justify-between items-start mb-4">
+                    <span className="text-white font-bold">Patient Queue</span>
+                    <span className="bg-teal-500 text-[10px] font-black px-2 py-0.5 rounded text-white uppercase tracking-tighter">
+                      Live
+                    </span>
+                  </div>
+                  <div className="space-y-3">
+                    {[1, 2].map((i) => (
+                      <div
+                        key={i}
+                        className="h-12 bg-white/5 rounded-lg animate-pulse"
+                      ></div>
+                    ))}
+                  </div>
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="bg-teal-500/10 p-4 rounded-xl border border-teal-500/20 text-teal-400">
+                    <div className="text-2xl font-black">12</div>
+                    <div className="text-[10px] uppercase font-bold tracking-widest">
+                      Appointments
                     </div>
-                    <div className="w-2 h-2 rounded-full bg-emerald-500"></div>
                   </div>
-                  <div className="flex gap-4">
-                    <div className="text-center flex-1"><span className="block text-sm font-bold text-emerald-500">8</span><span className="text-[0.625rem] text-slate-500">Completed</span></div>
-                    <div className="text-center flex-1"><span className="block text-sm font-bold text-emerald-500">4</span><span className="text-[0.625rem] text-slate-500">Pending</span></div>
-                  </div>
-                </div>
-                <div className="bg-slate-50 rounded-xl p-4 border-2 border-transparent">
-                  <div className="flex items-center gap-3 mb-3">
-                    <span className="text-2xl">📍</span>
-                    <div className="flex-1">
-                      <h4 className="m-0 text-sm font-semibold text-gray-900">Location Sharing</h4>
-                      <p className="m-0 text-xs text-slate-500">ETA: 15 minutes to hospital</p>
+                  <div className="bg-indigo-500/10 p-4 rounded-xl border border-indigo-500/20 text-indigo-400">
+                    <div className="text-2xl font-black">98%</div>
+                    <div className="text-[10px] uppercase font-bold tracking-widest">
+                      Satisfaction
                     </div>
-                    <div className="w-2 h-2 rounded-full bg-blue-500"></div>
-                  </div>
-                  <div className="flex gap-4">
-                    <div className="text-center flex-1"><span className="block text-sm font-bold text-emerald-500">Live</span><span className="text-[0.625rem] text-slate-500">GPS Tracking</span></div>
-                    <div className="text-center flex-1"><span className="block text-sm font-bold text-emerald-500">5</span><span className="text-[0.625rem] text-slate-500">Patients Notified</span></div>
                   </div>
                 </div>
               </div>
@@ -113,90 +154,54 @@ const DoctorLanding = () => {
           </div>
         </div>
       </section>
+      
+      {/* Feature Grid (Enterprise Cards) */}
+      <section className="py-32 bg-[#f8fafc]">
+        <div className="max-w-7xl mx-auto px-6 text-center mb-20">
+          <h2 className="text-sm font-black text-teal-600 uppercase tracking-[0.3em] mb-4">
+            Infrastructure
+          </h2>
+          <p className="text-4xl font-black text-slate-900 tracking-tight">
+            Built for Professional Excellence
+          </p>
+        </div>
 
-      <section className="py-24 bg-white md:py-16">
-        <div className="max-w-[1200px] mx-auto px-8 md:px-6">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-gray-900 mb-4">Doctor-Focused Features</h2>
-            <p className="text-xl text-slate-500 max-w-[600px] mx-auto">
-              Everything you need to manage your practice efficiently
-            </p>
-          </div>
-          <div className="grid grid-cols-[repeat(auto-fit,minmax(350px,1fr))] gap-8 md:grid-cols-1">
-            <div className="bg-white rounded-2xl p-8 border border-slate-200 shadow-[0_4px_15px_rgba(0,0,0,0.08)] transition-all duration-300 hover:-translate-y-1 border-t-4 border-t-emerald-500">
-              <div className="w-16 h-16 bg-gradient-to-br from-emerald-100 to-emerald-200 rounded-xl flex items-center justify-center mb-6 text-3xl">
-                🤖
+        <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-3 gap-8">
+          {[
+            {
+              title: "AI Queue Logic",
+              desc: "Predictive patient arrival models and smart duration estimation.",
+              icon: "🧠",
+            },
+            {
+              title: "Secure Telemetry",
+              desc: "End-to-end encrypted GPS and status sharing for rapid response.",
+              icon: "📡",
+            },
+            {
+              title: "Practice Insights",
+              desc: "Granular data on patient turnover and peak performance hours.",
+              icon: "📊",
+            },
+          ].map((feature, idx) => (
+            <div
+              key={idx}
+              className="group p-8 bg-white rounded-[2rem] border border-slate-200/60 hover:border-teal-500/30 transition-all duration-500 hover:shadow-[0_30px_60px_-15px_rgba(0,0,0,0.05)]"
+            >
+              <div className="w-14 h-14 bg-slate-50 rounded-2xl flex items-center justify-center text-2xl mb-8 group-hover:bg-teal-500 group-hover:text-white transition-all">
+                {feature.icon}
               </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-4">Smart Schedule Management</h3>
-              <p className="text-slate-500 mb-6 leading-relaxed">AI-powered scheduling optimization, automatic patient reminders, and intelligent time slot allocation.</p>
-              <div className="inline-block bg-emerald-500/10 text-emerald-600 px-3 py-1 rounded-full text-xs font-semibold">
-                <span>🤖 AI-Powered</span>
-              </div>
+              <h3 className="text-xl font-bold text-slate-900 mb-4 tracking-tight">
+                {feature.title}
+              </h3>
+              <p className="text-slate-500 text-sm leading-relaxed mb-6">
+                {feature.desc}
+              </p>
+              <div className="h-1 w-0 group-hover:w-full bg-teal-500/20 transition-all duration-500 rounded-full"></div>
             </div>
-            {[
-              { icon: '⚡', title: 'Real-Time Status Updates', desc: 'Update your availability status instantly. Patients get notified automatically when you\'re available.', tag: '⚡ Instant Updates' },
-              { icon: '📍', title: 'GPS Location Sharing', desc: 'Share your location with patients for accurate ETA updates. Privacy controls ensure you\'re always in control.', tag: '🔒 Privacy Protected' },
-              { icon: '📋', title: 'Patient Queue Management', desc: 'View and manage your patient queue in real-time. Prioritize urgent cases and optimize consultation flow.', tag: '📋 Smart Queue' },
-              { icon: '📊', title: 'Analytics & Insights', desc: 'Track your performance metrics, patient satisfaction scores, and optimize your practice efficiency.', tag: '📊 Data-Driven' },
-              { icon: '🚨', title: 'Emergency Alerts', desc: 'Receive instant notifications for emergency cases and urgent patient requests. Never miss critical situations.', tag: '🚨 Priority Alerts' },
-            ].map((f, i) => (
-              <div key={i} className="bg-white rounded-2xl p-8 border border-slate-200 shadow-[0_4px_15px_rgba(0,0,0,0.08)] transition-all duration-300 hover:-translate-y-1 border-t-4 border-t-emerald-500">
-                <div className="w-16 h-16 bg-gradient-to-br from-emerald-100 to-emerald-200 rounded-xl flex items-center justify-center mb-6 text-3xl">{f.icon}</div>
-                <h3 className="text-xl font-semibold text-gray-900 mb-4">{f.title}</h3>
-                <p className="text-slate-500 mb-6 leading-relaxed">{f.desc}</p>
-                <div className="inline-block bg-emerald-500/10 text-emerald-600 px-3 py-1 rounded-full text-xs font-semibold">{f.tag}</div>
-              </div>
-            ))}
-          </div>
+          ))}
         </div>
       </section>
-
-      <section className="py-24 bg-gradient-to-br from-emerald-50 to-emerald-100 md:py-16">
-        <div className="max-w-[1200px] mx-auto px-8 text-center">
-          <h2 className="text-4xl font-bold text-gray-900 mb-4">Ready to Transform Your Practice?</h2>
-          <p className="text-xl text-slate-500 mb-10 max-w-[600px] mx-auto">Join thousands of doctors who have already improved their efficiency and patient satisfaction.</p>
-          <div className="flex gap-4 justify-center flex-wrap">
-            <Link to="/login" className="inline-flex items-center gap-2 px-10 py-5 rounded-xl font-semibold no-underline bg-gradient-to-br from-emerald-500 to-emerald-600 text-white shadow-[0_4px_15px_rgba(16,185,129,0.3)] hover:-translate-y-0.5 transition-all duration-300">Access Doctor Dashboard<svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M5 12H19M19 12L12 5M19 12L12 19" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg></Link>
-            <Link to="/signup" className="inline-flex items-center gap-2 px-10 py-5 rounded-xl font-semibold no-underline border-2 border-emerald-500 text-emerald-500 bg-white hover:bg-emerald-500 hover:text-white hover:-translate-y-0.5 transition-all duration-300">Create Doctor Account<svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M16 21V19C16 17.9391 15.5786 16.9217 14.8284 16.1716C14.0783 15.4214 13.0609 15 12 15H5C3.93913 15 2.92172 15.4214 2.17157 16.1716C1.42143 16.9217 1 17.9391 1 19V21" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/><path d="M8.5 11C10.7091 11 12.5 9.20914 12.5 7C12.5 4.79086 10.7091 3 8.5 3C6.29086 3 4.5 4.79086 4.5 7C4.5 9.20914 6.29086 11 8.5 11Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/><path d="M20 8V14" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/><path d="M23 11H17" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg></Link>
-          </div>
-        </div>
-      </section>
-
-      <footer className="bg-gray-900 text-white pt-16 pb-8">
-        <div className="max-w-[1200px] mx-auto px-8 md:px-6">
-          <div className="grid grid-cols-[1fr_2fr] gap-16 mb-12 md:grid-cols-1 md:gap-8 md:text-center">
-            <div className="max-w-[400px]">
-              <div className="flex items-center gap-3 text-2xl font-bold mb-4">
-                <div className="w-10 h-10 bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-xl flex items-center justify-center">👨‍⚕️</div>
-                <span>DocTracker</span>
-              </div>
-              <p className="text-slate-400 leading-relaxed">Empowering doctors with intelligent healthcare management tools.</p>
-            </div>
-            <div className="grid grid-cols-2 gap-8 md:grid-cols-1">
-              <div>
-                <h4 className="text-base font-semibold mb-4">For Doctors</h4>
-                <div className="flex flex-col gap-2">
-                  <Link to="/login" className="text-slate-400 no-underline hover:text-emerald-500 transition-colors">Login</Link>
-                  <Link to="/signup" className="text-slate-400 no-underline hover:text-emerald-500 transition-colors">Sign Up</Link>
-                  <Link to="/doctor-dashboard" className="text-slate-400 no-underline hover:text-emerald-500 transition-colors">Dashboard</Link>
-                  <a href="#" className="text-slate-400 no-underline hover:text-emerald-500 transition-colors">Features</a>
-                </div>
-              </div>
-              <div>
-                <h4 className="text-base font-semibold mb-4">Support</h4>
-                <div className="flex flex-col gap-2">
-                  <a href="#" className="text-slate-400 no-underline hover:text-emerald-500 transition-colors">Help Center</a>
-                  <a href="#" className="text-slate-400 no-underline hover:text-emerald-500 transition-colors">Documentation</a>
-                  <a href="#" className="text-slate-400 no-underline hover:text-emerald-500 transition-colors">Contact</a>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div className="pt-8 border-t border-gray-800 text-center">
-            <p className="text-slate-400 m-0">&copy; 2024 DocTracker. All rights reserved.</p>
-          </div>
-        </div>
-      </footer>
     </div>
   );
 };

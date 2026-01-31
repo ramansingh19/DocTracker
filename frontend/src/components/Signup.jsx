@@ -1,43 +1,43 @@
-import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import authService from '../services/authService';
+import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import authService from "../services/authService";
 
 const Signup = () => {
   const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    password: '',
-    confirmPassword: '',
-    role: 'doctor'
+    name: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
+    role: "doctor",
   });
-  const [error, setError] = useState('');
-  const [success, setSuccess] = useState('');
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   const handleChange = (e) => {
     setFormData({
       ...formData,
-      [e.target.name]: e.target.value
+      [e.target.name]: e.target.value,
     });
-    setError('');
-    setSuccess('');
+    setError("");
+    setSuccess("");
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    setError('');
-    setSuccess('');
+    setError("");
+    setSuccess("");
 
     if (formData.password.length < 8) {
-      setError('Password must be at least 8 characters long');
+      setError("Password must be at least 8 characters long");
       setLoading(false);
       return;
     }
 
     if (formData.password !== formData.confirmPassword) {
-      setError('Passwords do not match');
+      setError("Passwords do not match");
       setLoading(false);
       return;
     }
@@ -50,156 +50,193 @@ const Signup = () => {
         role: formData.role,
       });
 
-      setSuccess('Account created successfully! Redirecting...');
+      setSuccess("Account created successfully! Redirecting...");
 
       setTimeout(() => {
         switch (formData.role) {
-          case 'doctor':
-            navigate('/doctor-dashboard');
+          case "doctor":
+            navigate("/doctor-dashboard");
             break;
-          case 'admin':
-            navigate('/admin-dashboard');
+          case "admin":
+            navigate("/admin-dashboard");
             break;
           default:
-            navigate('/login');
+            navigate("/login");
         }
       }, 1500);
     } catch (err) {
-      setError(err.message || 'Unable to create account. Please try again.');
+      setError(err.message || "Unable to create account. Please try again.");
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-teal-600 to-teal-800 flex items-center justify-center p-4 sm:p-6 lg:p-8 font-sans">
-      <div className="bg-white rounded-2xl p-6 sm:p-8 lg:p-10 w-full max-w-[420px] shadow-xl border border-slate-200/50">
+    <div className="min-h-screen bg-[#0f172a] flex items-center justify-center p-4 relative overflow-hidden font-sans">
+      {/* Modern background elements */}
+      <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
+        <div className="absolute top-[-10%] left-[-10%] w-[500px] h-[500px] bg-teal-500/10 rounded-full blur-[120px]"></div>
+        <div className="absolute bottom-[-10%] right-[-10%] w-[500px] h-[500px] bg-indigo-500/10 rounded-full blur-[120px]"></div>
+      </div>
+
+      <div className="bg-white rounded-[2.5rem] p-8 md:p-12 w-full max-w-[480px] shadow-[0_32px_64px_-16px_rgba(0,0,0,0.3)] relative z-10 border border-white/20">
+        {/* Header */}
         <div className="text-center mb-10">
-          <div className="flex items-center justify-center gap-4 mb-4">
-            <div className="w-12 h-12 bg-teal-600 rounded-2xl flex items-center justify-center text-white shadow-lg sm:w-10 sm:h-10">
-              <svg width="32" height="32" viewBox="0 0 24 24" fill="none">
-                <path d="M12 2L13.09 8.26L20 9L13.09 9.74L12 16L10.91 9.74L4 9L10.91 8.26L12 2Z" fill="currentColor"/>
-                <path d="M12 18L13.09 14.26L20 13L13.09 12.74L12 6L10.91 12.74L4 13L10.91 14.26L12 18Z" fill="currentColor"/>
-              </svg>
-            </div>
-            <h2 className="text-gray-900 text-3xl font-extrabold m-0 md:text-[1.75rem] sm:text-2xl">Create Account</h2>
+          <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-teal-500 to-teal-700 rounded-2xl mb-6 shadow-xl shadow-teal-500/20 rotate-3 hover:rotate-0 transition-transform duration-300">
+            <svg
+              width="32"
+              height="32"
+              viewBox="0 0 24 24"
+              fill="none"
+              className="text-white"
+            >
+              <path
+                d="M12 2L13.09 8.26L20 9L13.09 9.74L12 16L10.91 9.74L4 9L10.91 8.26L12 2Z"
+                fill="currentColor"
+              />
+              <path
+                d="M12 18L13.09 14.26L20 13L13.09 12.74L12 6L10.91 12.74L4 13L10.91 14.26L12 18Z"
+                fill="currentColor"
+                opacity="0.5"
+              />
+            </svg>
           </div>
-          <p className="text-slate-500 text-base m-0 sm:text-sm">Join DocTracker and start transforming healthcare</p>
+          <h2 className="text-3xl font-black text-slate-900 tracking-tight mb-2">
+            Create Account
+          </h2>
+          <p className="text-slate-500 font-medium">
+            Join the next generation of healthcare.
+          </p>
         </div>
 
-        <form onSubmit={handleSubmit} className="flex flex-col gap-6">
-          <div className="flex flex-col gap-3">
-            <label htmlFor="role" className="font-semibold text-gray-700 text-[0.95rem]">Register as</label>
-            <select
-              id="role"
-              name="role"
-              value={formData.role}
-              onChange={handleChange}
-              required
-              className="px-5 py-4 border-2 border-gray-200 rounded-xl text-base transition-all duration-300 bg-white text-gray-900 focus:outline-none focus:border-teal-500 focus:shadow-[0_0_0_4px_rgba(102,126,234,0.1)] focus:-translate-y-0.5 placeholder:text-gray-400 sm:text-base sm:px-4 sm:py-3.5"
-            >
-              <option value="doctor">Doctor</option>
-              <option value="admin">Admin</option>
-              <option value="patient">Patient</option>
-            </select>
+        <form onSubmit={handleSubmit} className="space-y-5">
+          {/* Role Selection - Pill Style */}
+          <div className="space-y-2">
+            <label className="text-xs font-black uppercase tracking-widest text-slate-400 ml-1">
+              Register as
+            </label>
+            <div className="relative group">
+              <select
+                id="role"
+                name="role"
+                value={formData.role}
+                onChange={handleChange}
+                required
+                className="w-full bg-slate-50 border-2 border-slate-100 px-5 py-4 rounded-2xl text-slate-900 font-semibold appearance-none focus:bg-white focus:border-teal-500 focus:ring-4 focus:ring-teal-500/5 transition-all outline-none cursor-pointer"
+              >
+                <option value="doctor">Healthcare Provider (Doctor)</option>
+                <option value="admin">System Administrator</option>
+                <option value="patient">Patient / Client</option>
+              </select>
+              <div className="absolute right-5 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400">
+                <svg
+                  width="16"
+                  height="16"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="3"
+                  viewBox="0 0 24 24"
+                >
+                  <path d="M19 9l-7 7-7-7" />
+                </svg>
+              </div>
+            </div>
           </div>
 
-          <div className="flex flex-col gap-3">
-            <label htmlFor="name" className="font-semibold text-gray-700 text-[0.95rem]">Full Name</label>
-            <input
-              type="text"
-              id="name"
-              name="name"
-              value={formData.name}
-              onChange={handleChange}
-              required
-              placeholder="Enter your name"
-              className="px-5 py-4 border-2 border-gray-200 rounded-xl text-base transition-all duration-300 bg-white text-gray-900 focus:outline-none focus:border-teal-500 focus:shadow-[0_0_0_4px_rgba(102,126,234,0.1)] focus:-translate-y-0.5 placeholder:text-gray-400 sm:text-base sm:px-4 sm:py-3.5"
-              autoComplete="name"
-            />
+          {/* Input Fields */}
+          <div className="space-y-4">
+            {[
+              {
+                label: "Full Name",
+                name: "name",
+                type: "text",
+                placeholder: "e.g. Dr. Sarah Chen",
+                icon: "👤",
+              },
+              {
+                label: "Email Address",
+                name: "email",
+                type: "email",
+                placeholder: "name@hospital.com",
+                icon: "✉️",
+              },
+              {
+                label: "Password",
+                name: "password",
+                type: "password",
+                placeholder: "••••••••",
+                icon: "🔒",
+              },
+            ].map((field) => (
+              <div key={field.name} className="space-y-2">
+                <label className="text-xs font-black uppercase tracking-widest text-slate-400 ml-1">
+                  {field.label}
+                </label>
+                <div className="relative">
+                  <input
+                    type={field.type}
+                    name={field.name}
+                    placeholder={field.placeholder}
+                    value={formData[field.name]}
+                    onChange={handleChange}
+                    required
+                    className="w-full bg-slate-50 border-2 border-slate-100 px-5 py-4 rounded-2xl focus:bg-white focus:border-teal-500 focus:ring-4 focus:ring-teal-500/5 transition-all outline-none font-medium"
+                  />
+                </div>
+              </div>
+            ))}
           </div>
 
-          <div className="flex flex-col gap-3">
-            <label htmlFor="email" className="font-semibold text-gray-700 text-[0.95rem]">Email Address</label>
-            <input
-              type="email"
-              id="email"
-              name="email"
-              value={formData.email}
-              onChange={handleChange}
-              required
-              placeholder="Enter your email"
-              className="px-5 py-4 border-2 border-gray-200 rounded-xl text-base transition-all duration-300 bg-white text-gray-900 focus:outline-none focus:border-teal-500 focus:shadow-[0_0_0_4px_rgba(102,126,234,0.1)] focus:-translate-y-0.5 placeholder:text-gray-400 sm:text-base sm:px-4 sm:py-3.5"
-              autoComplete="email"
-            />
-          </div>
-
-          <div className="flex flex-col gap-3">
-            <label htmlFor="password" className="font-semibold text-gray-700 text-[0.95rem]">Password</label>
-            <input
-              type="password"
-              id="password"
-              name="password"
-              value={formData.password}
-              onChange={handleChange}
-              required
-              placeholder="Create a strong password"
-              minLength="8"
-              className="px-5 py-4 border-2 border-gray-200 rounded-xl text-base transition-all duration-300 bg-white text-gray-900 focus:outline-none focus:border-teal-500 focus:shadow-[0_0_0_4px_rgba(102,126,234,0.1)] focus:-translate-y-0.5 placeholder:text-gray-400 sm:text-base sm:px-4 sm:py-3.5"
-              autoComplete="new-password"
-            />
-          </div>
-
-          <div className="flex flex-col gap-3">
-            <label htmlFor="confirmPassword" className="font-semibold text-gray-700 text-[0.95rem]">Confirm Password</label>
-            <input
-              type="password"
-              id="confirmPassword"
-              name="confirmPassword"
-              value={formData.confirmPassword}
-              onChange={handleChange}
-              required
-              placeholder="Confirm your password"
-              className="px-5 py-4 border-2 border-gray-200 rounded-xl text-base transition-all duration-300 bg-white text-gray-900 focus:outline-none focus:border-teal-500 focus:shadow-[0_0_0_4px_rgba(102,126,234,0.1)] focus:-translate-y-0.5 placeholder:text-gray-400 sm:text-base sm:px-4 sm:py-3.5"
-              autoComplete="new-password"
-            />
-          </div>
-
+          {/* Error/Success States */}
           {error && (
-            <div className="bg-gradient-to-br from-red-100 to-red-200 text-red-600 px-5 py-4 rounded-xl border border-red-300 text-center font-medium text-[0.95rem]">
-              {error}
-            </div>
-          )}
-          {success && (
-            <div className="bg-gradient-to-br from-emerald-100 to-emerald-200 text-emerald-700 px-5 py-4 rounded-xl border border-emerald-300 text-center font-medium text-[0.95rem]">
-              {success}
+            <div className="flex items-center gap-3 bg-red-50 text-red-600 p-4 rounded-2xl border border-red-100 text-sm font-bold animate-shake">
+              <span>⚠️</span> {error}
             </div>
           )}
 
-          <button 
-            type="submit" 
-            className="bg-teal-600 text-white border-0 px-8 py-4 rounded-xl text-lg font-semibold cursor-pointer transition-all duration-300 mt-4 flex items-center justify-center gap-2 hover:bg-teal-700 disabled:opacity-70 disabled:cursor-not-allowed sm:px-6 sm:py-3.5 sm:text-base sm:w-full"
+          {/* Submit Button */}
+          <button
+            type="submit"
             disabled={loading}
+            className="w-full bg-teal-600 hover:bg-teal-700 text-white py-5 rounded-2xl font-bold text-lg shadow-xl shadow-teal-600/20 transition-all duration-300 transform hover:-translate-y-1 active:scale-[0.98] flex items-center justify-center gap-3 disabled:opacity-70"
           >
             {loading ? (
-              <>
-                <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
-                <span>Creating Account...</span>
-              </>
+              <div className="w-6 h-6 border-3 border-white/30 border-t-white rounded-full animate-spin"></div>
             ) : (
               <>
-                <span>Create Account</span>
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-                  <path d="M5 12H19M19 12L12 5M19 12L12 19" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                <span>Get Started</span>
+                <svg
+                  width="20"
+                  height="20"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="3"
+                >
+                  <path d="M5 12h14M12 5l7 7-7 7" />
                 </svg>
               </>
             )}
           </button>
         </form>
 
-        <div className="text-center mt-8 pt-8 border-t border-gray-200 sm:mt-6 sm:pt-6">
-          <p className="my-3 text-slate-500 text-[0.95rem] sm:text-sm">Already have an account? <Link to="/login" className="text-teal-600 no-underline font-semibold transition-colors duration-300 hover:text-teal-700">Sign In</Link></p>
-          <p className="my-3 text-slate-500 text-[0.95rem] sm:text-sm"><Link to="/" className="text-teal-600 no-underline font-semibold transition-colors duration-300 hover:text-teal-700">← Back to Home</Link></p>
+        {/* Footer Links */}
+        <div className="mt-10 pt-8 border-t border-slate-100 flex flex-col items-center gap-4">
+          <p className="text-slate-500 font-medium">
+            Already have an account?{" "}
+            <Link
+              to="/login"
+              className="text-teal-600 font-bold hover:text-teal-700 underline decoration-teal-500/20 underline-offset-4"
+            >
+              Sign In
+            </Link>
+          </p>
+          <Link
+            to="/"
+            className="text-xs font-black uppercase tracking-tighter text-slate-400 hover:text-slate-600 transition-colors"
+          >
+            ← Back to corporate site
+          </Link>
         </div>
       </div>
     </div>

@@ -1,46 +1,49 @@
-import React, { useEffect, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import authService, { clearSession, getStoredUser } from '../services/authService';
+import React, { useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import authService, {
+  clearSession,
+  getStoredUser,
+} from "../services/authService";
 
 const Login = () => {
   const [formData, setFormData] = useState({
-    email: '',
-    password: '',
-    role: 'doctor',
-    rememberMe: false
+    email: "",
+    password: "",
+    role: "doctor",
+    rememberMe: false,
   });
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
-    const savedEmail = localStorage.getItem('savedEmail');
-    const savedRole = localStorage.getItem('savedRole');
-    const rememberMe = localStorage.getItem('rememberMe') === 'true';
-    
+    const savedEmail = localStorage.getItem("savedEmail");
+    const savedRole = localStorage.getItem("savedRole");
+    const rememberMe = localStorage.getItem("rememberMe") === "true";
+
     if (rememberMe && savedEmail) {
-      setFormData(prev => ({
+      setFormData((prev) => ({
         ...prev,
         email: savedEmail,
-        role: savedRole || 'doctor',
-        rememberMe: true
+        role: savedRole || "doctor",
+        rememberMe: true,
       }));
     }
   }, []);
 
   const handleChange = (e) => {
     const { name, type, value, checked } = e.target;
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [name]: type === 'checkbox' ? checked : value
+      [name]: type === "checkbox" ? checked : value,
     }));
-    setError('');
+    setError("");
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    setError('');
+    setError("");
 
     try {
       const { user } = await authService.login({
@@ -49,168 +52,255 @@ const Login = () => {
       });
 
       if (user.role !== formData.role) {
-        setError(`Your account is registered as ${user.role}. Please switch the role selector.`);
+        setError(
+          `Your account is registered as ${user.role}. Please switch the role selector.`,
+        );
         clearSession();
         setLoading(false);
         return;
       }
 
       if (formData.rememberMe) {
-        localStorage.setItem('savedEmail', formData.email);
-        localStorage.setItem('savedRole', user.role);
-        localStorage.setItem('rememberMe', 'true');
+        localStorage.setItem("savedEmail", formData.email);
+        localStorage.setItem("savedRole", user.role);
+        localStorage.setItem("rememberMe", "true");
       } else {
-        localStorage.removeItem('savedEmail');
-        localStorage.removeItem('savedRole');
-        localStorage.removeItem('rememberMe');
+        localStorage.removeItem("savedEmail");
+        localStorage.removeItem("savedRole");
+        localStorage.removeItem("rememberMe");
       }
 
       switch (user.role) {
-        case 'doctor':
-          navigate('/doctor-dashboard');
+        case "doctor":
+          navigate("/doctor-dashboard");
           break;
-        case 'admin':
-          navigate('/admin-dashboard');
+        case "admin":
+          navigate("/admin-dashboard");
           break;
-        case 'patient':
-          navigate('/patient-status');
+        case "patient":
+          navigate("/patient-status");
           break;
         default:
-          navigate('/');
+          navigate("/");
       }
     } catch (err) {
       const storedUser = getStoredUser();
       if (!storedUser) {
         clearSession();
       }
-      setError(err.message || 'Unable to sign in. Please try again.');
+      setError(err.message || "Unable to sign in. Please try again.");
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-teal-600 to-teal-800 flex items-center justify-center p-4 sm:p-6 lg:p-8 font-sans">
-      <div className="bg-white rounded-2xl p-6 sm:p-8 lg:p-10 w-full max-w-[420px] shadow-xl border border-slate-200/50">
+    <div className="min-h-screen bg-[#0f172a] flex items-center justify-center p-6 relative overflow-hidden font-sans">
+      {/* Sophisticated Background Accents */}
+      <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
+        <div className="absolute top-[-10%] right-[-5%] w-[600px] h-[600px] bg-teal-500/10 rounded-full blur-[120px]"></div>
+        <div className="absolute bottom-[-10%] left-[-5%] w-[600px] h-[600px] bg-indigo-500/10 rounded-full blur-[120px]"></div>
+      </div>
+
+      <div className="bg-white rounded-[2.5rem] p-8 md:p-12 w-full max-w-[480px] shadow-[0_32px_64px_-16px_rgba(0,0,0,0.4)] relative z-10 border border-white/20">
+        {/* Header Section */}
         <div className="text-center mb-10">
-          <div className="flex items-center justify-center gap-4 mb-4">
-            <div className="w-12 h-12 bg-teal-600 rounded-2xl flex items-center justify-center text-white shadow-lg sm:w-10 sm:h-10">
-              <svg width="32" height="32" viewBox="0 0 24 24" fill="none">
-                <path d="M12 2L13.09 8.26L20 9L13.09 9.74L12 16L10.91 9.74L4 9L10.91 8.26L12 2Z" fill="currentColor"/>
-                <path d="M12 18L13.09 14.26L20 13L13.09 12.74L12 6L10.91 12.74L4 13L10.91 14.26L12 18Z" fill="currentColor"/>
-              </svg>
-            </div>
-            <h2 className="text-gray-900 text-3xl font-extrabold m-0 md:text-[1.75rem] sm:text-2xl">Welcome Back</h2>
+          <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-teal-500 to-teal-700 rounded-2xl mb-6 shadow-xl shadow-teal-500/20 rotate-3 hover:rotate-0 transition-transform duration-300">
+            <svg
+              width="32"
+              height="32"
+              viewBox="0 0 24 24"
+              fill="none"
+              className="text-white"
+            >
+              <path
+                d="M12 2L13.09 8.26L20 9L13.09 9.74L12 16L10.91 9.74L4 9L10.91 8.26L12 2Z"
+                fill="currentColor"
+              />
+              <path
+                d="M12 18L13.09 14.26L20 13L13.09 12.74L12 6L10.91 12.74L4 13L10.91 14.26L12 18Z"
+                fill="currentColor"
+                opacity="0.5"
+              />
+            </svg>
           </div>
-          <p className="text-slate-500 text-base m-0 sm:text-sm">Sign in to your DocTracker account</p>
+          <h2 className="text-3xl font-black text-slate-900 tracking-tight mb-2">
+            Welcome Back
+          </h2>
+          <p className="text-slate-500 font-medium">
+            Secure access to your health dashboard.
+          </p>
         </div>
 
-        <form onSubmit={handleSubmit} className="flex flex-col gap-6">
-          <div className="flex flex-col gap-3">
-            <label htmlFor="role" className="font-semibold text-gray-700 text-[0.95rem]">Login as</label>
-            <select
-              id="role"
-              name="role"
-              value={formData.role}
-              onChange={handleChange}
-              required
-              className="px-5 py-4 border-2 border-gray-200 rounded-xl text-base transition-all duration-300 bg-white text-gray-900 focus:outline-none focus:border-teal-500 focus:shadow-[0_0_0_4px_rgba(102,126,234,0.1)] focus:-translate-y-0.5 placeholder:text-gray-400 sm:text-base sm:px-4 sm:py-3.5"
-            >
-              <option value="doctor">Doctor</option>
-              <option value="admin">Admin</option>
-              <option value="patient">Patient</option>
-            </select>
+        <form onSubmit={handleSubmit} className="space-y-5">
+          {/* Role Picker */}
+          <div className="space-y-2">
+            <label className="text-xs font-black uppercase tracking-widest text-slate-400 ml-1">
+              Identity
+            </label>
+            <div className="relative">
+              <select
+                id="role"
+                name="role"
+                value={formData.role}
+                onChange={handleChange}
+                required
+                className="w-full bg-slate-50 border-2 border-slate-100 px-5 py-4 rounded-2xl text-slate-900 font-bold appearance-none focus:bg-white focus:border-teal-500 focus:ring-4 focus:ring-teal-500/5 transition-all outline-none cursor-pointer"
+              >
+                <option value="doctor">Doctor / Healthcare Provider</option>
+                <option value="admin">System Administrator</option>
+                <option value="patient">Patient Portal</option>
+              </select>
+              <div className="absolute right-5 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400">
+                <svg
+                  width="16"
+                  height="16"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="3"
+                  viewBox="0 0 24 24"
+                >
+                  <path d="M19 9l-7 7-7-7" />
+                </svg>
+              </div>
+            </div>
           </div>
 
-          <div className="flex flex-col gap-3">
-            <label htmlFor="email" className="font-semibold text-gray-700 text-[0.95rem]">Email Address</label>
-            <input
-              type="email"
-              id="email"
-              name="email"
-              value={formData.email}
-              onChange={handleChange}
-              required
-              placeholder="Enter your email"
-              className="px-5 py-4 border-2 border-gray-200 rounded-xl text-base transition-all duration-300 bg-white text-gray-900 focus:outline-none focus:border-teal-500 focus:shadow-[0_0_0_4px_rgba(102,126,234,0.1)] focus:-translate-y-0.5 placeholder:text-gray-400 sm:text-base sm:px-4 sm:py-3.5"
-              autoComplete="email"
-            />
+          {/* Credentials */}
+          <div className="space-y-4">
+            {[
+              {
+                label: "Email Address",
+                name: "email",
+                type: "email",
+                placeholder: "name@hospital.com",
+              },
+              {
+                label: "Password",
+                name: "password",
+                type: "password",
+                placeholder: "••••••••",
+              },
+            ].map((field) => (
+              <div key={field.name} className="space-y-2">
+                <label className="text-xs font-black uppercase tracking-widest text-slate-400 ml-1">
+                  {field.label}
+                </label>
+                <input
+                  type={field.type}
+                  name={field.name}
+                  placeholder={field.placeholder}
+                  value={formData[field.name]}
+                  onChange={handleChange}
+                  required
+                  className="w-full bg-slate-50 border-2 border-slate-100 px-5 py-4 rounded-2xl focus:bg-white focus:border-teal-500 focus:ring-4 focus:ring-teal-500/5 transition-all outline-none font-medium text-slate-900"
+                />
+              </div>
+            ))}
           </div>
 
-          <div className="flex flex-col gap-3">
-            <label htmlFor="password" className="font-semibold text-gray-700 text-[0.95rem]">Password</label>
-            <input
-              type="password"
-              id="password"
-              name="password"
-              value={formData.password}
-              onChange={handleChange}
-              required
-              placeholder="Enter your password"
-              className="px-5 py-4 border-2 border-gray-200 rounded-xl text-base transition-all duration-300 bg-white text-gray-900 focus:outline-none focus:border-teal-500 focus:shadow-[0_0_0_4px_rgba(102,126,234,0.1)] focus:-translate-y-0.5 placeholder:text-gray-400 sm:text-base sm:px-4 sm:py-3.5"
-              autoComplete="current-password"
-            />
-          </div>
-
-          <div className="flex flex-col gap-3 mb-4">
-            <label className="flex items-center gap-2 cursor-pointer text-sm text-gray-700 select-none hover:[&>span]:text-teal-600">
+          <div className="flex items-center justify-between px-1">
+            <label className="flex items-center gap-2 cursor-pointer group">
               <input
                 type="checkbox"
                 name="rememberMe"
                 checked={formData.rememberMe}
                 onChange={handleChange}
-                className="w-[18px] h-[18px] accent-teal-500 cursor-pointer"
+                className="w-5 h-5 accent-teal-600 rounded-lg border-2 border-slate-200"
               />
-              <span className="font-medium">Remember me</span>
+              <span className="text-sm font-bold text-slate-600 group-hover:text-teal-600 transition-colors">
+                Remember me
+              </span>
             </label>
+            <a
+              href="#"
+              className="text-sm font-bold text-teal-600 hover:text-teal-700"
+            >
+              Forgot?
+            </a>
           </div>
 
           {error && (
-            <div className="bg-gradient-to-br from-red-100 to-red-200 text-red-600 px-5 py-4 rounded-xl border border-red-300 text-center font-medium text-[0.95rem]">
-              {error}
+            <div className="flex items-center gap-3 bg-red-50 text-red-600 p-4 rounded-2xl border border-red-100 text-sm font-bold animate-shake">
+              <span>⚠️</span> {error}
             </div>
           )}
 
-          <button 
-            type="submit" 
-            className="bg-teal-600 hover:bg-teal-700 text-white border-0 px-8 py-4 rounded-xl text-lg font-semibold cursor-pointer transition-all duration-300 mt-4 flex items-center justify-center gap-2 shadow-[0_8px_25px_rgba(102,126,234,0.3)] relative overflow-hidden hover:-translate-y-0.5 hover:shadow-[0_12px_35px_rgba(102,126,234,0.4)] disabled:opacity-70 disabled:cursor-not-allowed disabled:transform-none sm:px-6 sm:py-3.5 sm:text-base sm:w-full"
+          <button
+            type="submit"
             disabled={loading}
+            className="w-full bg-teal-600 hover:bg-teal-700 text-white py-5 rounded-2xl font-bold text-lg shadow-xl shadow-teal-600/20 transition-all duration-300 transform hover:-translate-y-1 active:scale-[0.98] flex items-center justify-center gap-3 disabled:opacity-70"
           >
             {loading ? (
-              <>
-                <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
-                <span>Signing In...</span>
-              </>
+              <div className="w-6 h-6 border-3 border-white/30 border-t-white rounded-full animate-spin"></div>
             ) : (
-              <>
-                <span>Sign In</span>
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-                  <path d="M5 12H19M19 12L12 5M19 12L12 19" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                </svg>
-              </>
+              "Enter Dashboard"
             )}
           </button>
         </form>
 
-        <div className="text-center mt-8 pt-8 border-t border-gray-200 sm:mt-6 sm:pt-6">
-          <p className="my-3 text-slate-500 text-[0.95rem] sm:text-sm">Don't have an account? <Link to="/signup" className="text-teal-600 no-underline font-semibold transition-colors duration-300 hover:text-teal-700">Create Account</Link></p>
-          <p className="my-3 text-slate-500 text-[0.95rem] sm:text-sm"><Link to="/" className="text-teal-600 no-underline font-semibold transition-colors duration-300 hover:text-teal-700">← Back to Home</Link></p>
+        {/* Demo Accounts - Minimalist Table Style */}
+        <div className="mt-10 p-6 bg-slate-50 rounded-3xl border border-slate-100">
+          <div className="flex items-center gap-2 mb-4">
+            <span className="text-xs font-black uppercase tracking-widest text-slate-400">
+              System Sandbox
+            </span>
+            <div className="h-px flex-1 bg-slate-200"></div>
+          </div>
+          <div className="space-y-3">
+            {[
+              {
+                role: "Doctor",
+                color: "bg-blue-500",
+                email: "doctor@example.com",
+              },
+              {
+                role: "Admin",
+                color: "bg-amber-500",
+                email: "admin@example.com",
+              },
+              {
+                role: "Patient",
+                color: "bg-emerald-500",
+                email: "patient@example.com",
+              },
+            ].map((demo) => (
+              <div
+                key={demo.role}
+                className="flex items-center justify-between group cursor-help"
+              >
+                <div className="flex items-center gap-3">
+                  <div
+                    className={`w-1.5 h-1.5 rounded-full ${demo.color}`}
+                  ></div>
+                  <span className="text-xs font-bold text-slate-600">
+                    {demo.role}
+                  </span>
+                </div>
+                <span className="text-[11px] font-mono text-slate-400 group-hover:text-teal-600 transition-colors">
+                  {demo.email}
+                </span>
+              </div>
+            ))}
+          </div>
         </div>
 
-        <div className="mt-8 p-6 bg-gradient-to-br from-slate-50 to-slate-200 rounded-2xl border border-gray-200 sm:p-5 sm:mt-6">
-          <h4 className="m-0 mb-4 text-gray-700 text-base font-semibold">Demo Credentials:</h4>
-          <div className="flex items-center gap-3 my-3 text-sm md:flex-col md:items-start md:gap-2 md:text-xs">
-            <span className="px-3 py-1 rounded-2xl text-xs font-semibold uppercase tracking-wide min-w-[60px] text-center bg-gradient-to-br from-blue-100 to-blue-200 text-blue-800 md:self-start">Doctor</span>
-            <span className="text-slate-500 font-mono">doctor@example.com / password123</span>
-          </div>
-          <div className="flex items-center gap-3 my-3 text-sm md:flex-col md:items-start md:gap-2 md:text-xs">
-            <span className="px-3 py-1 rounded-2xl text-xs font-semibold uppercase tracking-wide min-w-[60px] text-center bg-gradient-to-br from-amber-100 to-amber-200 text-amber-800 md:self-start">Admin</span>
-            <span className="text-slate-500 font-mono">admin@example.com / password123</span>
-          </div>
-          <div className="flex items-center gap-3 my-3 text-sm md:flex-col md:items-start md:gap-2 md:text-xs">
-            <span className="px-3 py-1 rounded-2xl text-xs font-semibold uppercase tracking-wide min-w-[60px] text-center bg-gradient-to-br from-emerald-100 to-emerald-200 text-emerald-800 md:self-start">Patient</span>
-            <span className="text-slate-500 font-mono">patient@example.com / password123</span>
-          </div>
+        <div className="mt-10 pt-8 border-t border-slate-100 flex flex-col items-center gap-4">
+          <p className="text-slate-500 font-medium">
+            New to the platform?{" "}
+            <Link
+              to="/signup"
+              className="text-teal-600 font-bold hover:text-teal-700 underline decoration-teal-500/20 underline-offset-4"
+            >
+              Create Account
+            </Link>
+          </p>
+          <Link
+            to="/"
+            className="text-xs font-black uppercase tracking-tighter text-slate-400 hover:text-slate-600 transition-colors"
+          >
+            ← Exit Portal
+          </Link>
         </div>
       </div>
     </div>

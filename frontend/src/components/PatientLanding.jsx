@@ -15,201 +15,137 @@ const PatientLanding = () => {
   }, [isMenuOpen]);
 
   return (
-    <div className="font-sans bg-white text-gray-900 leading-relaxed overflow-x-hidden">
-      <nav className="fixed top-0 left-0 right-0 bg-white/95 backdrop-blur-xl border-b border-black/5 z-[1000] py-4 transition-all duration-300">
-        <div className="nav-container max-w-[1200px] mx-auto px-8 flex justify-between items-center relative md:px-6">
-          <div className="flex items-center gap-3 text-2xl font-bold text-gray-900">
-            <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center text-xl">👤</div>
-            <span>DocTracker - Patient Portal</span>
-          </div>
-          <button 
-            className={`flex flex-col justify-around w-[30px] h-[30px] bg-transparent border-0 cursor-pointer p-0 z-[1001] relative md:flex lg:hidden ${isMenuOpen ? 'active' : ''}`}
-            onClick={() => setIsMenuOpen(!isMenuOpen)}
-            aria-label="Toggle menu"
-            aria-expanded={isMenuOpen}
-          >
-            <span className={`w-full h-[3px] bg-gray-900 rounded transition-all duration-300 origin-center ${isMenuOpen ? 'rotate-45 translate-y-[8px]' : ''}`}></span>
-            <span className={`w-full h-[3px] bg-gray-900 rounded transition-all duration-300 origin-center ${isMenuOpen ? 'opacity-0 -translate-x-5' : ''}`}></span>
-            <span className={`w-full h-[3px] bg-gray-900 rounded transition-all duration-300 origin-center ${isMenuOpen ? '-rotate-45 -translate-y-[8px]' : ''}`}></span>
-          </button>
-          <div className={`flex items-center gap-8 lg:gap-6 md:fixed md:top-[70px] md:left-0 md:right-0 md:bg-white/98 md:backdrop-blur-xl md:flex-col md:items-start md:p-8 md:gap-6 md:shadow-lg md:border-b md:border-black/5 md:transition-all md:duration-300 md:z-[999] ${isMenuOpen ? 'md:translate-y-0 md:opacity-100 md:visible' : 'md:-translate-y-full md:opacity-0 md:invisible'}`}>
-            <Link to="/" className="text-slate-500 no-underline font-medium hover:text-blue-500 transition-colors md:text-lg md:py-3 md:w-full md:border-b md:border-black/5" onClick={() => setIsMenuOpen(false)}>Home</Link>
-            <Link to="/login" className="bg-gradient-to-br from-blue-500 to-blue-600 text-white px-6 py-3 rounded-xl no-underline font-semibold transition-all duration-300 shadow-[0_4px_15px_rgba(59,130,246,0.3)] hover:-translate-y-0.5 hover:shadow-[0_8px_25px_rgba(59,130,246,0.4)] md:w-full md:text-center" onClick={() => setIsMenuOpen(false)}>Login</Link>
-          </div>
+    <div className="font-sans bg-[#fcfdfe] text-slate-900 leading-relaxed overflow-x-hidden">
+  <nav className="fixed top-0 left-0 right-0 bg-white/70 backdrop-blur-md border-b border-blue-100/50 z-[1000] py-4">
+    <div className="max-w-7xl mx-auto px-6 flex justify-between items-center">
+      <div className="flex items-center gap-3">
+        <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-blue-700 rounded-xl flex items-center justify-center shadow-lg shadow-blue-500/20">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" className="text-white">
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"/>
+            <circle cx="12" cy="7" r="4" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"/>
+          </svg>
         </div>
-      </nav>
-
-      <section className="pt-32 pb-24 bg-gradient-to-br from-blue-50 to-blue-100 relative overflow-hidden md:pt-28 md:pb-16">
-        <div className="max-w-[1200px] mx-auto px-8 grid grid-cols-2 gap-16 items-center relative z-[2] md:grid-cols-1 md:gap-10 md:text-center md:px-6">
-          <div className="max-w-[600px]">
-            <div className="inline-block bg-blue-500/10 text-blue-600 px-4 py-2 rounded-full text-sm font-semibold mb-6 border border-blue-500/20">👤 Patient Portal</div>
-            <h1 className="text-5xl font-extrabold leading-tight mb-6 text-gray-900 md:text-4xl">
-              Never Wait in the Dark Again
-              <span className="bg-gradient-to-br from-blue-500 to-blue-600 bg-clip-text text-transparent"> Know Your Doctor's Status</span>
-            </h1>
-            <p className="text-xl text-slate-500 mb-10 leading-relaxed md:text-base">
-              Track your doctor's real-time location, get accurate wait times, and receive instant notifications. 
-              Make your hospital visits stress-free with our intelligent patient management system.
-            </p>
-            <div className="flex gap-4 flex-wrap md:flex-col md:gap-4">
-              <Link to="/login" className="inline-flex items-center gap-2 px-8 py-4 rounded-xl font-semibold no-underline transition-all duration-300 bg-gradient-to-br from-blue-500 to-blue-600 text-white shadow-[0_4px_15px_rgba(59,130,246,0.3)] hover:-translate-y-0.5 hover:shadow-[0_8px_25px_rgba(59,130,246,0.4)] md:w-full md:justify-center">
-                <span>Check My Status</span>
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-                  <path d="M5 12H19M19 12L12 5M19 12L12 19" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                </svg>
-              </Link>
-              <Link to="/signup" className="inline-flex items-center gap-2 px-8 py-4 rounded-xl font-semibold no-underline transition-all duration-300 border-2 border-blue-500 text-blue-500 bg-white hover:bg-blue-500 hover:text-white hover:-translate-y-0.5 md:w-full md:justify-center">
-                <span>Create Account</span>
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-                  <path d="M16 21V19C16 17.9391 15.5786 16.9217 14.8284 16.1716C14.0783 15.4214 13.0609 15 12 15H5C3.93913 15 2.92172 15.4214 2.17157 16.1716C1.42143 16.9217 1 17.9391 1 19V21" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                  <path d="M8.5 11C10.7091 11 12.5 9.20914 12.5 7C12.5 4.79086 10.7091 3 8.5 3C6.29086 3 4.5 4.79086 4.5 7C4.5 9.20914 6.29086 11 8.5 11Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                  <path d="M20 8V14" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                  <path d="M23 11H17" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                </svg>
-              </Link>
-            </div>
-          </div>
-          <div className="flex justify-center md:mt-10">
-            <div className="bg-white rounded-[20px] shadow-[0_20px_40px_rgba(0,0,0,0.1)] overflow-hidden w-full max-w-[400px]">
-              <div className="bg-slate-50 px-6 py-4 flex items-center justify-between border-b border-slate-200">
-                <div className="flex gap-2">
-                  <span className="w-2 h-2 rounded-full bg-red-500"></span>
-                  <span className="w-2 h-2 rounded-full bg-amber-500"></span>
-                  <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
-                </div>
-                <span className="font-semibold text-gray-700 text-sm">Patient Dashboard</span>
-              </div>
-              <div className="p-6 flex flex-col gap-4">
-                <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl p-4 border-2 border-blue-200">
-                  <div className="flex items-center gap-3 mb-3">
-                    <span className="text-2xl">⏰</span>
-                    <div className="flex-1">
-                      <h4 className="m-0 text-sm font-semibold text-gray-900">Your Queue Position</h4>
-                      <p className="m-0 text-xs text-slate-500">Position #3 • Estimated wait: 45 min</p>
-                    </div>
-                    <div className="w-2 h-2 rounded-full bg-amber-500"></div>
-                  </div>
-                  <div className="flex gap-4">
-                    <div className="text-center flex-1"><span className="block text-sm font-bold text-blue-500">3</span><span className="text-[0.625rem] text-slate-500">In Queue</span></div>
-                    <div className="text-center flex-1"><span className="block text-sm font-bold text-blue-500">45min</span><span className="text-[0.625rem] text-slate-500">Wait Time</span></div>
-                  </div>
-                </div>
-                <div className="bg-slate-50 rounded-xl p-4 border-2 border-transparent">
-                  <div className="flex items-center gap-3 mb-3">
-                    <span className="text-2xl">👨‍⚕️</span>
-                    <div className="flex-1">
-                      <h4 className="m-0 text-sm font-semibold text-gray-900">Dr. Sarah Johnson</h4>
-                      <p className="m-0 text-xs text-slate-500">Cardiology • Available</p>
-                    </div>
-                    <div className="w-2 h-2 rounded-full bg-emerald-500"></div>
-                  </div>
-                  <div className="flex gap-4">
-                    <div className="text-center flex-1"><span className="block text-sm font-bold text-blue-500">ETA</span><span className="text-[0.625rem] text-slate-500">5 minutes</span></div>
-                    <div className="text-center flex-1"><span className="block text-sm font-bold text-blue-500">Live</span><span className="text-[0.625rem] text-slate-500">Tracking</span></div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section className="py-24 bg-white md:py-16">
-        <div className="max-w-[1200px] mx-auto px-8 md:px-6">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-gray-900 mb-4">Patient-Focused Features</h2>
-            <p className="text-xl text-slate-500 max-w-[600px] mx-auto">Everything you need for a stress-free hospital visit</p>
-          </div>
-          <div className="grid grid-cols-[repeat(auto-fit,minmax(350px,1fr))] gap-8 md:grid-cols-1">
-            {[
-              { icon: '⚡', title: 'Real-Time Queue Tracking', desc: 'See your exact position in the queue and get accurate wait time estimates.', tag: '⚡ Live Updates' },
-              { icon: '📍', title: 'Doctor Location Tracking', desc: "Know exactly where your doctor is and when they'll arrive. Get precise ETA updates.", tag: '📍 GPS Accurate' },
-              { icon: '🔔', title: 'Smart Notifications', desc: 'Get instant alerts when your turn is approaching, doctor arrives, or queue status changes.', tag: '🔔 Instant Alerts' },
-              { icon: '📱', title: 'Digital Check-In', desc: 'Check in remotely and join the queue from anywhere. No need to wait at the hospital.', tag: '📱 Remote Check-in' },
-              { icon: '📋', title: 'Appointment History', desc: 'View your past appointments, doctor notes, and medical history in one convenient place.', tag: '📋 Complete History' },
-              { icon: '🚨', title: 'Emergency Priority', desc: 'Urgent cases get priority treatment. The system automatically adjusts queue for emergencies.', tag: '🚨 Priority Care' },
-            ].map((f, i) => (
-              <div key={i} className="bg-white rounded-2xl p-8 border border-slate-200 shadow-[0_4px_15px_rgba(0,0,0,0.08)] transition-all duration-300 hover:-translate-y-1 border-t-4 border-t-blue-500">
-                <div className="w-16 h-16 bg-gradient-to-br from-blue-100 to-blue-200 rounded-xl flex items-center justify-center mb-6 text-3xl">{f.icon}</div>
-                <h3 className="text-xl font-semibold text-gray-900 mb-4">{f.title}</h3>
-                <p className="text-slate-500 mb-6 leading-relaxed">{f.desc}</p>
-                <div className="inline-block bg-blue-500/10 text-blue-600 px-3 py-1 rounded-full text-xs font-semibold">{f.tag}</div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <section className="py-24 bg-gradient-to-br from-slate-50 to-slate-200 md:py-16">
-        <div className="max-w-[1200px] mx-auto px-8 md:px-6">
-          <div className="text-center mb-12">
-            <h2 className="text-4xl font-bold text-gray-900 mb-4">Why Patients Love DocTracker</h2>
-            <p className="text-xl text-slate-500">Join thousands of patients who have transformed their hospital experience</p>
-          </div>
-          <div className="grid grid-cols-[repeat(auto-fit,minmax(300px,1fr))] gap-8">
-            {[
-              { num: '60%', title: 'Reduction in Wait Time', desc: 'Patients spend significantly less time waiting with our intelligent queue management.' },
-              { num: '95%', title: 'Patient Satisfaction', desc: 'Overwhelming majority of patients report improved experience and reduced anxiety.' },
-              { num: '24/7', title: 'Always Available', desc: 'Check your status anytime, anywhere. No more uncertainty about your appointment.' },
-            ].map((b, i) => (
-              <div key={i} className="bg-white rounded-2xl p-10 text-center shadow-[0_4px_15px_rgba(0,0,0,0.08)] transition-all duration-300 hover:-translate-y-1">
-                <div className="text-5xl font-extrabold bg-gradient-to-br from-blue-500 to-blue-600 bg-clip-text text-transparent mb-4">{b.num}</div>
-                <h3 className="text-xl font-semibold text-gray-900 mb-4">{b.title}</h3>
-                <p className="text-slate-500 leading-relaxed">{b.desc}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <section className="py-24 bg-gradient-to-br from-blue-50 to-blue-100 md:py-16">
-        <div className="max-w-[1200px] mx-auto px-8 text-center">
-          <h2 className="text-4xl font-bold text-gray-900 mb-4">Ready for a Better Hospital Experience?</h2>
-          <p className="text-xl text-slate-500 mb-10 max-w-[600px] mx-auto">Join thousands of patients who have made their hospital visits stress-free and efficient.</p>
-          <div className="flex gap-4 justify-center flex-wrap">
-            <Link to="/login" className="inline-flex items-center gap-2 px-10 py-5 rounded-xl font-semibold no-underline bg-gradient-to-br from-blue-500 to-blue-600 text-white shadow-[0_4px_15px_rgba(59,130,246,0.3)] hover:-translate-y-0.5 transition-all duration-300">Check My Status<svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M5 12H19M19 12L12 5M19 12L12 19" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg></Link>
-            <Link to="/signup" className="inline-flex items-center gap-2 px-10 py-5 rounded-xl font-semibold no-underline border-2 border-blue-500 text-blue-500 bg-white hover:bg-blue-500 hover:text-white hover:-translate-y-0.5 transition-all duration-300">Create Patient Account<svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M16 21V19C16 17.9391 15.5786 16.9217 14.8284 16.1716C14.0783 15.4214 13.0609 15 12 15H5C3.93913 15 2.92172 15.4214 2.17157 16.1716C1.42143 16.9217 1 17.9391 1 19V21" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/><path d="M8.5 11C10.7091 11 12.5 9.20914 12.5 7C12.5 4.79086 10.7091 3 8.5 3C6.29086 3 4.5 4.79086 4.5 7C4.5 9.20914 6.29086 11 8.5 11Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/><path d="M20 8V14" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/><path d="M23 11H17" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg></Link>
-          </div>
-        </div>
-      </section>
-
-      <footer className="bg-gray-900 text-white pt-16 pb-8">
-        <div className="max-w-[1200px] mx-auto px-8 md:px-6">
-          <div className="grid grid-cols-[1fr_2fr] gap-16 mb-12 md:grid-cols-1 md:gap-8 md:text-center">
-            <div className="max-w-[400px]">
-              <div className="flex items-center gap-3 text-2xl font-bold mb-4">
-                <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center">👤</div>
-                <span>DocTracker</span>
-              </div>
-              <p className="text-slate-400 leading-relaxed">Making healthcare accessible and stress-free for every patient.</p>
-            </div>
-            <div className="grid grid-cols-2 gap-8 md:grid-cols-1">
-              <div>
-                <h4 className="text-base font-semibold mb-4">For Patients</h4>
-                <div className="flex flex-col gap-2">
-                  <Link to="/login" className="text-slate-400 no-underline hover:text-blue-500 transition-colors">Login</Link>
-                  <Link to="/signup" className="text-slate-400 no-underline hover:text-blue-500 transition-colors">Sign Up</Link>
-                  <Link to="/patient-status" className="text-slate-400 no-underline hover:text-blue-500 transition-colors">Status Check</Link>
-                  <a href="#" className="text-slate-400 no-underline hover:text-blue-500 transition-colors">Features</a>
-                </div>
-              </div>
-              <div>
-                <h4 className="text-base font-semibold mb-4">Support</h4>
-                <div className="flex flex-col gap-2">
-                  <a href="#" className="text-slate-400 no-underline hover:text-blue-500 transition-colors">Help Center</a>
-                  <a href="#" className="text-slate-400 no-underline hover:text-blue-500 transition-colors">FAQ</a>
-                  <a href="#" className="text-slate-400 no-underline hover:text-blue-500 transition-colors">Contact</a>
-                  <a href="#" className="text-slate-400 no-underline hover:text-blue-500 transition-colors">Emergency</a>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div className="pt-8 border-t border-gray-800 text-center">
-            <p className="text-slate-400 m-0">&copy; 2024 DocTracker. All rights reserved.</p>
-          </div>
-        </div>
-      </footer>
+        <span className="text-xl font-black tracking-tight text-slate-900">DocTracker <span className="text-blue-600 font-medium">Care</span></span>
+      </div>
+      <div className="hidden md:flex items-center gap-8">
+        <Link to="/login" className="text-sm font-bold text-slate-600 hover:text-blue-600 transition-colors">Sign In</Link>
+        <Link to="/signup" className="bg-blue-600 text-white px-6 py-2.5 rounded-xl text-sm font-bold hover:bg-blue-700 transition-all shadow-xl shadow-blue-600/10">
+          Join the Queue
+        </Link>
+      </div>
     </div>
+  </nav>
+
+  {/* Patient Hero */}
+  <section className="pt-44 pb-24 relative overflow-hidden">
+    <div className="absolute top-0 left-0 w-full h-[800px] bg-gradient-to-b from-blue-50/50 to-transparent -z-10"></div>
+    
+    <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
+      <div>
+        <div className="inline-flex items-center gap-2 bg-white text-blue-700 px-4 py-2 rounded-full text-xs font-black uppercase tracking-widest mb-8 shadow-sm border border-blue-50">
+          ✨ Your Time Matters
+        </div>
+        <h1 className="text-6xl lg:text-7xl font-black leading-[1.05] mb-8 text-slate-900 tracking-tight">
+          Wait less. <br />
+          <span className="text-blue-600">Heal faster.</span>
+        </h1>
+        <p className="text-lg text-slate-500 mb-10 leading-relaxed max-w-lg">
+          No more guessing games in waiting rooms. Track your doctor's ETA, monitor your position in line, and arrive exactly when you're needed.
+        </p>
+        <div className="flex flex-col sm:flex-row gap-4">
+          <Link to="/login" className="px-10 py-5 bg-blue-600 text-white rounded-2xl font-bold text-lg shadow-2xl shadow-blue-600/30 hover:bg-blue-700 hover:-translate-y-1 transition-all flex items-center justify-center gap-3">
+            Track My Status
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </Link>
+        </div>
+      </div>
+
+      {/* Interactive Patient Mockup */}
+      <div className="relative">
+        <div className="bg-white rounded-[3rem] p-8 shadow-[0_50px_100px_-20px_rgba(0,0,0,0.06)] border border-slate-100 relative z-10">
+          <div className="space-y-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-xs font-black text-slate-400 uppercase tracking-widest">Current Provider</p>
+                <h3 className="text-xl font-bold text-slate-900">Dr. Sarah Johnson</h3>
+              </div>
+              <div className="w-12 h-12 rounded-full bg-blue-50 flex items-center justify-center text-blue-600">
+                <svg width="24" height="24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 2v20M2 12h20"/></svg>
+              </div>
+            </div>
+            
+            <div className="bg-blue-600 rounded-[2rem] p-6 text-white shadow-xl shadow-blue-600/20">
+              <div className="flex justify-between items-center mb-6">
+                <span className="text-sm font-bold opacity-80">Queue Status</span>
+                <span className="px-3 py-1 bg-white/20 rounded-full text-[10px] font-black uppercase tracking-tighter">On Time</span>
+              </div>
+              <div className="flex items-end gap-1 mb-2">
+                <span className="text-5xl font-black">12</span>
+                <span className="text-xl font-bold mb-1 opacity-80">mins</span>
+              </div>
+              <p className="text-sm font-medium opacity-90">Estimated remaining wait time</p>
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div className="bg-slate-50 p-4 rounded-2xl border border-slate-100">
+                <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Position</p>
+                <p className="text-xl font-black text-slate-900">#02</p>
+              </div>
+              <div className="bg-slate-50 p-4 rounded-2xl border border-slate-100">
+                <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">ETA</p>
+                <p className="text-xl font-black text-slate-900">14:20</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        {/* Decorative elements */}
+        <div className="absolute -top-10 -right-10 w-40 h-40 bg-blue-100/50 rounded-full blur-3xl -z-10"></div>
+        <div className="absolute -bottom-10 -left-10 w-40 h-40 bg-indigo-100/50 rounded-full blur-3xl -z-10"></div>
+      </div>
+    </div>
+  </section>
+
+  <section className="py-24 bg-white">
+    <div className="max-w-7xl mx-auto px-6">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
+        {[
+          { label: 'Wait Time Reduction', val: '45%', sub: 'Average decrease in lobby time' },
+          { label: 'Patient Trust', val: '9.8/10', sub: 'Reported satisfaction score' },
+          { label: 'Live Notifications', val: '2M+', sub: 'Alerts delivered this month' }
+        ].map((stat, i) => (
+          <div key={i} className="relative group p-8 rounded-[2.5rem] bg-slate-50/50 border border-slate-100 hover:bg-white hover:shadow-2xl hover:shadow-blue-500/5 transition-all duration-500">
+            <div className="text-4xl font-black text-blue-600 mb-2">{stat.val}</div>
+            <div className="text-lg font-bold text-slate-900 mb-1">{stat.label}</div>
+            <div className="text-sm text-slate-500 font-medium">{stat.sub}</div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section className="py-32 bg-[#fcfdfe]">
+    <div className="max-w-7xl mx-auto px-6 text-center mb-20">
+      <h2 className="text-xs font-black text-blue-600 uppercase tracking-[0.3em] mb-4">The Experience</h2>
+      <p className="text-4xl font-black text-slate-900 tracking-tight">Healthcare on your schedule</p>
+    </div>
+    
+    <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-3 gap-10">
+      {[
+        { title: 'Remote Check-in', desc: 'Secure your spot from home. No more early arrivals in crowded waiting rooms.', icon: '📱' },
+        { title: 'Live GPS ETA', desc: "See your doctor's movement in real-time. Know exactly when they step into the clinic.", icon: '📍' },
+        { title: 'Smart Alerts', desc: 'Get a nudge when you are "next up" so you can prepare for your consultation.', icon: '🔔' }
+      ].map((item, idx) => (
+        <div key={idx} className="flex flex-col items-center text-center p-8 bg-white rounded-[2.5rem] shadow-sm border border-slate-100 hover:-translate-y-2 transition-transform duration-300">
+          <div className="w-20 h-20 bg-blue-50 rounded-full flex items-center justify-center text-3xl mb-8">
+            {item.icon}
+          </div>
+          <h3 className="text-xl font-bold text-slate-900 mb-4">{item.title}</h3>
+          <p className="text-slate-500 text-sm leading-relaxed">{item.desc}</p>
+        </div>
+      ))}
+    </div>
+  </section>
+  </div>
   );
 };
 
