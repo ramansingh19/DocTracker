@@ -34,67 +34,118 @@ const LandingPage = () => {
 
   return (
     <div className="font-sans bg-white text-gray-900 leading-relaxed overflow-x-hidden">
-      <nav className="fixed top-0 left-0 right-0 bg-white border-b border-slate-200/80 z-[1000] py-3 sm:py-4 shadow-sm">
+      <nav className="fixed top-0 left-0 right-0 bg-white/80 backdrop-blur-xl border-b border-slate-200/60 z-[1000] py-3 sm:py-4 shadow-sm">
         <div
           ref={navRef}
           className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center relative"
         >
-          <div className="flex items-center gap-3 text-2xl font-bold text-gray-900 no-underline sm:text-xl">
-            <div className="w-10 h-10 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-xl flex items-center justify-center text-white transition-transform duration-300 hover:scale-105 sm:w-[35px] sm:h-[35px]">
+          {/* Logo */}
+          <div className="flex items-center gap-3 text-2xl font-bold text-gray-900 sm:text-xl">
+            <div
+              className="w-10 h-10 sm:w-[35px] sm:h-[35px] 
+        bg-gradient-to-br from-indigo-500 to-purple-600 
+        rounded-xl flex items-center justify-center text-white 
+        transition-all duration-300 hover:scale-110 hover:shadow-lg"
+            >
               <img
                 src="https://i.pinimg.com/736x/3b/df/57/3bdf5702d98a357455ff4027786c3d96.jpg"
                 alt="DocTracker Logo"
                 className="w-full h-full object-cover rounded-xl"
               />
             </div>
-            <span className="bg-gradient-to-br from-indigo-500 to-purple-600 bg-clip-text text-transparent">
+
+            <span className="bg-gradient-to-br from-indigo-500 to-purple-600 bg-clip-text text-transparent tracking-tight">
               DocTracker
             </span>
           </div>
+
+          {/* Mobile Toggle */}
           <button
-            className={`flex flex-col justify-around w-[30px] h-[30px] bg-transparent border-0 cursor-pointer p-0 z-[1001] relative md:flex lg:hidden ${isMenuOpen ? "active" : ""}`}
+            className={`flex flex-col justify-between w-[32px] h-[24px] bg-transparent border-0 cursor-pointer p-0 z-[1001] relative md:flex lg:hidden`}
             onClick={toggleMenu}
             aria-label="Toggle menu"
             aria-expanded={isMenuOpen}
           >
             <span
-              className={`w-full h-[3px] bg-gray-900 rounded-[3px] transition-all duration-300 origin-center ${isMenuOpen ? "rotate-45 translate-y-[8px]" : ""}`}
+              className={`h-[3px] w-full bg-gray-900 rounded transition-all duration-300
+        ${isMenuOpen ? "rotate-45 translate-y-[10px]" : ""}`}
             ></span>
+
             <span
-              className={`w-full h-[3px] bg-gray-900 rounded-[3px] transition-all duration-300 origin-center ${isMenuOpen ? "opacity-0 -translate-x-5" : ""}`}
+              className={`h-[3px] w-full bg-gray-900 rounded transition-all duration-300
+        ${isMenuOpen ? "opacity-0" : ""}`}
             ></span>
+
             <span
-              className={`w-full h-[3px] bg-gray-900 rounded-[3px] transition-all duration-300 origin-center ${isMenuOpen ? "-rotate-45 -translate-y-[8px]" : ""}`}
+              className={`h-[3px] w-full bg-gray-900 rounded transition-all duration-300
+        ${isMenuOpen ? "-rotate-45 -translate-y-[10px]" : ""}`}
             ></span>
           </button>
+
+          {/* Menu */}
           <div
-            className={`flex items-center gap-10 lg:gap-6 md:fixed md:top-[70px] md:left-0 md:right-0 md:bg-white/98 md:backdrop-blur-xl md:flex-col md:items-start md:p-8 md:gap-6 md:shadow-lg md:border-b md:border-black/5 md:transition-all md:duration-300 md:z-[999] ${isMenuOpen ? "md:translate-y-0 md:opacity-100 md:visible" : "md:-translate-y-full md:opacity-0 md:invisible"}`}
+            className={`flex items-center gap-10 lg:gap-6
+      md:fixed md:top-[70px] md:left-0 md:right-0
+      md:bg-white/95 md:backdrop-blur-xl
+      md:flex-col md:items-start md:p-8 md:gap-6
+      md:shadow-xl md:border-b md:border-black/5
+      md:transition-all md:duration-300 md:z-[999]
+      ${
+        isMenuOpen
+          ? "md:translate-y-0 md:opacity-100 md:visible"
+          : "md:-translate-y-full md:opacity-0 md:invisible"
+      }`}
           >
+            {/* Link */}
             <a
               href="#features"
-              className="text-slate-500 no-underline font-medium text-[0.95rem] transition-colors duration-300 relative hover:text-indigo-500 md:text-[1.1rem] md:py-3 md:w-full md:border-b md:border-black/5"
               onClick={() => setIsMenuOpen(false)}
+              className="relative text-slate-600 font-medium text-[0.95rem]
+        transition-all duration-300 hover:text-indigo-500
+        after:absolute after:left-0 after:-bottom-1
+        after:w-0 after:h-[2px] after:bg-indigo-500
+        after:transition-all after:duration-300 hover:after:w-full
+        md:text-[1.1rem] md:py-3 md:w-full md:border-b md:border-black/5"
             >
               Features
             </a>
+
             <a
               href="#how-it-works"
-              className="text-slate-500 no-underline font-medium text-[0.95rem] transition-colors duration-300 relative hover:text-indigo-500 md:text-[1.1rem] md:py-3 md:w-full md:border-b md:border-black/5"
               onClick={() => setIsMenuOpen(false)}
+              className="relative text-slate-600 font-medium text-[0.95rem]
+        transition-all duration-300 hover:text-indigo-500
+        after:absolute after:left-0 after:-bottom-1
+        after:w-0 after:h-[2px] after:bg-indigo-500
+        after:transition-all after:duration-300 hover:after:w-full
+        md:text-[1.1rem] md:py-3 md:w-full md:border-b md:border-black/5"
             >
               How It Works
             </a>
+
             <a
               href="#ContactPage"
-              className="text-slate-500 no-underline font-medium text-[0.95rem] transition-colors duration-300 relative hover:text-indigo-500 md:text-[1.1rem] md:py-3 md:w-full md:border-b md:border-black/5"
               onClick={() => setIsMenuOpen(false)}
+              className="relative text-slate-600 font-medium text-[0.95rem]
+        transition-all duration-300 hover:text-indigo-500
+        after:absolute after:left-0 after:-bottom-1
+        after:w-0 after:h-[2px] after:bg-indigo-500
+        after:transition-all after:duration-300 hover:after:w-full
+        md:text-[1.1rem] md:py-3 md:w-full md:border-b md:border-black/5"
             >
               Contact
             </a>
+
+            {/* CTA */}
             <Link
               to="/login"
-              className="bg-gradient-to-br from-indigo-500 to-purple-600 text-white px-6 py-3 rounded-xl no-underline font-semibold text-[0.95rem] transition-all duration-300 shadow-[0_4px_15px_rgba(102,126,234,0.3)] hover:-translate-y-0.5 hover:shadow-[0_8px_25px_rgba(102,126,234,0.4)] md:w-full md:text-center md:justify-center"
               onClick={() => setIsMenuOpen(false)}
+              className="bg-gradient-to-br from-indigo-500 to-purple-600
+        text-white px-7 py-3 rounded-xl font-semibold text-[0.95rem]
+        transition-all duration-300
+        shadow-lg hover:shadow-indigo-300/40
+        hover:-translate-y-0.5 active:scale-95
+        md:w-full md:text-center"
             >
               Get Started
             </Link>
@@ -102,6 +153,7 @@ const LandingPage = () => {
         </div>
       </nav>
 
+      {/* main-page */}
       <section className="pt-28 sm:pt-32 pb-20 w-100% sm:pb-24 bg-slate-50 relative overflow-hidden">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center relative z-[2]">
           <div className="max-w-xl lg:max-w-none md:text-center lg:text-left">
@@ -150,109 +202,85 @@ const LandingPage = () => {
             </div>
 
             {/* Role Selection Section - FIXED */}
+            {/* Role Selection Section */}
             <div className="mt-12 text-center">
               <h3 className="text-xl sm:text-2xl font-semibold text-gray-900 mb-6">
                 Choose Your Role
               </h3>
+
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full max-w-5xl mx-auto">
-                {/* Doctors - SPANS 2 COLUMNS + FIXED FLEX */}
+                {/* Doctor */}
                 <Link
                   to="/doctor-landing"
-                  className="md:col-span-2 flex-[2] group flex items-center gap-5 p-8 bg-white border-2 border-gray-200 rounded-2xl no-underline text-inherit transition-all duration-300 shadow-[0_4px_15px_rgba(0,0,0,0.05)] relative overflow-hidden hover:-translate-y-1 hover:shadow-[0_8px_25px_rgba(0,0,0,0.1)] hover:border-emerald-500 hover:bg-gradient-to-br hover:from-emerald-50 hover:to-emerald-100"
+                  className="w-full group flex flex-col items-center text-center
+      p-7 bg-white border-2 border-gray-200 rounded-2xl
+      no-underline text-inherit transition-all duration-300
+      shadow-[0_4px_15px_rgba(0,0,0,0.05)]
+      hover:-translate-y-1 hover:shadow-[0_8px_25px_rgba(0,0,0,0.1)]
+      hover:border-emerald-500"
                 >
-                  <div className="text-[2.75rem] w-[70px] h-[70px] flex items-center justify-center bg-gradient-to-br from-emerald-100 to-emerald-200 rounded-xl flex-shrink-0">
+                  <div
+                    className="text-3xl w-16 h-16 flex items-center justify-center
+      bg-emerald-100 rounded-xl mb-4"
+                  >
                     👨‍⚕️
                   </div>
-                  <div className="flex-1 text-left min-w-0">
-                    <h4 className="text-2xl font-semibold text-gray-900 mb-3">
-                      For Doctors
-                    </h4>
-                    <p className="text-lg text-slate-500 m-0 leading-relaxed">
-                      Manage your schedule, update status, and track patients in
-                      real-time
-                    </p>
-                  </div>
-                  <svg
-                    className="text-gray-400 transition-all duration-300 group-hover:text-gray-700 group-hover:translate-x-1 flex-shrink-0"
-                    width="24"
-                    height="24"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                  >
-                    <path
-                      d="M5 12H19M19 12L12 5M19 12L12 19"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                  </svg>
+
+                  <h4 className="text-lg font-semibold mb-2">For Doctors</h4>
+
+                  <p className="text-sm text-slate-500">
+                    Manage your schedule and track patients
+                  </p>
                 </Link>
 
-                {/* Patients */}
+                {/* Patient */}
                 <Link
                   to="/patient-landing"
-                  className="flex-1 group flex items-center gap-4 p-6 bg-white border-2 border-gray-200 rounded-2xl no-underline text-inherit transition-all duration-300 shadow-[0_4px_15px_rgba(0,0,0,0.05)] relative overflow-hidden hover:-translate-y-1 hover:shadow-[0_8px_25px_rgba(0,0,0,0.1)] hover:border-blue-500 hover:bg-gradient-to-br hover:from-blue-50 hover:to-blue-100"
+                  className="w-full group flex flex-col items-center text-center
+      p-7 bg-white border-2 border-gray-200 rounded-2xl
+      no-underline text-inherit transition-all duration-300
+      shadow-[0_4px_15px_rgba(0,0,0,0.05)]
+      hover:-translate-y-1 hover:shadow-[0_8px_25px_rgba(0,0,0,0.1)]
+      hover:border-blue-500"
                 >
-                  <div className="text-[2.5rem] w-[60px] h-[60px] flex items-center justify-center bg-gradient-to-br from-blue-100 to-blue-200 rounded-xl flex-shrink-0">
+                  <div
+                    className="text-3xl w-16 h-16 flex items-center justify-center
+      bg-blue-100 rounded-xl mb-4"
+                  >
                     👤
                   </div>
-                  <div className="flex-1 text-left">
-                    <h4 className="text-xl font-semibold text-gray-900 mb-2">
-                      For Patients
-                    </h4>
-                    <p className="text-[0.95rem] text-slate-500 m-0">
-                      Track your queue position and doctor availability
-                    </p>
-                  </div>
-                  <svg
-                    className="text-gray-400 transition-all duration-300 group-hover:text-gray-700 group-hover:translate-x-1 flex-shrink-0"
-                    width="20"
-                    height="20"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                  >
-                    <path
-                      d="M5 12H19M19 12L12 5M19 12L12 19"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                  </svg>
+
+                  <h4 className="text-lg font-semibold mb-2">For Patients</h4>
+
+                  <p className="text-sm text-slate-500">
+                    Track queue position and doctor availability
+                  </p>
                 </Link>
 
                 {/* Admin */}
                 <Link
                   to="/admin-landing"
-                  className="flex-1 group flex items-center gap-4 p-6 bg-white border-2 border-gray-200 rounded-2xl no-underline text-inherit transition-all duration-300 shadow-[0_4px_15px_rgba(0,0,0,0.05)] relative overflow-hidden hover:-translate-y-1 hover:shadow-[0_8px_25px_rgba(0,0,0,0.1)] hover:border-purple-500 hover:bg-gradient-to-br hover:from-purple-50 hover:to-purple-100"
+                  className="w-full group flex flex-col items-center text-center
+      p-7 bg-white border-2 border-gray-200 rounded-2xl
+      no-underline text-inherit transition-all duration-300
+      shadow-[0_4px_15px_rgba(0,0,0,0.05)]
+      hover:-translate-y-1 hover:shadow-[0_8px_25px_rgba(0,0,0,0.1)]
+      hover:border-purple-500"
                 >
-                  <div className="text-[2.5rem] w-[60px] h-[60px] flex items-center justify-center bg-gradient-to-br from-purple-100 to-purple-200 rounded-xl flex-shrink-0">
+                  <div
+                    className="text-3xl w-16 h-16 flex items-center justify-center
+      bg-purple-100 rounded-xl mb-4"
+                  >
                     👨‍💼
                   </div>
-                  <div className="flex-1 text-left">
-                    <h4 className="text-xl font-semibold text-gray-900 mb-2">
-                      For Administrators
-                    </h4>
-                    <p className="text-[0.95rem] text-slate-500 m-0">
-                      Monitor system performance and manage operations
-                    </p>
-                  </div>
-                  <svg
-                    className="text-gray-400 transition-all duration-300 group-hover:text-gray-700 group-hover:translate-x-1 flex-shrink-0"
-                    width="20"
-                    height="20"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                  >
-                    <path
-                      d="M5 12H19M19 12L12 5M19 12L12 19"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                  </svg>
+
+                  <h4 className="text-lg font-semibold mb-2">
+                    For Administrators
+                  </h4>
+
+                  <p className="text-sm text-slate-500">
+                    Manage system and hospital operations
+                  </p>
                 </Link>
               </div>
             </div>
@@ -371,161 +399,231 @@ const LandingPage = () => {
         </div>
       </section>
 
-      <section id="features" className="py-16 sm:py-24 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16 md:mb-12">
-            <h2 className="text-[2.5rem] font-extrabold text-gray-900 mb-4 leading-tight md:text-[1.75rem]">
-              Powerful Features for Modern Healthcare
+      <section
+        id="features"
+        className="relative py-24 overflow-hidden bg-[#fafaff]"
+      >
+        {/* Abstract Background Elements */}
+        <div className="absolute top-0 left-1/4 w-96 h-96 bg-indigo-100 rounded-full mix-blend-multiply filter blur-[128px] opacity-50 animate-pulse"></div>
+        <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-purple-100 rounded-full mix-blend-multiply filter blur-[128px] opacity-50"></div>
+
+        <div className="relative max-w-7xl mx-auto px-6 lg:px-8">
+          {/* Header */}
+          <div className="text-center mb-20">
+            <span className="inline-block px-4 py-1.5 mb-4 text-xs font-bold tracking-widest uppercase text-indigo-600 bg-indigo-50 rounded-full">
+              Platform Excellence
+            </span>
+            <h2 className="text-4xl md:text-5xl font-black text-slate-900 mb-6 tracking-tight">
+              Powerful Features for <br />
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-violet-600">
+                Modern Healthcare
+              </span>
             </h2>
-            <p className="text-xl text-slate-500 max-w-[600px] mx-auto md:text-lg">
+            <p className="text-lg text-slate-500 max-w-2xl mx-auto leading-relaxed">
               Everything you need to streamline operations and enhance patient
-              care
+              care in one seamless ecosystem.
             </p>
           </div>
-          <div className="grid grid-cols-[repeat(auto-fit,minmax(350px,1fr))] gap-8 md:grid-cols-1 md:gap-6">
-            <div className="bg-white border border-slate-200 rounded-[20px] p-10 text-center transition-all duration-300 relative overflow-hidden group hover:-translate-y-2 hover:shadow-[0_20px_40px_rgba(0,0,0,0.1)] hover:border-indigo-500/20 md:p-6">
-              <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-br from-indigo-500 to-purple-600 scale-x-0 transition-transform duration-300 group-hover:scale-x-100"></div>
-              <div className="w-20 h-20 bg-gradient-to-br from-indigo-500/10 to-purple-600/10 rounded-[20px] flex items-center justify-center mx-auto mb-6 text-indigo-500 transition-transform duration-300 group-hover:scale-110">
-                <svg width="48" height="48" viewBox="0 0 24 24" fill="none">
-                  <path
-                    d="M12 2L2 7L12 12L22 7L12 2Z"
+
+          {/* Features Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {/* Feature 1 */}
+            <div className="group relative bg-white border border-slate-100 p-8 rounded-[2.5rem] transition-all duration-500 hover:shadow-[0_40px_80px_-15px_rgba(79,70,229,0.15)] hover:-translate-y-3">
+              <div className="relative z-10">
+                <div className="w-16 h-16 mb-8 rounded-2xl bg-gradient-to-br from-indigo-500 to-indigo-700 flex items-center justify-center text-white shadow-lg shadow-indigo-200 group-hover:scale-110 group-hover:rotate-3 transition-transform duration-500">
+                  <svg
+                    width="32"
+                    height="32"
+                    viewBox="0 0 24 24"
+                    fill="none"
                     stroke="currentColor"
                     strokeWidth="2"
                     strokeLinecap="round"
                     strokeLinejoin="round"
-                  />
-                  <path
-                    d="M2 17L12 22L22 17"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                  <path
-                    d="M2 12L12 17L22 12"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                </svg>
-              </div>
-              <h3 className="text-2xl font-bold text-gray-900 mb-4">
-                Real-Time Tracking
-              </h3>
-              <p className="text-slate-500 mb-6 leading-relaxed">
-                Monitor doctor locations and arrival times with GPS precision.
-                Patients get accurate ETAs and automatic notifications.
-              </p>
-              <div className="inline-block bg-indigo-500/10 text-indigo-500 px-4 py-2 rounded-full text-sm font-semibold">
-                <span>⚡ Live Updates</span>
+                  >
+                    <path d="M12 2L2 7L12 12L22 7L12 2Z" />
+                    <path d="M2 17L12 22L22 17" />
+                    <path d="M2 12L12 17L22 12" />
+                  </svg>
+                </div>
+                <h3 className="text-2xl font-bold text-slate-900 mb-4">
+                  Real-Time Tracking
+                </h3>
+                <p className="text-slate-500 mb-8 leading-relaxed">
+                  Monitor doctor locations and arrival times with GPS precision.
+                  Patients get accurate ETAs automatically.
+                </p>
+                <div className="flex items-center text-sm font-bold text-indigo-600">
+                  <span className="px-3 py-1 bg-indigo-50 rounded-lg">
+                    ⚡ Live Updates
+                  </span>
+                </div>
               </div>
             </div>
-            <div className="bg-white border border-slate-200 rounded-[20px] p-10 text-center transition-all duration-300 relative overflow-hidden group hover:-translate-y-2 hover:shadow-[0_20px_40px_rgba(0,0,0,0.1)] hover:border-indigo-500/20 md:p-6">
-              <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-br from-indigo-500 to-purple-600 scale-x-0 transition-transform duration-300 group-hover:scale-x-100"></div>
-              <div className="w-20 h-20 bg-gradient-to-br from-indigo-500/10 to-purple-600/10 rounded-[20px] flex items-center justify-center mx-auto mb-6 text-indigo-500 transition-transform duration-300 group-hover:scale-110">
-                <svg width="48" height="48" viewBox="0 0 24 24" fill="none">
-                  <path
-                    d="M9 11H15M9 15H15M17 21H7C5.89543 21 5 20.1046 5 19V5C5 3.89543 5.89543 3 7 3H17C18.1046 3 19 3.89543 19 5V19C19 20.1046 18.1046 21 17 21Z"
+
+            {/* Feature 2 */}
+            <div className="group relative bg-white border border-slate-100 p-8 rounded-[2.5rem] transition-all duration-500 hover:shadow-[0_40px_80px_-15px_rgba(79,70,229,0.15)] hover:-translate-y-3">
+              <div className="relative z-10">
+                <div className="w-16 h-16 mb-8 rounded-2xl bg-gradient-to-br from-violet-500 to-purple-700 flex items-center justify-center text-white shadow-lg shadow-purple-200 group-hover:scale-110 group-hover:rotate-3 transition-transform duration-500">
+                  <svg
+                    width="32"
+                    height="32"
+                    viewBox="0 0 24 24"
+                    fill="none"
                     stroke="currentColor"
                     strokeWidth="2"
                     strokeLinecap="round"
                     strokeLinejoin="round"
-                  />
-                </svg>
-              </div>
-              <h3 className="text-2xl font-bold text-gray-900 mb-4">
-                Smart Queue Management
-              </h3>
-              <p className="text-slate-500 mb-6 leading-relaxed">
-                Intelligent patient queuing with priority handling, virtual
-                tokens, and automated check-in reminders.
-              </p>
-              <div className="inline-block bg-indigo-500/10 text-indigo-500 px-4 py-2 rounded-full text-sm font-semibold">
-                <span>🤖 AI-Powered</span>
+                  >
+                    <path d="M9 11H15M9 15H15M17 21H7C5.89543 21 5 20.1046 5 19V5C5 3.89543 5.89543 3 7 3H17C18.1046 3 19 3.89543 19 5V19C19 20.1046 18.1046 21 17 21Z" />
+                  </svg>
+                </div>
+                <h3 className="text-2xl font-bold text-slate-900 mb-4">
+                  Smart Queue
+                </h3>
+                <p className="text-slate-500 mb-8 leading-relaxed">
+                  Intelligent patient queuing with priority handling, virtual
+                  tokens, and automated check-in reminders.
+                </p>
+                <div className="flex items-center text-sm font-bold text-purple-600">
+                  <span className="px-3 py-1 bg-purple-50 rounded-lg">
+                    🤖 AI-Powered
+                  </span>
+                </div>
               </div>
             </div>
-            <div className="bg-white border border-slate-200 rounded-[20px] p-10 text-center transition-all duration-300 relative overflow-hidden group hover:-translate-y-2 hover:shadow-[0_20px_40px_rgba(0,0,0,0.1)] hover:border-indigo-500/20 md:p-6">
-              <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-br from-indigo-500 to-purple-600 scale-x-0 transition-transform duration-300 group-hover:scale-x-100"></div>
-              <div className="w-20 h-20 bg-gradient-to-br from-indigo-500/10 to-purple-600/10 rounded-[20px] flex items-center justify-center mx-auto mb-6 text-indigo-500 transition-transform duration-300 group-hover:scale-110">
-                <svg width="48" height="48" viewBox="0 0 24 24" fill="none">
-                  <path
-                    d="M18 8C18 6.4087 17.3679 4.88258 16.2426 3.75736C15.1174 2.63214 13.5913 2 12 2C10.4087 2 8.88258 2.63214 7.75736 3.75736C6.63214 4.88258 6 6.4087 6 8C6 15 3 17 3 17H21C21 17 18 15 18 8Z"
+
+            {/* Feature 3 */}
+            <div className="group relative bg-white border border-slate-100 p-8 rounded-[2.5rem] transition-all duration-500 hover:shadow-[0_40px_80px_-15px_rgba(79,70,229,0.15)] hover:-translate-y-3">
+              <div className="relative z-10">
+                <div className="w-16 h-16 mb-8 rounded-2xl bg-gradient-to-br from-pink-500 to-rose-600 flex items-center justify-center text-white shadow-lg shadow-rose-200 group-hover:scale-110 group-hover:rotate-3 transition-transform duration-500">
+                  <svg
+                    width="32"
+                    height="32"
+                    viewBox="0 0 24 24"
+                    fill="none"
                     stroke="currentColor"
                     strokeWidth="2"
                     strokeLinecap="round"
                     strokeLinejoin="round"
-                  />
-                  <path
-                    d="M13.73 21C13.5542 21.3031 13.3019 21.5547 12.9982 21.7295C12.6946 21.9044 12.3504 21.9965 12 21.9965C11.6496 21.9965 11.3054 21.9044 11.0018 21.7295C10.6982 21.5547 10.4458 21.3031 10.27 21"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                </svg>
-              </div>
-              <h3 className="text-2xl font-bold text-gray-900 mb-4">
-                Instant Notifications
-              </h3>
-              <p className="text-slate-500 mb-6 leading-relaxed">
-                Multi-channel alerts via SMS, email, and push notifications keep
-                everyone informed and engaged.
-              </p>
-              <div className="inline-block bg-indigo-500/10 text-indigo-500 px-4 py-2 rounded-full text-sm font-semibold">
-                <span>📱 Multi-Channel</span>
+                  >
+                    <path d="M18 8C18 6.4087 17.3679 4.88258 16.2426 3.75736C15.1174 2.63214 13.5913 2 12 2C10.4087 2 8.88258 2.63214 7.75736 3.75736C6.63214 4.88258 6 6.4087 6 8C6 15 3 17 3 17H21C21 17 18 15 18 8Z" />
+                    <path d="M13.73 21C13.5542 21.3031 13.3019 21.5547 12.9982 21.7295C12.6946 21.9044 12.3504 21.9965 12 21.9965C11.6496 21.9965 11.3054 21.9044 11.0018 21.7295C10.6982 21.5547 10.4458 21.3031 10.27 21" />
+                  </svg>
+                </div>
+                <h3 className="text-2xl font-bold text-slate-900 mb-4">
+                  Instant Alerts
+                </h3>
+                <p className="text-slate-500 mb-8 leading-relaxed">
+                  Multi-channel alerts via SMS, email, and push notifications
+                  keep everyone informed and engaged.
+                </p>
+                <div className="flex items-center text-sm font-bold text-rose-600">
+                  <span className="px-3 py-1 bg-rose-50 rounded-lg">
+                    📱 Multi-Channel
+                  </span>
+                </div>
               </div>
             </div>
           </div>
         </div>
       </section>
 
-      <section id="how-it-works" className="py-16 sm:py-24 bg-slate-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
-            <h2 className="text-[2.5rem] font-extrabold text-gray-900 mb-4 leading-tight md:text-[1.75rem]">
-              How It Works
+      <style jsx>{`
+        @keyframes spin-slow {
+          from {
+            transform: rotate(0deg);
+          }
+          to {
+            transform: rotate(360deg);
+          }
+        }
+        .animate-spin-slow {
+          animation: spin-slow 20s linear infinite;
+        }
+      `}</style>
+
+      <section
+        id="how-it-works"
+        className="relative py-24 bg-white overflow-hidden"
+      >
+        {/* Background Decoration */}
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full bg-[radial-gradient(#e5e7eb_1px,transparent_1px)] [background-size:32px_32px] [mask-image:radial-gradient(ellipse_50%_50%_at_50%_50%,#000_70%,transparent_100%)] opacity-40"></div>
+
+        <div className="relative max-w-7xl mx-auto px-6 lg:px-8">
+          <div className="text-center mb-20">
+            <h2 className="text-sm font-black tracking-[0.2em] uppercase text-indigo-600 mb-4">
+              The Process
             </h2>
-            <p className="text-xl text-slate-500 max-w-[600px] mx-auto md:text-lg">
-              Simple setup, powerful results
-            </p>
+            <h3 className="text-4xl md:text-5xl font-extrabold text-slate-900 mb-6 tracking-tight">
+              Simple setup,{" "}
+              <span className="italic font-serif text-indigo-600">
+                powerful
+              </span>{" "}
+              results
+            </h3>
+            <div className="w-20 h-1.5 bg-gradient-to-r from-indigo-500 to-purple-600 mx-auto rounded-full"></div>
           </div>
-          <div className="grid grid-cols-[repeat(auto-fit,minmax(300px,1fr))] gap-8 mt-12 md:grid-cols-1 md:gap-6">
-            <div className="bg-white rounded-[20px] p-10 text-center shadow-[0_10px_30px_rgba(0,0,0,0.05)] transition-transform duration-300 hover:-translate-y-1 md:p-6">
-              <div className="w-[60px] h-[60px] bg-gradient-to-br from-indigo-500 to-purple-600 text-white rounded-full flex items-center justify-center text-2xl font-extrabold mx-auto mb-6">
-                01
+
+          <div className="relative grid grid-cols-1 md:grid-cols-3 gap-12 mt-16">
+            {/* Connector Line (Desktop Only) */}
+            <div className="hidden md:block absolute top-1/4 left-0 w-full h-0.5 border-t-2 border-dashed border-slate-200 -z-0"></div>
+
+            {/* Step 1 */}
+            <div className="relative group">
+              <div className="bg-white rounded-[32px] p-8 text-center border border-slate-100 shadow-[0_20px_50px_rgba(0,0,0,0.04)] transition-all duration-500 hover:shadow-[0_30px_60px_rgba(79,70,229,0.1)] hover:-translate-y-2">
+                <div className="relative w-20 h-20 mx-auto mb-8">
+                  <div className="absolute inset-0 bg-indigo-500 rounded-3xl rotate-6 group-hover:rotate-12 transition-transform duration-500 opacity-20"></div>
+                  <div className="relative w-full h-full bg-gradient-to-br from-indigo-500 to-indigo-700 text-white rounded-2xl flex items-center justify-center text-2xl font-black shadow-lg shadow-indigo-200">
+                    01
+                  </div>
+                </div>
+                <h4 className="text-2xl font-bold text-slate-900 mb-4 group-hover:text-indigo-600 transition-colors">
+                  Setup & Integration
+                </h4>
+                <p className="text-slate-500 leading-relaxed">
+                  Quick installation with existing hospital systems. No complex
+                  configurations required.
+                </p>
               </div>
-              <h3 className="text-2xl font-bold text-gray-900 mb-4">
-                Setup & Integration
-              </h3>
-              <p className="text-slate-500 leading-relaxed">
-                Quick installation with existing hospital systems. No complex
-                configurations required.
-              </p>
             </div>
-            <div className="bg-white rounded-[20px] p-10 text-center shadow-[0_10px_30px_rgba(0,0,0,0.05)] transition-transform duration-300 hover:-translate-y-1 md:p-6">
-              <div className="w-[60px] h-[60px] bg-gradient-to-br from-indigo-500 to-purple-600 text-white rounded-full flex items-center justify-center text-2xl font-extrabold mx-auto mb-6">
-                02
+
+            {/* Step 2 */}
+            <div className="relative group">
+              <div className="bg-white rounded-[32px] p-8 text-center border border-slate-100 shadow-[0_20px_50px_rgba(0,0,0,0.04)] transition-all duration-500 hover:shadow-[0_30px_60px_rgba(147,51,234,0.1)] hover:-translate-y-2">
+                <div className="relative w-20 h-20 mx-auto mb-8">
+                  <div className="absolute inset-0 bg-purple-500 rounded-3xl rotate-6 group-hover:rotate-12 transition-transform duration-500 opacity-20"></div>
+                  <div className="relative w-full h-full bg-gradient-to-br from-purple-500 to-purple-700 text-white rounded-2xl flex items-center justify-center text-2xl font-black shadow-lg shadow-purple-200">
+                    02
+                  </div>
+                </div>
+                <h4 className="text-2xl font-bold text-slate-900 mb-4 group-hover:text-purple-600 transition-colors">
+                  Doctor Onboarding
+                </h4>
+                <p className="text-slate-500 leading-relaxed">
+                  Doctors download the app and start sharing their location and
+                  status updates instantly.
+                </p>
               </div>
-              <h3 className="text-2xl font-bold text-gray-900 mb-4">
-                Doctor Onboarding
-              </h3>
-              <p className="text-slate-500 leading-relaxed">
-                Doctors download the app and start sharing their location and
-                status updates.
-              </p>
             </div>
-            <div className="bg-white rounded-[20px] p-10 text-center shadow-[0_10px_30px_rgba(0,0,0,0.05)] transition-transform duration-300 hover:-translate-y-1 md:p-6">
-              <div className="w-[60px] h-[60px] bg-gradient-to-br from-indigo-500 to-purple-600 text-white rounded-full flex items-center justify-center text-2xl font-extrabold mx-auto mb-6">
-                03
+
+            {/* Step 3 */}
+            <div className="relative group">
+              <div className="bg-white rounded-[32px] p-8 text-center border border-slate-100 shadow-[0_20px_50px_rgba(0,0,0,0.04)] transition-all duration-500 hover:shadow-[0_30px_60px_rgba(236,72,153,0.1)] hover:-translate-y-2">
+                <div className="relative w-20 h-20 mx-auto mb-8">
+                  <div className="absolute inset-0 bg-pink-500 rounded-3xl rotate-6 group-hover:rotate-12 transition-transform duration-500 opacity-20"></div>
+                  <div className="relative w-full h-full bg-gradient-to-br from-pink-500 to-pink-600 text-white rounded-2xl flex items-center justify-center text-2xl font-black shadow-lg shadow-pink-200">
+                    03
+                  </div>
+                </div>
+                <h4 className="text-2xl font-bold text-slate-900 mb-4 group-hover:text-pink-600 transition-colors">
+                  Patient Engagement
+                </h4>
+                <p className="text-slate-500 leading-relaxed">
+                  Patients receive real-time updates and can check their queue
+                  position anytime, anywhere.
+                </p>
               </div>
-              <h3 className="text-2xl font-bold text-gray-900 mb-4">
-                Patient Engagement
-              </h3>
-              <p className="text-slate-500 leading-relaxed">
-                Patients receive real-time updates and can check their queue
-                position anytime.
-              </p>
             </div>
           </div>
         </div>
@@ -534,12 +632,16 @@ const LandingPage = () => {
       <IndustryFeatures />
       <ContactPage />
 
-      <footer className="bg-slate-900 text-white pt-14 pb-8">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-[1fr_2fr] gap-16 mb-12 md:grid-cols-1 md:gap-8 md:text-center">
-            <div className="max-w-[400px]">
-              <div className="flex items-center gap-3 text-2xl font-bold mb-4">
-                <div className="w-10 h-10 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-xl flex items-center justify-center text-white">
+      <footer className="bg-[#0f172a] text-slate-300 pt-20 pb-10 relative overflow-hidden">
+        {/* Subtle glow effect in the corner */}
+        <div className="absolute bottom-0 right-0 w-[500px] h-[500px] bg-indigo-500/5 rounded-full blur-[120px] pointer-events-none"></div>
+
+        <div className="max-w-7xl mx-auto px-6 lg:px-8 relative z-10">
+          <div className="grid grid-cols-1 lg:grid-cols-[1.5fr_1fr_1fr_1fr] gap-12 pb-16 border-b border-slate-800/60">
+            {/* Brand Column */}
+            <div className="space-y-6">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 bg-gradient-to-br from-indigo-500 to-violet-600 rounded-xl flex items-center justify-center text-white shadow-lg shadow-indigo-500/20">
                   <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
                     <path
                       d="M12 2L13.09 8.26L20 9L13.09 9.74L12 16L10.91 9.74L4 9L10.91 8.26L12 2Z"
@@ -548,133 +650,115 @@ const LandingPage = () => {
                     <path
                       d="M12 18L13.09 14.26L20 13L13.09 12.74L12 6L10.91 12.74L4 13L10.91 14.26L12 18Z"
                       fill="currentColor"
+                      opacity="0.5"
                     />
                   </svg>
                 </div>
-                <span>DocTracker</span>
+                <span className="text-2xl font-black tracking-tight text-white">
+                  DocTracker
+                </span>
               </div>
-              <p className="text-slate-400 leading-relaxed">
-                Transforming healthcare delivery through intelligent patient
-                management.
+              <p className="text-slate-400 leading-relaxed max-w-sm text-sm">
+                Next-generation patient management for modern healthcare
+                providers. Built with precision, scaled for the world.
               </p>
+              <div className="flex gap-4">
+                {["Twitter", "LinkedIn", "GitHub"].map((platform) => (
+                  <a
+                    key={platform}
+                    href="#"
+                    className="w-8 h-8 rounded-lg bg-slate-800 flex items-center justify-center hover:bg-indigo-600 hover:text-white transition-all duration-300"
+                  >
+                    <span className="sr-only">{platform}</span>
+                    <div className="w-4 h-4 bg-current opacity-70"></div>
+                  </a>
+                ))}
+              </div>
             </div>
-            <div className="grid grid-cols-3 gap-8 md:grid-cols-1 md:gap-6">
-              <div>
-                <h4 className="text-base font-semibold mb-4 text-white">
-                  Product
-                </h4>
-                <div className="flex flex-col gap-2">
-                  <a
-                    href="#features"
-                    className="block text-slate-400 no-underline mb-2 transition-colors duration-300 hover:text-indigo-500"
-                  >
-                    Features
-                  </a>
-                  <a
-                    href="#how-it-works"
-                    className="block text-slate-400 no-underline mb-2 transition-colors duration-300 hover:text-indigo-500"
-                  >
-                    How It Works
-                  </a>
-                  <a
-                    href="#"
-                    className="block text-slate-400 no-underline mb-2 transition-colors duration-300 hover:text-indigo-500"
-                  >
-                    Pricing
-                  </a>
-                </div>
-              </div>
-              <div>
-                <h4 className="text-base font-semibold mb-4 text-white">
-                  Company
-                </h4>
-                <div className="flex flex-col gap-2">
-                  <a
-                    href="#"
-                    className="block text-slate-400 no-underline mb-2 transition-colors duration-300 hover:text-indigo-500"
-                  >
-                    About
-                  </a>
-                  <a
-                    href="#"
-                    className="block text-slate-400 no-underline mb-2 transition-colors duration-300 hover:text-indigo-500"
-                  >
-                    Careers
-                  </a>
-                  <a
-                    href="#ContactPage"
-                    className="block text-slate-400 no-underline mb-2 transition-colors duration-300 hover:text-indigo-500"
-                  >
-                    Contact
-                  </a>
-                  <a
-                    href="#"
-                    className="block text-slate-400 no-underline mb-2 transition-colors duration-300 hover:text-indigo-500"
-                  >
-                    Blog
-                  </a>
-                </div>
-              </div>
-              <div>
-                <h4 className="text-base font-semibold mb-4 text-white">
-                  Support
-                </h4>
-                <div className="flex flex-col gap-2">
-                  <a
-                    href="#"
-                    className="block text-slate-400 no-underline mb-2 transition-colors duration-300 hover:text-indigo-500"
-                  >
-                    Help Center
-                  </a>
-                  <a
-                    href="#"
-                    className="block text-slate-400 no-underline mb-2 transition-colors duration-300 hover:text-indigo-500"
-                  >
-                    Documentation
-                  </a>
-                  <a
-                    href="#"
-                    className="block text-slate-400 no-underline mb-2 transition-colors duration-300 hover:text-indigo-500"
-                  >
-                    Status
-                  </a>
-                  <a
-                    href="#"
-                    className="block text-slate-400 no-underline mb-2 transition-colors duration-300 hover:text-indigo-500"
-                  >
-                    Security
-                  </a>
-                </div>
-              </div>
+
+            {/* Links Columns */}
+            <div>
+              <h4 className="text-white font-bold text-sm uppercase tracking-widest mb-6">
+                Product
+              </h4>
+              <ul className="space-y-4 text-sm">
+                {["Features", "How It Works", "Integrations", "Pricing"].map(
+                  (link) => (
+                    <li key={link}>
+                      <a
+                        href="#"
+                        className="hover:text-indigo-400 transition-colors inline-flex items-center group"
+                      >
+                        <span className="w-0 group-hover:w-2 h-[1px] bg-indigo-400 mr-0 group-hover:mr-2 transition-all"></span>
+                        {link}
+                      </a>
+                    </li>
+                  ),
+                )}
+              </ul>
+            </div>
+
+            <div>
+              <h4 className="text-white font-bold text-sm uppercase tracking-widest mb-6">
+                Company
+              </h4>
+              <ul className="space-y-4 text-sm">
+                {["About Us", "Careers", "Contact", "Press Kit"].map((link) => (
+                  <li key={link}>
+                    <a
+                      href="#"
+                      className="hover:text-indigo-400 transition-colors inline-flex items-center group"
+                    >
+                      <span className="w-0 group-hover:w-2 h-[1px] bg-indigo-400 mr-0 group-hover:mr-2 transition-all"></span>
+                      {link}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            <div>
+              <h4 className="text-white font-bold text-sm uppercase tracking-widest mb-6">
+                Resources
+              </h4>
+              <ul className="space-y-4 text-sm">
+                {["Help Center", "API Docs", "Security", "Status"].map(
+                  (link) => (
+                    <li key={link}>
+                      <a
+                        href="#"
+                        className="hover:text-indigo-400 transition-colors inline-flex items-center group"
+                      >
+                        <span className="w-0 group-hover:w-2 h-[1px] bg-indigo-400 mr-0 group-hover:mr-2 transition-all"></span>
+                        {link}
+                      </a>
+                    </li>
+                  ),
+                )}
+              </ul>
             </div>
           </div>
-          <div className="flex justify-between items-center pt-8 border-t border-gray-800 md:flex-col md:gap-4 md:text-center">
-            <p className="text-slate-400 m-0">
-              &copy; 2025 DocTracker. All rights reserved.
-            </p>
-            <div className="flex gap-6">
-              <a
-                href="#"
-                className="text-slate-400 no-underline transition-colors duration-300 hover:text-indigo-500"
-              >
-                Twitter
+
+          {/* Bottom Bar */}
+          <div className="pt-10 flex flex-col md:flex-row justify-between items-center gap-6">
+            <div className="flex items-center gap-8 text-xs font-medium text-slate-500">
+              <p>© 2026 DocTracker Inc.</p>
+              <a href="#" className="hover:text-white transition-colors">
+                Privacy Policy
               </a>
-              <a
-                href="https://www.linkedin.com/in/raman-kumar0"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-slate-400 no-underline transition-colors duration-300 hover:text-indigo-500"
-              >
-                LinkedIn
+              <a href="#" className="hover:text-white transition-colors">
+                Terms of Service
               </a>
-              <a
-                href="https://github.com/ramansingh19"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-slate-400 no-underline transition-colors duration-300 hover:text-indigo-500"
-              >
-                GitHub
+              <a href="#" className="hover:text-white transition-colors">
+                Cookies
               </a>
+            </div>
+
+            <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20">
+              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+              <span className="text-[10px] font-bold text-emerald-500 uppercase tracking-tighter">
+                Systems Operational
+              </span>
             </div>
           </div>
         </div>
