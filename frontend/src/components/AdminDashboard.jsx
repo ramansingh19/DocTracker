@@ -126,7 +126,7 @@ const AdminDashboard = () => {
               </div>
             </div>
           ))}
-        </section>
+        </section>    
 
         {/* Doctor table */}
         <section className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden mb-6">
