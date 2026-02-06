@@ -34,15 +34,15 @@ const LandingPage = () => {
 
   return (
     <div className="font-sans bg-white text-gray-900 leading-relaxed overflow-x-hidden">
-      <nav className="fixed top-0 left-0 right-0 bg-white/80 backdrop-blur-xl border-b border-slate-200/60 z-[1000] py-3 sm:py-4 shadow-sm">
+      <nav className="fixed top-0 left-0 right-0  backdrop-blur-xl border-b border-slate-200/60 z-[1000] py-3 sm:py-4 shadow-sm">
         <div
           ref={navRef}
           className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center relative"
         >
           {/* Logo */}
-          <div className="flex items-center gap-3 text-2xl font-bold text-gray-900 sm:text-xl">
+          <div className="flex items-center gap-3 text-9xl font-bold text-gray-900 sm:text-xl">
             <div
-              className="w-10 h-10 sm:w-[35px] sm:h-[35px] 
+              className="w-10 h-10 sm:w-[45px] sm:h-[35px] 
         bg-gradient-to-br from-indigo-500 to-purple-600 
         rounded-xl flex items-center justify-center text-white 
         transition-all duration-300 hover:scale-110 hover:shadow-lg"
@@ -154,37 +154,64 @@ const LandingPage = () => {
       </nav>
 
       {/* main-page */}
-      <section className="pt-28 sm:pt-32 pb-20 w-100% sm:pb-24 bg-slate-50 relative overflow-hidden">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center relative z-[2]">
-          <div className="max-w-xl lg:max-w-none md:text-center lg:text-left">
-            <div className="inline-block bg-indigo-500/10 text-indigo-500 px-4 py-2 rounded-full text-sm font-semibold mb-6 border border-indigo-500/20">
-              <span>🏥 Healthcare Innovation</span>
+      <section className="pt-28 sm:pt-32 pb-20 sm:pb-24 relative overflow-hidden min-h-[90vh]">
+        {/* ADD Background Image - PUT HERE */}
+        <div className="absolute inset-0">
+          <div
+            className="absolute inset-0 bg-cover bg-center bg-no-repeat bg-fixed"
+            style={{
+              backgroundImage: `linear-gradient(rgba(0,0,0,0.1), rgba(15,23,42,0.7)), 
+                          url('https://i.pinimg.com/1200x/15/e9/56/15e95618a2a142e412902a71f1419cca.jpg')`,
+            }}
+          />
+        </div>
+        {/* Animated Background Pattern */}
+        <div className="absolute inset-0 opacity-10">
+          <div className="absolute -top-40 -right-40 w-80 h-80 bg-indigo-300/20 rounded-full blur-3xl animate-pulse"></div>
+          <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-purple-300/20 rounded-full blur-3xl animate-pulse delay-1000"></div>
+          <div className="absolute top-40 left-1/2 w-60 h-60 bg-emerald-200/20 rounded-full blur-3xl animate-bounce"></div>
+        </div>
+
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center relative z-10">
+          <div className="max-w-xl lg:max-w-none md:text-center lg:text-left space-y-8">
+            <div className="inline-flex bg-gradient-to-r from-indigo-500/10 to-purple-500/10 backdrop-blur-sm text-indigo-600 px-6 py-3 rounded-2xl text-sm font-semibold mb-8 border border-indigo-500/20 shadow-lg">
+              <span className="flex items-center gap-2">
+                🏥 Healthcare Innovation
+              </span>
             </div>
-            <h1 className="text-[3.5rem] font-extrabold leading-[1.1] mb-6 text-gray-900 md:text-[2rem] sm:text-[1.75rem]">
+
+            <h1 className="text-5xl md:text-6xl lg:text-5xl font-black leading-[1.05] mb-8 text-gray-900 bg-gradient-to-r from-gray-900 via-indigo-900 to-purple-900 bg-clip-text text-transparent drop-shadow-lg">
               Transform Your Hospital's
-              <span className="bg-gradient-to-br from-indigo-500 to-purple-600 bg-clip-text text-transparent">
-                {" "}
+              <span className="block mt-2 bg-gradient-to-br from-indigo-500 via-purple-600 to-pink-600 bg-clip-text text-transparent">
                 Patient Experience
               </span>
             </h1>
-            <p className="text-xl text-slate-500 mb-10 leading-[1.7] md:text-base sm:text-[0.95rem] md:px-4 sm:px-0">
-              Revolutionize healthcare delivery with real-time doctor tracking,
-              intelligent queue management, and seamless patient communication.
-              Reduce wait times by up to 60% and boost patient satisfaction.
+
+            <p className="text-xl font-bold md:text-1xl text-slate-900 mb-12 leading-relaxed max-w-lg">
+              Revolutionize healthcare with real-time doctor tracking,
+              AI-powered queue management, and seamless communication. Reduce
+              wait times by up to{" "}
+              <span className="font-bold text-indigo-600">60%</span> and boost
+              satisfaction.
             </p>
-            <div className="flex flex-col sm:flex-row gap-4 mb-12 md:justify-center lg:justify-start">
+
+            <div className="flex flex-col sm:flex-row gap-4 mb-16">
               <Link
                 to="/login"
-                className="inline-flex items-center gap-2 px-8 py-4 rounded-xl font-semibold text-base no-underline transition-all duration-300 border-0 cursor-pointer bg-gradient-to-br from-indigo-500 to-purple-600 text-white shadow-[0_4px_15px_rgba(102,126,234,0.3)] hover:-translate-y-0.5 hover:shadow-[0_8px_25px_rgba(102,126,234,0.4)] md:w-full md:justify-center sm:px-6 sm:py-3.5 sm:text-[0.95rem]"
+                className="group inline-flex items-center gap-3 px-8 py-5 rounded-2xl font-bold text-lg bg-gradient-to-r from-indigo-500 to-purple-600 text-white shadow-xl hover:shadow-2xl hover:-translate-y-1 transform transition-all duration-300 hover:from-indigo-600 hover:to-purple-700"
               >
                 <span>Get Started</span>
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                <svg
+                  className="w-6 h-6 group-hover:translate-x-1 transition-transform"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
                   <path
-                    d="M5 12H19M19 12L12 5M19 12L12 19"
-                    stroke="currentColor"
-                    strokeWidth="2"
                     strokeLinecap="round"
                     strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M17 8l4 4m0 0l-4 4m4-4H3"
                   />
                 </svg>
               </Link>
@@ -192,202 +219,184 @@ const LandingPage = () => {
                 href="https://www.youtube.com/watch?v=8QyBBqlKkbQ"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 px-8 py-4 rounded-xl font-semibold text-base no-underline transition-all duration-300 border-2 border-slate-200 bg-white text-slate-500 shadow-[0_2px_10px_rgba(0,0,0,0.05)] hover:-translate-y-0.5 hover:border-indigo-500 hover:text-indigo-500 hover:shadow-[0_8px_25px_rgba(0,0,0,0.1)] md:w-full md:justify-center sm:px-6 sm:py-3.5 sm:text-[0.95rem]"
+                className="group inline-flex items-center gap-3 px-8 py-5 rounded-2xl font-bold text-lg border-2 border-slate-200 bg-white/80 backdrop-blur-sm text-slate-700 shadow-xl hover:shadow-2xl hover:-translate-y-1 hover:border-indigo-500 hover:text-indigo-600 transform transition-all duration-300"
               >
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-                  <path d="M8 5V19L19 12L8 5Z" fill="currentColor" />
+                <svg
+                  className="w-6 h-6"
+                  fill="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path d="M8 5V19L19 12L8 5Z" />
                 </svg>
                 <span>Watch Demo</span>
               </a>
             </div>
 
-            {/* Role Selection Section - FIXED */}
-            {/* Role Selection Section */}
-            <div className="mt-12 text-center">
-              <h3 className="text-xl sm:text-2xl font-semibold text-gray-900 mb-6">
+            {/* Enhanced Role Selection */}
+            <div className="text-center lg:text-left">
+              <h3 className="text-2xl lg:text-3xl font-bold text-gray-900 mb-10">
                 Choose Your Role
               </h3>
-
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full max-w-5xl mx-auto">
-                {/* Doctor */}
-                <Link
-                  to="/doctor-landing"
-                  className="w-full group flex flex-col items-center text-center
-      p-7 bg-white border-2 border-gray-200 rounded-2xl
-      no-underline text-inherit transition-all duration-300
-      shadow-[0_4px_15px_rgba(0,0,0,0.05)]
-      hover:-translate-y-1 hover:shadow-[0_8px_25px_rgba(0,0,0,0.1)]
-      hover:border-emerald-500"
-                >
-                  <div
-                    className="text-3xl w-16 h-16 flex items-center justify-center
-      bg-emerald-100 rounded-xl mb-4"
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                {[
+                  {
+                    to: "/doctor-landing",
+                    icon: "👨‍⚕️",
+                    title: "For Doctors",
+                    desc: "Manage schedule & track patients",
+                    color: "from-emerald-500 to-green-600",
+                    bg: "bg-emerald-500/10",
+                  },
+                  {
+                    to: "/patient-landing",
+                    icon: "👤",
+                    title: "For Patients",
+                    desc: "Track queue & availability",
+                    color: "from-blue-500 to-cyan-600",
+                    bg: "bg-blue-500/10",
+                  },
+                  {
+                    to: "/admin-landing",
+                    icon: "👨‍💼",
+                    title: "For Admins",
+                    desc: "Manage operations & system",
+                    color: "from-purple-500 to-pink-600",
+                    bg: "bg-purple-500/10",
+                  },
+                ].map((role, i) => (
+                  <Link
+                    key={role.title}
+                    to={role.to}
+                    className={`group relative w-full p-8 bg-white/70 backdrop-blur-xl border-2 border-white/50 rounded-3xl shadow-2xl hover:shadow-3xl hover:-translate-y-3 hover:border-${role.color.replace("from-", "").replace("to-", "")} transform transition-all duration-500 overflow-hidden ${role.bg}`}
                   >
-                    👨‍⚕️
-                  </div>
-
-                  <h4 className="text-lg font-semibold mb-2">For Doctors</h4>
-
-                  <p className="text-sm text-slate-500">
-                    Manage your schedule and track patients
-                  </p>
-                </Link>
-
-                {/* Patient */}
-                <Link
-                  to="/patient-landing"
-                  className="w-full group flex flex-col items-center text-center
-      p-7 bg-white border-2 border-gray-200 rounded-2xl
-      no-underline text-inherit transition-all duration-300
-      shadow-[0_4px_15px_rgba(0,0,0,0.05)]
-      hover:-translate-y-1 hover:shadow-[0_8px_25px_rgba(0,0,0,0.1)]
-      hover:border-blue-500"
-                >
-                  <div
-                    className="text-3xl w-16 h-16 flex items-center justify-center
-      bg-blue-100 rounded-xl mb-4"
-                  >
-                    👤
-                  </div>
-
-                  <h4 className="text-lg font-semibold mb-2">For Patients</h4>
-
-                  <p className="text-sm text-slate-500">
-                    Track queue position and doctor availability
-                  </p>
-                </Link>
-
-                {/* Admin */}
-                <Link
-                  to="/admin-landing"
-                  className="w-full group flex flex-col items-center text-center
-      p-7 bg-white border-2 border-gray-200 rounded-2xl
-      no-underline text-inherit transition-all duration-300
-      shadow-[0_4px_15px_rgba(0,0,0,0.05)]
-      hover:-translate-y-1 hover:shadow-[0_8px_25px_rgba(0,0,0,0.1)]
-      hover:border-purple-500"
-                >
-                  <div
-                    className="text-3xl w-16 h-16 flex items-center justify-center
-      bg-purple-100 rounded-xl mb-4"
-                  >
-                    👨‍💼
-                  </div>
-
-                  <h4 className="text-lg font-semibold mb-2">
-                    For Administrators
-                  </h4>
-
-                  <p className="text-sm text-slate-500">
-                    Manage system and hospital operations
-                  </p>
-                </Link>
+                    <div
+                      className={`absolute inset-0 bg-gradient-to-br ${role.color} opacity-0 group-hover:opacity-5 transition-opacity duration-500`}
+                    ></div>
+                    <div
+                      className={`relative text-4xl w-20 h-20 flex items-center justify-center bg-gradient-to-br ${role.color} text-white rounded-2xl shadow-2xl mb-6 group-hover:scale-110 transition-transform duration-300 mx-auto lg:mx-0`}
+                    >
+                      {role.icon}
+                    </div>
+                    <h4 className="text-xl font-bold text-gray-900 mb-3">
+                      {role.title}
+                    </h4>
+                    <p className="text-slate-600 leading-relaxed">
+                      {role.desc}
+                    </p>
+                  </Link>
+                ))}
               </div>
             </div>
 
-            {/* Stats */}
-            <div className="flex gap-8 flex-wrap md:justify-center md:gap-6 sm:gap-4 mt-16">
-              <div className="flex flex-col items-center text-center">
-                <span className="text-[2rem] font-extrabold text-indigo-500 leading-none sm:text-[1.75rem]">
-                  500+
-                </span>
-                <span className="text-sm text-slate-500 font-medium mt-1 sm:text-sm">
-                  Hospitals
-                </span>
-              </div>
-              <div className="flex flex-col items-center text-center">
-                <span className="text-[2rem] font-extrabold text-indigo-500 leading-none sm:text-[1.75rem]">
-                  60%
-                </span>
-                <span className="text-sm text-slate-500 font-medium mt-1 sm:text-sm">
-                  Wait Reduction
-                </span>
-              </div>
-              <div className="flex flex-col items-center text-center">
-                <span className="text-[2rem] font-extrabold text-indigo-500 leading-none sm:text-[1.75rem]">
-                  99.9%
-                </span>
-                <span className="text-sm text-slate-500 font-medium mt-1 sm:text-sm">
-                  Uptime
-                </span>
-              </div>
+            {/* Enhanced Stats */}
+            <div className="flex gap-8 flex-wrap md:justify-center lg:justify-start mt-12">
+              {[
+                { num: "500+", label: "Hospitals", color: "text-indigo-600" },
+                {
+                  num: "60%",
+                  label: "Wait Reduction",
+                  color: "text-emerald-600",
+                },
+                { num: "99.9%", label: "Uptime", color: "text-purple-600" },
+              ].map((stat) => (
+                <div key={stat.label} className="text-center group">
+                  <span
+                    className={`text-4xl lg:text-5xl font-black ${stat.color} leading-none block group-hover:scale-110 transition-transform duration-300`}
+                  >
+                    {stat.num}
+                  </span>
+                  <span className="text-sm text-slate-500 font-semibold mt-2 block">
+                    {stat.label}
+                  </span>
+                </div>
+              ))}
             </div>
           </div>
 
-          {/* Dashboard Mockup - unchanged */}
-          <div className="flex justify-center items-center md:mt-10">
-            <div className="bg-white rounded-[20px] shadow-[0_25px_50px_rgba(0,0,0,0.15)] overflow-hidden w-full max-w-[500px] transition-transform duration-300 hover:scale-[1.02] md:transform-none md:mt-8">
-              {/* Dashboard content unchanged - keeping it exactly as you had it */}
-              <div className="bg-slate-50 px-6 py-4 flex items-center gap-4 border-b border-slate-200">
+          {/* Enhanced Dashboard Mockup */}
+          <div className="flex justify-center items-start md:mt-12">
+            <div className="relative bg-white/80 backdrop-blur-xl rounded-3xl shadow-2xl overflow-hidden w-full max-w-md lg:max-w-lg transform hover:scale-[1.02] transition-all duration-500 border border-white/50">
+              {/* Header */}
+              <div className="bg-gradient-to-r from-slate-50 to-indigo-50/50 px-6 py-5 flex items-center gap-3 border-b border-slate-200/50">
                 <div className="flex gap-2">
-                  <span className="w-3 h-3 rounded-full bg-red-500"></span>
-                  <span className="w-3 h-3 rounded-full bg-amber-500"></span>
-                  <span className="w-3 h-3 rounded-full bg-emerald-500"></span>
+                  <span className="w-3 h-3 rounded-full bg-red-400 animate-pulse"></span>
+                  <span className="w-3 h-3 rounded-full bg-amber-400"></span>
+                  <span className="w-3 h-3 rounded-full bg-emerald-400"></span>
                 </div>
-                <div className="font-semibold text-gray-700 text-sm">
+                <div className="font-bold text-lg text-gray-800 bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
                   DocTracker Dashboard
                 </div>
               </div>
-              <div className="p-6 flex flex-col gap-4">
-                <div className="bg-gradient-to-br from-indigo-500/5 to-purple-600/5 rounded-xl p-4 border-2 border-indigo-500/20 transition-all duration-300">
-                  <div className="flex items-center gap-3 mb-3">
-                    <span className="text-2xl">👨‍⚕️</span>
-                    <div className="flex-1">
-                      <h4 className="m-0 text-sm font-semibold text-gray-900">
+
+              <div className="p-6 space-y-4">
+                {/* Doctor Card 1 */}
+                <div className="group bg-gradient-to-br from-indigo-500/5 to-purple-500/5 rounded-2xl p-6 border border-indigo-500/30 hover:border-indigo-400/50 transition-all duration-300 hover:shadow-xl">
+                  <div className="flex items-start gap-4 mb-4">
+                    <span className="text-3xl shrink-0">👨‍⚕️</span>
+                    <div className="flex-1 min-w-0">
+                      <h4 className="font-bold text-lg text-gray-900 truncate">
                         Dr. Sarah Johnson
                       </h4>
-                      <p className="m-0 text-xs text-slate-500">
-                        Cardiology • Available
+                      <p className="text-sm text-slate-500 truncate">
+                        Cardiology •{" "}
+                        <span className="font-semibold text-emerald-600">
+                          Available
+                        </span>
                       </p>
                     </div>
-                    <div className="w-2 h-2 rounded-full bg-emerald-500 ml-auto shadow-[0_0_0_2px_rgba(16,185,129,0.2)]"></div>
+                    <div className="w-3 h-3 rounded-full bg-emerald-500 shadow-lg flex-shrink-0 animate-pulse"></div>
                   </div>
-                  <div className="flex gap-4">
-                    <div className="text-center flex-1">
-                      <span className="block text-sm font-bold text-indigo-500">
+                  <div className="grid grid-cols-2 gap-6 text-center">
+                    <div>
+                      <span className="block text-2xl font-black text-indigo-600 group-hover:scale-110 transition-transform">
                         8
                       </span>
-                      <span className="text-[0.625rem] text-slate-500 font-medium">
+                      <span className="text-xs text-slate-500 font-medium block mt-1">
                         Patients Today
                       </span>
                     </div>
-                    <div className="text-center flex-1">
-                      <span className="block text-sm font-bold text-indigo-500">
+                    <div>
+                      <span className="block text-2xl font-black text-indigo-600 group-hover:scale-110 transition-transform">
                         5min
                       </span>
-                      <span className="text-[0.625rem] text-slate-500 font-medium">
+                      <span className="text-xs text-slate-500 font-medium block mt-1">
                         Avg. Wait
                       </span>
                     </div>
                   </div>
                 </div>
-                <div className="bg-slate-50 rounded-xl p-4 border-2 border-transparent transition-all duration-300">
-                  <div className="flex items-center gap-3 mb-3">
-                    <span className="text-2xl">👩‍⚕️</span>
-                    <div className="flex-1">
-                      <h4 className="m-0 text-sm font-semibold text-gray-900">
+
+                {/* Doctor Card 2 */}
+                <div className="group bg-gradient-to-br from-slate-50 to-indigo-50/30 rounded-2xl p-6 border-2 border-transparent hover:border-amber-400/50 transition-all duration-300 hover:shadow-xl">
+                  <div className="flex items-start gap-4 mb-4">
+                    <span className="text-3xl shrink-0">👩‍⚕️</span>
+                    <div className="flex-1 min-w-0">
+                      <h4 className="font-bold text-lg text-gray-900 truncate">
                         Dr. Michael Chen
                       </h4>
-                      <p className="m-0 text-xs text-slate-500">
-                        Orthopedics • In Transit
+                      <p className="text-sm text-slate-500 truncate">
+                        Orthopedics •{" "}
+                        <span className="font-semibold text-amber-600">
+                          In Transit
+                        </span>
                       </p>
                     </div>
-                    <div className="w-2 h-2 rounded-full bg-amber-500 ml-auto shadow-[0_0_0_2px_rgba(245,158,11,0.2)]"></div>
+                    <div className="w-3 h-3 rounded-full bg-amber-500 shadow-lg flex-shrink-0 animate-pulse"></div>
                   </div>
-                  <div className="flex gap-4">
-                    <div className="text-center flex-1">
-                      <span className="block text-sm font-bold text-indigo-500">
+                  <div className="grid grid-cols-2 gap-6 text-center">
+                    <div>
+                      <span className="block text-2xl font-black text-indigo-600 group-hover:scale-110 transition-transform">
                         12
                       </span>
-                      <span className="text-[0.625rem] text-slate-500 font-medium">
+                      <span className="text-xs text-slate-500 font-medium block mt-1">
                         Patients Today
                       </span>
                     </div>
-                    <div className="text-center flex-1">
-                      <span className="block text-sm font-bold text-indigo-500">
+                    <div>
+                      <span className="block text-2xl font-black text-indigo-600 group-hover:scale-110 transition-transform">
                         15min
                       </span>
-                      <span className="text-[0.625rem] text-slate-500 font-medium">
+                      <span className="text-xs text-slate-500 font-medium block mt-1">
                         ETA
                       </span>
                     </div>
