@@ -1,30 +1,17 @@
-import mongoose from 'mongoose';
-import { databaseConfig } from './env.js';
-import logger from '../utils/logger.js';
-
-mongoose.set('strictQuery', true);
+import mongoose from "mongoose";
+import { databaseConfig } from "./env.js";
 
 export async function connectToDatabase() {
-  const { url, options } = databaseConfig;
+  try {
+    await mongoose.connect(databaseConfig.url);
 
-  mongoose.connection.on('connected', () => {
-    logger.info('✅ MongoDB connected');
-  });
-
-  mongoose.connection.on('error', (error) => {
-    logger.error('❌ MongoDB connection error', { error });
-  });
-
-  mongoose.connection.on('disconnected', () => {
-    logger.warn('⚠️ MongoDB disconnected');
-  });
-
-  // Only pass options if it has properties, otherwise use default MongoDB driver options
-  const connectOptions = Object.keys(options).length > 0 ? options : undefined;
-  await mongoose.connect(url, connectOptions);
+    console.log("✅ MongoDB connected");
+  } catch (error) {
+    console.error("❌ MongoDB connection error:", error);
+    process.exit(1);
+  }
 }
 
 export async function disconnectFromDatabase() {
   await mongoose.disconnect();
 }
-
