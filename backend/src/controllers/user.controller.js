@@ -23,10 +23,26 @@ export const register = async (req, res) => {
     }
 
     const exitedUser = await User.findOne({
-      $or: req.user?._id,
+      $or: [{name}, {email}],
     });
+    if (!exitedUser) {
+      return res.status(404).json({
+        success: false,
+        message: "Already exitsed",
+      });
+    }
+
+    const avatarLocalPath = req.files?.avatar[0]?.path
+    if (!avatarLocalPath) {
+      return res.status(404).json({
+        success: false,
+        message: "You have to upload avatar",
+      });
+    }
 
     
+
+
   } catch (error) {
     return res.status(500).json({
       success: false,

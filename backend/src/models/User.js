@@ -1,7 +1,7 @@
-import mongoose from 'mongoose';
-import bcrypt from 'bcryptjs';
+import mongoose from "mongoose";
+import bcrypt from "bcryptjs";
 
-const roles = ['doctor', 'patient', 'admin'];
+const roles = ["doctor", "patient", "admin"];
 
 const userSchema = new mongoose.Schema(
   {
@@ -20,12 +20,12 @@ const userSchema = new mongoose.Schema(
     password: {
       type: String,
       required: true,
-      select : false,
+      select: false,
     },
     role: {
       type: String,
       enum: roles,
-      default: 'patient',
+      default: "patient",
     },
     phone: String,
     specialty: String,
@@ -33,18 +33,24 @@ const userSchema = new mongoose.Schema(
       type: Boolean,
       default: true,
     },
+    avatar: {
+      url: {
+        type: String,
+        default: "",
+      },
+      public_id: {
+        type: String,
+        default: "",
+      },
+    },
     lastLoginAt: Date,
-
-    
   },
-  { timestamps: true }
-
-  
+  { timestamps: true },
 );
 userSchema.index({ email: 1 });
 
-userSchema.pre('save', async function hashPassword(next) {
-  if (!this.isModified('password')) {
+userSchema.pre("save", async function hashPassword(next) {
+  if (!this.isModified("password")) {
     return next();
   }
 
@@ -57,8 +63,7 @@ userSchema.methods.comparePassword = function comparePassword(candidate) {
   return bcrypt.compare(candidate, this.password);
 };
 
-const User = mongoose.model('User', userSchema);
+const User = mongoose.model("User", userSchema);
 
 export default User;
 export { roles as userRoles };
-
