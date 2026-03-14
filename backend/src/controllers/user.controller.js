@@ -2,52 +2,84 @@ import httpStatus from "http-status";
 import catchAsync from "../utils/catchAsync.js";
 import ApiError from "../utils/ApiError.js";
 import {
-  listUsers,
   getUserById,
   updateUser,
   deleteUser,
 } from "../services/user.service.js";
 import User from "../models/User.js";
+import { uploadonCLOUDNARY } from "../config/cloudnary.js";
 
 export const register = async (req, res) => {
   try {
     const { name, email, password, role, phone } = req.body;
 
-    if (
-      [name, email, password, role, phone].some((field) => field?.trim() === "")
-    ) {
-      return res.status(404).json({
+    if ([name, email, password, role, phone].some((f) => !f?.trim())) {
+      return res.status(400).json({
         success: false,
-        message: "fill all the requirement",
+        message: "All fields are required",
       });
     }
 
-    const exitedUser = await User.findOne({
-      $or: [{name}, {email}],
-    });
-    if (!exitedUser) {
-      return res.status(404).json({
+    const allowedRoles = ["doctor", "patient", "admin"];
+    if (!allowedRoles.includes(role)) {
+      return res.status(400).json({
         success: false,
-        message: "Already exitsed",
+        message: "Invalid role",
       });
     }
+    console.log(allowedRoles);
 
-    const avatarLocalPath = req.files?.avatar[0]?.path
+    const existingUser = await User.findOne({ $or: [{ name }, { email }] });
+    if (existingUser) {
+      return res.status(400).json({
+        success: false,
+        message: "User with this name or email already exists",
+      });
+    }
+    console.log(existingUser);
+
+    const avatarLocalPath = req.files?.avatar?.[0]?.path;
     if (!avatarLocalPath) {
-      return res.status(404).json({
+      return res.status(400).json({
         success: false,
-        message: "You have to upload avatar",
+        message: "Avatar is required",
       });
     }
+    console.log(avatarLocalPath);
 
-    
+    const avatar = await uploadonCLOUDNARY(avatarLocalPath);
+    if (!avatar) {
+      return res.status(500).json({
+        success: false,
+        message: "Error uploading avatar",
+      });
+    }
+    console.log(avatar);
 
-
-  } catch (error) {
-    return res.status(500).json({
-      success: false,
-      message: error.message,
+    const user = await User.create({
+      name: name.toLowerCase(),
+      email,
+      password,
+      role,
+      phone,
+      avatar: {
+        url: avatar.secure_url,
+        public_id: avatar.public_id,
+      },
     });
+    console.log(user);
+
+    const createdUser = user.toObject();
+    delete createdUser.password;
+
+    return res.status(201).json({
+      success: true,
+      data: createdUser,
+      message: "User created successfully",
+    });
+  } catch (error) {
+    console.error("Register Controller Error:", error);
+    return res.status(500).json({ success: false, message: error.message });
   }
 };
 
