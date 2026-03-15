@@ -2,13 +2,13 @@ const USER_STORAGE_KEY = 'user';
 const AUTH_TOKEN_KEY = 'authToken';
 const USERS_STORAGE_KEY = 'doctracker_users';
 
-// Get all registered users from localStorage
+// Get all registered users from localStorage (fallback / legacy)
 function getAllUsers() {
   const users = localStorage.getItem(USERS_STORAGE_KEY);
   return users ? JSON.parse(users) : [];
 }
 
-// Save all users to localStorage
+// Save all users to localStorage (fallback / legacy)
 function saveAllUsers(users) {
   localStorage.setItem(USERS_STORAGE_KEY, JSON.stringify(users));
 }
@@ -50,48 +50,39 @@ export function clearSession() {
 export async function login(credentials) {
   try {
     const { email, password } = credentials;
-    
+
     if (!email || !password) {
       throw new Error('Email and password are required');
     }
 
-    const users = getAllUsers();
-    const user = users.find(u => u.email.toLowerCase() === email.toLowerCase());
-    
-    if (!user) {
-      throw new Error('Invalid email or password');
-    }
-    
-    if (user.password !== password) {
-      throw new Error('Invalid email or password');
-    }
+    const apiClient = (await import('./apiClient.js')).default;
+    const data = await apiClient.post(
+      '/auth/login',
+      { email, password },
+      { auth: false }
+    );
 
-    // Create user object without password
-    const { password: _, ...userWithoutPassword } = user;
+    const user = data.user || data;
+    const token = data.token;
     const userData = {
-      ...userWithoutPassword,
-      id: user.id || user.email,
+      ...user,
+      id: user.id || user._id,
     };
 
-    const token = generateToken(userData.id);
-    
-    const response = {
-      user: userData,
-      token: token
-    };
-    
+    const response = { user: userData, token };
     storeSession(response);
     return response;
   } catch (error) {
     console.error('Login error:', error);
-    throw error;
+    const message = error.message || (error.details && error.details[0]?.message) || 'Invalid email or password';
+    throw new Error(message);
   }
 }
 
 export async function register(payload) {
   try {
     const { name, email, password, role } = payload;
-    
+
     if (!name || !email || !password) {
       throw new Error('Name, email, and password are required');
     }
@@ -100,46 +91,27 @@ export async function register(payload) {
       throw new Error('Password must be at least 8 characters long');
     }
 
-    const users = getAllUsers();
-    
-    // Check if user already exists
-    const existingUser = users.find(u => u.email.toLowerCase() === email.toLowerCase());
-    if (existingUser) {
-      throw new Error('Email already registered');
-    }
+    const apiClient = (await import('./apiClient.js')).default;
+    const data = await apiClient.post(
+      '/auth/register',
+      { name, email, password, role: role || 'patient' },
+      { auth: false }
+    );
 
-    // Create new user
-    const newUser = {
-      id: `user_${Date.now()}`,
-      name,
-      email: email.toLowerCase(),
-      password, // In a real app, this should be hashed
-      role: role || 'patient',
-      createdAt: new Date().toISOString(),
-    };
-
-    // Add user to the list
-    users.push(newUser);
-    saveAllUsers(users);
-
-    // Create user object without password
-    const { password: _, ...userWithoutPassword } = newUser;
+    const user = data.user || data;
+    const token = data.token;
     const userData = {
-      ...userWithoutPassword,
+      ...user,
+      id: user.id || user._id,
     };
 
-    const token = generateToken(newUser.id);
-    
-    const response = {
-      user: userData,
-      token: token
-    };
-    
+    const response = { user: userData, token };
     storeSession(response);
     return response;
   } catch (error) {
     console.error('Registration error:', error);
-    throw error;
+    const message = error.message || (error.details && error.details[0]?.message) || 'Unable to create account. Please try again.';
+    throw new Error(message);
   }
 }
 
