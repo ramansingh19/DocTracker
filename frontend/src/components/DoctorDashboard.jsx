@@ -67,7 +67,7 @@ const DoctorDashboard = () => {
       {/* ===== CONTAINER ===== */}
       <div className="max-w-7xl mx-auto px-6 lg:px-10">
         {/* ===== HEADER ===== */}
-        <header className="sticky top-0 z-50 bg-white/70 backdrop-blur-md border-b border-slate-200/60 px-8 py-4 rounded-b-[2rem] shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
+        <header className="sticky top-0 z-50 bg-white/70 backdrop-blur-md border-b border-slate-200/60 px-8 py-4 rounded-b-4xl shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
           <div className="max-w-7xl mx-auto flex justify-between items-center">
             {/* Brand */}
             <div className="group cursor-default">

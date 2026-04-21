@@ -42,8 +42,8 @@ const LandingPage = () => {
           {/* Logo */}
           <div className="flex items-center gap-3 text-9xl font-bold text-gray-900 sm:text-xl">
             <div
-              className="w-10 h-10 sm:w-[45px] sm:h-[35px] 
-        bg-gradient-to-br from-indigo-500 to-purple-600 
+              className="w-10 h-10 sm:w-11.25 sm:h-8.75 
+        bg-linear-to-br from-indigo-500 to-purple-600 
         rounded-xl flex items-center justify-center text-white 
         transition-all duration-300 hover:scale-110 hover:shadow-lg"
             >
@@ -54,14 +54,14 @@ const LandingPage = () => {
               />
             </div>
 
-            <span className="bg-gradient-to-br from-indigo-500 to-purple-600 bg-clip-text text-transparent tracking-tight">
+            <span className="bg-linear-to-br from-indigo-500 to-purple-600 bg-clip-text text-transparent tracking-tight">
               DocTracker
             </span>
           </div>
 
           {/* Mobile Toggle */}
           <button
-            className={`flex flex-col justify-between w-[32px] h-[24px] bg-transparent border-0 cursor-pointer p-0 z-[1001] relative md:flex lg:hidden`}
+            className={`flex flex-col justify-between w-8 h-[24px] bg-transparent border-0 cursor-pointer p-0 z-[1001] relative md:flex lg:hidden`}
             onClick={toggleMenu}
             aria-label="Toggle menu"
             aria-expanded={isMenuOpen}
@@ -161,7 +161,7 @@ const LandingPage = () => {
             className="absolute inset-0 bg-cover bg-center bg-no-repeat bg-fixed"
             style={{
               backgroundImage: `linear-gradient(rgba(0,0,0,0.1), rgba(15,23,42,0.7)), 
-                          url('https://i.pinimg.com/1200x/15/e9/56/15e95618a2a142e412902a71f1419cca.jpg')`,
+                          url('https://i.pinimg.com/1200x/b9/c1/94/b9c194b952dd9580bf06afe714bfac26.jpg')`,
             }}
           />
         </div>
@@ -180,14 +180,14 @@ const LandingPage = () => {
               </span>
             </div>
 
-            <h1 className="text-5xl md:text-6xl lg:text-5xl font-black leading-[1.05] mb-8 text-gray-900 bg-gradient-to-r from-gray-900 via-indigo-900 to-purple-900 bg-clip-text text-transparent drop-shadow-lg">
+            <h1 className="text-5xl md:text-6xl lg:text-5xl font-black leading-[1.05] mb-8 text-gray-900 bg-linear-to-r from-gray-400 via-indigo-800 to-purple-900 bg-clip-text text-transparent drop-shadow-lg">
               Transform Your Hospital's
               <span className="block mt-2 bg-gradient-to-br from-indigo-500 via-purple-600 to-pink-600 bg-clip-text text-transparent">
                 Patient Experience
               </span>
             </h1>
 
-            <p className="text-xl font-bold md:text-1xl text-slate-900 mb-12 leading-relaxed max-w-lg">
+            <p className="text-xl font-bold md:text-1xl text-slate-400 mb-12 leading-relaxed max-w-lg">
               Revolutionize healthcare with real-time doctor tracking,
               AI-powered queue management, and seamless communication. Reduce
               wait times by up to{" "}
@@ -234,7 +234,7 @@ const LandingPage = () => {
 
             {/* Enhanced Role Selection */}
             <div className="text-center lg:text-left">
-              <h3 className="text-2xl lg:text-3xl font-bold text-gray-900 mb-10">
+              <h3 className="text-2xl lg:text-3xl font-bold text-gray-400 mb-10">
                 Choose Your Role
               </h3>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
