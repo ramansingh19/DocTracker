@@ -12,6 +12,10 @@ dist
 dist-ssr
 *.local
 
+Project.pdf
+project.pdf
+Project
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

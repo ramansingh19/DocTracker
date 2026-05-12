@@ -1,62 +1,25 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import authService, { getStoredUser } from "../services/authService";
+import apiClient from "../services/apiClient";
 
 const PatientStatus = () => {
   const [user, setUser] = useState(null);
   const [activeTab, setActiveTab] = useState("status");
   const [doctorStatus, setDoctorStatus] = useState("in_transit");
-  const [etaMinutes, setEtaMinutes] = useState(18);
-  const [queuePosition, setQueuePosition] = useState(3);
-  const [totalInQueue] = useState(12);
+  const [etaMinutes, setEtaMinutes] = useState(0);
+  const [queuePosition, setQueuePosition] = useState(null);
+  const [totalInQueue, setTotalInQueue] = useState(0);
   const [arrivalStatus, setArrivalStatus] = useState("on_time"); // on_time | delayed | cancelled | emergency
-  const [locationSharing, setLocationSharing] = useState(true);
-  const [isConnected] = useState(true);
+  const [locationSharing] = useState(true);
+  const [isConnected, setIsConnected] = useState(true);
+  const [doctorProfileId, setDoctorProfileId] = useState(null);
+  const [loadingData, setLoadingData] = useState(true);
+  const [notice, setNotice] = useState("");
+  const [doctor, setDoctor] = useState(null);
+  const [notifications, setNotifications] = useState([]);
+  const [rescheduling, setRescheduling] = useState(false);
   const navigate = useNavigate();
-
-  const doctor = {
-    name: "Dr. Sarah Johnson",
-    specialization: "Cardiology",
-    photo: null,
-  };
-
-  const notifications = [
-    {
-      id: 1,
-      icon: "📍",
-      text: "Dr. Johnson is on the way. Arriving in ~18 minutes.",
-      time: "2 min ago",
-      type: "info",
-    },
-    {
-      id: 2,
-      icon: "✓",
-      text: "Your queue position updated: You are now #3 in line",
-      time: "5 min ago",
-      type: "success",
-    },
-    {
-      id: 3,
-      icon: "⏰",
-      text: "Estimated wait time: 35–40 minutes",
-      time: "10 min ago",
-      type: "info",
-    },
-    {
-      id: 4,
-      icon: "🏥",
-      text: "Check-in confirmed. Please wait in the OPD waiting area.",
-      time: "15 min ago",
-      type: "success",
-    },
-    {
-      id: 5,
-      icon: "📋",
-      text: "Your slot: 10:30 AM – Cardiology OPD",
-      time: "1 hour ago",
-      type: "info",
-    },
-  ];
 
   useEffect(() => {
     const storedUser = getStoredUser();
@@ -65,13 +28,57 @@ const PatientStatus = () => {
       return;
     }
     setUser(storedUser);
+    if (storedUser.role !== "patient") {
+      navigate("/login");
+      return;
+    }
 
-    const interval = setInterval(() => {
-      setEtaMinutes((prev) => Math.max(1, prev - 1));
-      if (Math.random() > 0.9) {
-        setQueuePosition((prev) => Math.max(1, prev - 1));
+    const loadData = async () => {
+      try {
+        const trackingResponse = await apiClient.get("/patients/me/tracking");
+        const resolvedDoctor = trackingResponse?.tracking?.assignedDoctorId;
+
+        if (!resolvedDoctor?._id) {
+          setDoctorProfileId(null);
+          setDoctor(null);
+          setQueuePosition(null);
+          setTotalInQueue(0);
+          setNotice("No doctor is assigned to your account yet. Please contact reception.");
+          return;
+        }
+        setDoctorProfileId(resolvedDoctor._id);
+        setDoctor({
+          name: resolvedDoctor.userId?.name || "Doctor",
+          specialization: resolvedDoctor.department || "General",
+          photo: null,
+        });
+        setDoctorStatus(resolvedDoctor.status || "in_transit");
+        if (typeof resolvedDoctor.currentEtaMinutes === "number") {
+          setEtaMinutes(resolvedDoctor.currentEtaMinutes);
+        }
+        setArrivalStatus(resolvedDoctor.status === "delayed" ? "delayed" : "on_time");
+
+        const positionResponse = await apiClient.get(`/queue/${resolvedDoctor._id}/position/${storedUser.id}`);
+        setQueuePosition(positionResponse.queuePosition);
+        setTotalInQueue(positionResponse.totalInQueue || 0);
+
+        const notificationResponse = await apiClient.get("/notifications");
+        setNotifications(notificationResponse.notifications || []);
+        setIsConnected(true);
+      } catch (error) {
+        console.error("Patient live data fetch failed", {
+          userId: storedUser?.id,
+          message: error?.message,
+        });
+        setIsConnected(false);
+        setNotice("Unable to reach live services. Please retry.");
+      } finally {
+        setLoadingData(false);
       }
-    }, 60000);
+    };
+
+    loadData();
+    const interval = setInterval(loadData, 20000);
     return () => clearInterval(interval);
   }, [navigate]);
 
@@ -140,7 +147,7 @@ const PatientStatus = () => {
     return configs[status] || configs.on_time;
   };
 
-  if (!user) {
+  if (!user || loadingData) {
     return (
       <div className="flex justify-center items-center min-h-screen bg-teal-50">
         <div className="flex flex-col items-center gap-4">
@@ -153,13 +160,63 @@ const PatientStatus = () => {
 
   const statusConfig = getStatusConfig(doctorStatus);
   const alertConfig = getArrivalAlertConfig(arrivalStatus);
-  const progressPercent = Math.round(
-    ((totalInQueue - queuePosition) / totalInQueue) * 100,
-  );
+  const progressPercent = totalInQueue > 0 && queuePosition
+    ? Math.round(((totalInQueue - queuePosition) / totalInQueue) * 100)
+    : 0;
+
+  const handleCheckIn = async () => {
+    if (!doctorProfileId || !user?.id) {
+      setNotice("Cannot check in until a doctor is assigned.");
+      return;
+    }
+    try {
+      await apiClient.post("/queue/checkin", {
+        doctorId: doctorProfileId,
+        patientId: user.id,
+      });
+      const positionResponse = await apiClient.get(`/queue/${doctorProfileId}/position/${user.id}`);
+      setQueuePosition(positionResponse.queuePosition);
+      setTotalInQueue(positionResponse.totalInQueue || 0);
+    } catch (error) {
+      setNotice(error.message || "Check-in failed.");
+    }
+  };
+
+  const handleReschedule = async () => {
+    if (!user?.id) {
+      return;
+    }
+    setRescheduling(true);
+    setNotice("");
+    try {
+      await apiClient.put("/patients/me/tracking", {
+        checkInStatus: "not_checked_in",
+        notes: "Patient requested reschedule",
+      });
+      setQueuePosition(null);
+      setTotalInQueue(0);
+      setNotice("Reschedule request saved. Please check in again when ready.");
+    } catch (error) {
+      console.error("Reschedule request failed", {
+        userId: user?.id,
+        message: error?.message,
+      });
+      setNotice(error.message || "Unable to submit reschedule request.");
+    } finally {
+      setRescheduling(false);
+    }
+  };
 
   return (
     /* Main Wrapper: Full width on mobile, centered constrained on desktop */
 <div className="min-h-screen bg-[#f8fafc] font-sans pb-32">
+  {notice && (
+    <div className="max-w-7xl mx-auto px-6 pt-4">
+      <div className="rounded-xl border border-amber-200 bg-amber-50 text-amber-800 text-sm font-semibold px-4 py-3">
+        {notice}
+      </div>
+    </div>
+  )}
   
   {/* Header: Responsive max-width */}
   <header className="sticky top-0 z-50 w-full bg-white/80 backdrop-blur-xl border-b border-slate-200/40 px-6 py-4">
@@ -172,13 +229,15 @@ const PatientStatus = () => {
         </div>
         <div>
           <h1 className="text-xl font-black text-slate-900 tracking-tight leading-none">DocTracker</h1>
-          <p className="text-[10px] font-bold text-teal-600 uppercase tracking-widest mt-1">Patient Portal</p>
+          <p className="text-[10px] font-bold text-teal-600 uppercase tracking-widest mt-1">
+            Patient Portal {isConnected ? "Online" : "Offline"}
+          </p>
         </div>
       </div>
       <div className="flex items-center gap-4">
         <div className="hidden md:block text-right">
            <p className="text-xs font-bold text-slate-900">{user.name || "Patient"}</p>
-           <p className="text-[10px] text-slate-500 uppercase">ID: #4421</p>
+           <p className="text-[10px] text-slate-500 uppercase">ID: #{user.id?.slice(-4) || "----"}</p>
         </div>
         <button onClick={handleLogout} className="p-2.5 rounded-xl bg-slate-50 text-slate-400 hover:text-rose-500 transition-colors border border-slate-100">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9" /></svg>
@@ -232,7 +291,7 @@ const PatientStatus = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                <div className="bg-slate-900 rounded-[2rem] p-8 text-white shadow-2xl">
                   <p className="text-teal-400 text-[10px] font-black uppercase tracking-[0.2em] mb-4">Live Queue</p>
-                  <h3 className="text-3xl font-bold mb-4">#{queuePosition} <span className="text-lg font-light text-slate-400">in line</span></h3>
+                  <h3 className="text-3xl font-bold mb-4">#{queuePosition ?? "-"} <span className="text-lg font-light text-slate-400">in line</span></h3>
                   <div className="h-2.5 bg-white/10 rounded-full overflow-hidden">
                     <div className="h-full bg-teal-500 shadow-[0_0_15px_rgba(20,184,166,0.5)] transition-all duration-1000" style={{ width: `${progressPercent}%` }} />
                   </div>
@@ -253,29 +312,32 @@ const PatientStatus = () => {
           </>
         ) : (
           <div className="bg-white rounded-[2rem] p-8 border border-slate-100 shadow-lg space-y-4">
-             {notifications.map(n => (
-               <div key={n.id} className="flex gap-4 p-4 hover:bg-slate-50 rounded-2xl transition-all">
-                  <div className="w-12 h-12 bg-teal-50 rounded-xl flex items-center justify-center text-2xl">{n.icon}</div>
+             {notifications.map((n) => (
+               <div key={n._id || n.id} className="flex gap-4 p-4 hover:bg-slate-50 rounded-2xl transition-all">
+                  <div className="w-12 h-12 bg-teal-50 rounded-xl flex items-center justify-center text-2xl">📢</div>
                   <div>
-                    <p className="font-bold text-slate-800">{n.text}</p>
-                    <p className="text-xs text-slate-400 font-bold uppercase">{n.time}</p>
+                    <p className="font-bold text-slate-800">{n.message}</p>
+                    <p className="text-xs text-slate-400 font-bold uppercase">{new Date(n.createdAt).toLocaleTimeString()}</p>
                   </div>
                </div>
              ))}
+             {notifications.length === 0 && (
+              <p className="text-sm text-slate-500">No notifications yet.</p>
+             )}
           </div>
         )}
       </div>
 
       {/* Right Column: Doctor Sidebar (4 Units on Desktop) */}
       <div className="lg:col-span-4 space-y-6">
-        <div className="bg-white rounded-[2.5rem] p-8 shadow-xl shadow-slate-200/50 border border-slate-100 sticky top-28">
+        <div className="bg-white rounded-[2.5rem] p-8 shadow-xl shadow-slate-200/50 border border-slate-100 lg:sticky lg:top-28">
           <p className="text-slate-400 text-[10px] font-black uppercase tracking-[0.2em] mb-6">Assigned Specialist</p>
           <div className="text-center">
             <div className="w-24 h-24 bg-slate-50 rounded-[2rem] mx-auto mb-4 flex items-center justify-center text-5xl shadow-inner border border-slate-100">
               👨‍⚕️
             </div>
-            <h4 className="text-xl font-black text-slate-900">{doctor.name}</h4>
-            <p className="text-teal-600 font-bold text-xs uppercase tracking-wider mb-6">{doctor.specialization}</p>
+            <h4 className="text-xl font-black text-slate-900">{doctor?.name || "Assignment pending"}</h4>
+            <p className="text-teal-600 font-bold text-xs uppercase tracking-wider mb-6">{doctor?.specialization || "Waiting for admin assignment"}</p>
             
             <div className={`inline-flex items-center gap-2 px-4 py-2 rounded-full text-[10px] font-black uppercase ${statusConfig.color}`}>
               <span className={`w-2 h-2 rounded-full ${statusConfig.dot}`} />
@@ -286,11 +348,19 @@ const PatientStatus = () => {
           <hr className="my-8 border-slate-100" />
 
           <div className="space-y-4">
-            <button className="w-full py-4 rounded-2xl font-black text-xs uppercase tracking-widest bg-slate-900 text-white shadow-lg hover:bg-teal-600 transition-all active:scale-95">
-              Check In
+            <button
+              onClick={handleCheckIn}
+              disabled={!doctorProfileId}
+              className="w-full min-h-11 py-4 rounded-2xl font-black text-xs uppercase tracking-widest bg-slate-900 text-white shadow-lg hover:bg-teal-600 transition-all active:scale-95 disabled:opacity-60 disabled:cursor-not-allowed"
+            >
+              {doctorProfileId ? "Check In" : "Awaiting Assignment"}
             </button>
-            <button className="w-full py-4 rounded-2xl font-black text-xs uppercase tracking-widest border-2 border-slate-200 text-slate-600 hover:bg-slate-50 transition-all">
-              Reschedule
+            <button
+              onClick={handleReschedule}
+              disabled={rescheduling}
+              className="w-full min-h-11 py-4 rounded-2xl font-black text-xs uppercase tracking-widest border-2 border-slate-200 text-slate-600 hover:bg-slate-50 transition-all disabled:opacity-60 disabled:cursor-not-allowed"
+            >
+              {rescheduling ? "Submitting..." : "Reschedule"}
             </button>
           </div>
         </div>

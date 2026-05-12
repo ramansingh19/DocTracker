@@ -10,12 +10,11 @@ export default function ContactPage() {
     message: "",
   });
   const [loading, setLoading] = useState(false);
-  const [status, setStatus] = useState(null);
-
-  function updateField(e) {
+  const [, setStatus] = useState(null);
+  const handleFieldChange = (e) => {
     const { name, value } = e.target;
     setForm((prev) => ({ ...prev, [name]: value }));
-  }
+  };
 
   function validate() {
     if (!form.name.trim()) return "Please enter your name.";
@@ -185,6 +184,8 @@ export default function ContactPage() {
                 <input
                   name="name"
                   placeholder="Your name"
+                  value={form.name}
+                  onChange={handleFieldChange}
                   className="w-full bg-slate-50 border-2 border-slate-100 px-5 py-4 rounded-2xl focus:bg-white focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/5 transition-all outline-none"
                 />
               </div>
@@ -196,6 +197,8 @@ export default function ContactPage() {
                   name="email"
                   type="email"
                   placeholder="john@example.com"
+                  value={form.email}
+                  onChange={handleFieldChange}
                   className="w-full bg-slate-50 border-2 border-slate-100 px-5 py-4 rounded-2xl focus:bg-white focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/5 transition-all outline-none"
                 />
               </div>
@@ -205,7 +208,12 @@ export default function ContactPage() {
               <label className="text-xs font-bold uppercase tracking-wider text-slate-500 ml-1">
                 Subject
               </label>
-              <select className="w-full bg-slate-50 border-2 border-slate-100 px-5 py-4 rounded-2xl focus:bg-white focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/5 transition-all outline-none appearance-none">
+              <select
+                name="subject"
+                value={form.subject}
+                onChange={handleFieldChange}
+                className="w-full bg-slate-50 border-2 border-slate-100 px-5 py-4 rounded-2xl focus:bg-white focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/5 transition-all outline-none appearance-none"
+              >
                 <option>General Inquiry</option>
                 <option>Enterprise Pricing</option>
                 <option>Technical Support</option>
@@ -220,6 +228,8 @@ export default function ContactPage() {
                 name="message"
                 rows={5}
                 placeholder="Tell us about your project..."
+                value={form.message}
+                onChange={handleFieldChange}
                 className="w-full bg-slate-50 border-2 border-slate-100 px-5 py-4 rounded-2xl focus:bg-white focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/5 transition-all outline-none resize-none"
               />
             </div>

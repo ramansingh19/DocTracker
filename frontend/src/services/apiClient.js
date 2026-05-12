@@ -5,17 +5,55 @@ const defaultHeaders = {
   'Content-Type': 'application/json',
 };
 
-function getAuthToken() {
-  return localStorage.getItem('authToken');
+function clearClientSession() {
+  localStorage.removeItem('user');
+  localStorage.removeItem('isAuthenticated');
 }
 
-async function request(path, { method = 'GET', body, headers = {}, auth = true } = {}) {
+let accessToken = null;
+let refreshPromise = null;
+
+function setAccessToken(token) {
+  accessToken = token || null;
+}
+
+async function refreshAccessToken() {
+  if (!refreshPromise) {
+    refreshPromise = fetch(`${API_BASE_URL}/auth/refresh`, {
+      method: 'POST',
+      headers: defaultHeaders,
+      credentials: 'include',
+    })
+      .then(async (response) => {
+        const data = await response.json().catch(() => ({}));
+        if (!response.ok || !data?.accessToken) {
+          throw new Error(data?.message || 'Unable to refresh session');
+        }
+        setAccessToken(data.accessToken);
+        return data.accessToken;
+      })
+      .finally(() => {
+        refreshPromise = null;
+      });
+  }
+  return refreshPromise;
+}
+
+async function request(path, { method = 'GET', body, headers = {}, auth = true, retry = true } = {}) {
   const finalHeaders = { ...defaultHeaders, ...headers };
+  const isAuthPath = path.startsWith('/auth/');
+
+  if (auth && !accessToken && retry && !isAuthPath) {
+    try {
+      await refreshAccessToken();
+    } catch {
+      // Ignore pre-refresh errors and allow normal request flow/handling.
+    }
+  }
 
   if (auth) {
-    const token = getAuthToken();
-    if (token) {
-      finalHeaders.Authorization = `Bearer ${token}`;
+    if (accessToken) {
+      finalHeaders.Authorization = `Bearer ${accessToken}`;
     }
   }
 
@@ -34,7 +72,23 @@ async function request(path, { method = 'GET', body, headers = {}, auth = true }
     const data = isJson ? await response.json() : await response.text();
 
     if (!response.ok) {
-      const errorMessage = isJson && data?.message ? data.message : response.statusText;
+      let errorMessage = isJson && data?.message ? data.message : response.statusText;
+      if (response.status === 401) {
+        if (auth && retry && !isAuthPath) {
+          try {
+            await refreshAccessToken();
+            return request(path, { method, body, headers, auth, retry: false });
+          } catch {
+            clearClientSession();
+            errorMessage = 'Your session has expired. Please log in again.';
+          }
+        } else {
+          clearClientSession();
+          errorMessage = 'Your session has expired. Please log in again.';
+        }
+      } else if (!errorMessage) {
+        errorMessage = 'Request failed';
+      }
       const error = new Error(errorMessage || 'Request failed');
       error.status = response.status;
       error.details = data?.details;
@@ -64,6 +118,13 @@ async function request(path, { method = 'GET', body, headers = {}, auth = true }
         `Unable to connect to the server. Please check your connection and try again.`
       );
     }
+    console.error("API request failed", {
+      url,
+      method,
+      message: error?.message,
+      status: error?.status,
+      details: error?.details,
+    });
     throw error;
   }
 }
@@ -71,8 +132,10 @@ async function request(path, { method = 'GET', body, headers = {}, auth = true }
 export default {
   get: (path, options) => request(path, { ...options, method: 'GET' }),
   post: (path, body, options) => request(path, { ...options, method: 'POST', body }),
+  put: (path, body, options) => request(path, { ...options, method: 'PUT', body }),
   patch: (path, body, options) => request(path, { ...options, method: 'PATCH', body }),
   delete: (path, options) => request(path, { ...options, method: 'DELETE' }),
+  setAccessToken,
 };
 
 

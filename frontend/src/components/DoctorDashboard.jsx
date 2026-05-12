@@ -1,30 +1,50 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import apiClient from "../services/apiClient";
 import authService, { getStoredUser } from "../services/authService";
+import { getStatusMeta } from "../utils/statusConfig";
 
 const DoctorDashboard = () => {
   const [user, setUser] = useState(null);
-  const [status, setStatus] = useState("in_opd");
+  const [modalError, setModalError] = useState("");
+  const [doctorProfile, setDoctorProfile] = useState(null);
+  const [status, setStatus] = useState("in_transit");
   const [locationSharing, setLocationSharing] = useState(false);
   const [showDelayModal, setShowDelayModal] = useState(false);
-  const [delayMinutes, setDelayMinutes] = useState(20);
+  const [delayMinutes, setDelayMinutes] = useState(15);
   const [delayNotified, setDelayNotified] = useState(false);
+  const [broadcastingDelay, setBroadcastingDelay] = useState(false);
   const [location, setLocation] = useState({ lat: 28.6139, lng: 77.209 });
+  const [queueTotal, setQueueTotal] = useState(0);
+  const [notice, setNotice] = useState("");
+  const locationWatchId = useRef(null);
   const navigate = useNavigate();
 
   const statusOptions = [
-    { id: "on_the_way", label: "Transit", icon: "🚗", color: "bg-blue-600" },
-    { id: "in_opd", label: "In OPD", icon: "🩺", color: "bg-teal-600" },
+    { id: "in_transit", label: "Transit", icon: "🚗", color: "bg-blue-600" },
+    { id: "consulting", label: "Consulting", icon: "🩺", color: "bg-teal-600" },
     { id: "in_ot", label: "In OT", icon: "🏥", color: "bg-indigo-600" },
-    { id: "break", label: "Break", icon: "☕", color: "bg-amber-500" },
-    { id: "emergency", label: "Urgent", icon: "🚨", color: "bg-rose-600" },
+    { id: "arrived", label: "Arrived", icon: "✅", color: "bg-emerald-600" },
+    { id: "delayed", label: "Delayed", icon: "⏱", color: "bg-amber-500" },
   ];
 
-  const schedule = [
-    { time: "09:00 AM", slot: "Morning Session", waiting: 8 },
-    { time: "10:30 AM", slot: "Mid-Day Session", waiting: 2 },
-    { time: "02:00 PM", slot: "Surgery / OT", waiting: 0 },
-  ];
+  const loadDoctorData = async (userId) => {
+    const doctorsResponse = await apiClient.get("/doctors");
+    const doctors = doctorsResponse.doctors || [];
+    const profile = doctors.find(
+      (doctor) => (doctor.userId?._id || doctor.userId?.id) === userId,
+    );
+    if (!profile) {
+      throw new Error(
+        "Doctor profile not found. Ask admin to create your doctor profile.",
+      );
+    }
+    setDoctorProfile(profile);
+    setStatus(profile.status);
+
+    const queueResponse = await apiClient.get(`/queue/${profile._id}`);
+    setQueueTotal(queueResponse.totalInQueue || 0);
+  };
 
   useEffect(() => {
     const storedUser = getStoredUser();
@@ -33,25 +53,158 @@ const DoctorDashboard = () => {
       return;
     }
     setUser(storedUser);
+    loadDoctorData(storedUser.id).catch((error) => setNotice(error.message));
   }, [navigate]);
 
-  const handleLocationSharing = (enabled) => {
-    setLocationSharing(enabled);
-    if (enabled && navigator.geolocation) {
-      navigator.geolocation.watchPosition(
-        (pos) =>
-          setLocation({ lat: pos.coords.latitude, lng: pos.coords.longitude }),
-        () => {},
-        { enableHighAccuracy: true },
-      );
+  useEffect(() => {
+    if (!doctorProfile?._id) {
+      return;
+    }
+    const interval = setInterval(() => {
+      apiClient
+        .get(`/queue/${doctorProfile._id}`)
+        .then((data) => setQueueTotal(data.totalInQueue || 0))
+        .catch((error) => {
+          console.error("Doctor queue polling failed", {
+            doctorId: doctorProfile._id,
+            message: error?.message,
+          });
+        });
+    }, 20000);
+    return () => clearInterval(interval);
+  }, [doctorProfile?._id]);
+
+  useEffect(() => {
+    return () => {
+      if (locationWatchId.current !== null && navigator.geolocation) {
+        navigator.geolocation.clearWatch(locationWatchId.current);
+      }
+    };
+  }, []);
+
+  const updateDoctorLocation = async (nextLocation, enabled) => {
+    if (!doctorProfile?._id) {
+      return;
+    }
+    const response = await apiClient.patch(
+      `/doctors/${doctorProfile._id}/location`,
+      {
+        lat: nextLocation.lat,
+        lng: nextLocation.lng,
+        isTrackingEnabled: enabled,
+      },
+    );
+    if (response.doctor) {
+      setDoctorProfile(response.doctor);
     }
   };
 
-  const handleNotifyDelay = () => {
+  const handleLocationSharing = async (enabled) => {
+    setLocationSharing(enabled);
+    setNotice("");
+
+    if (locationWatchId.current !== null && navigator.geolocation) {
+      navigator.geolocation.clearWatch(locationWatchId.current);
+      locationWatchId.current = null;
+    }
+
+    if (!enabled) {
+      try {
+        await updateDoctorLocation(location, false);
+      } catch (error) {
+        setNotice(error.message || "Unable to disable location sharing.");
+      }
+      return;
+    }
+
+    if (!navigator.geolocation) {
+      setLocationSharing(false);
+      setNotice("Location sharing is not supported by this browser.");
+      return;
+    }
+
+    locationWatchId.current = navigator.geolocation.watchPosition(
+      async (pos) => {
+        const nextLocation = {
+          lat: pos.coords.latitude,
+          lng: pos.coords.longitude,
+        };
+        setLocation(nextLocation);
+        try {
+          await updateDoctorLocation(nextLocation, true);
+        } catch (error) {
+          setNotice(error.message || "Unable to update live location.");
+        }
+      },
+      (error) => {
+        setLocationSharing(false);
+        setNotice(error.message || "Unable to access your location.");
+      },
+      { enableHighAccuracy: true },
+    );
+  };
+
+  const handleNotifyDelay = async () => {
+    if (!doctorProfile?._id || broadcastingDelay) return;
+
+    setBroadcastingDelay(true);
+    setModalError("");
+    setNotice("");
+
+    try {
+      await Promise.all([
+        apiClient.patch(`/doctors/${doctorProfile._id}/status`, {
+          status: "delayed",
+        }),
+        apiClient.patch(`/doctors/${doctorProfile._id}/eta`, {
+          currentEtaMinutes: delayMinutes,
+        }),
+      ]);
+    } catch (err) {
+      console.warn("Status/ETA update failed:", err.message);
+      console.error("Doctor delay status update error", {
+        doctorId: doctorProfile._id,
+        delayMinutes,
+        message: err?.message,
+      });
+      setModalError(
+        err.message || "Could not update status/ETA. Please try again.",
+      );
+      setBroadcastingDelay(false);
+      return;
+    }
+
+    try {
+      await apiClient.post("/notifications/broadcast", {
+        type: "delay",
+        title: "Doctor Delay Update",
+        message: `Doctor is delayed by approximately ${delayMinutes} minutes.`,
+        roleTarget: "patient",
+        meta: { doctorId: doctorProfile._id, delayMinutes },
+      });
+    } catch (err) {
+      console.warn("Notification broadcast failed:", err.message);
+      console.error("Doctor delay broadcast error", {
+        doctorId: doctorProfile._id,
+        delayMinutes,
+        message: err?.message,
+      });
+      setModalError(
+        err.message || "Could not send broadcast update. Please try again.",
+      );
+      setBroadcastingDelay(false);
+      return;
+    }
+
     setDelayNotified(true);
+    setStatus("delayed");
+    setNotice(`Broadcast update sent successfully (${delayMinutes} min delay).`);
+    window.alert("Broadcast update sent successfully.");
+
     setTimeout(() => {
       setShowDelayModal(false);
       setDelayNotified(false);
+      setBroadcastingDelay(false);
     }, 2000);
   };
 
@@ -66,6 +219,13 @@ const DoctorDashboard = () => {
     <div className="min-h-screen bg-[#F6F8FB] font-sans">
       {/* ===== CONTAINER ===== */}
       <div className="max-w-7xl mx-auto px-6 lg:px-10">
+        {notice && (
+          <div className="pt-4">
+            <div className="rounded-xl border border-amber-200 bg-amber-50 text-amber-800 text-sm font-semibold px-4 py-3">
+              {notice}
+            </div>
+          </div>
+        )}
         {/* ===== HEADER ===== */}
         <header className="sticky top-0 z-50 bg-white/70 backdrop-blur-md border-b border-slate-200/60 px-8 py-4 rounded-b-4xl shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
           <div className="max-w-7xl mx-auto flex justify-between items-center">
@@ -90,7 +250,7 @@ const DoctorDashboard = () => {
                   Dr. {user.name?.split(" ")[0] || "Doctor"}
                 </p>
                 <p className="text-[9px] font-bold uppercase tracking-widest text-teal-600 mt-1 bg-teal-50 px-2 py-0.5 rounded-full inline-block">
-                  {status.replace("_", " ")}
+                  {getStatusMeta(status).label}
                 </p>
               </div>
 
@@ -101,7 +261,7 @@ const DoctorDashboard = () => {
 
                 <button
                   onClick={handleLogout}
-                  className="flex items-center justify-center w-10 h-10 rounded-xl bg-white text-slate-400 border border-slate-100 hover:border-rose-200 hover:bg-rose-50 hover:text-rose-600 shadow-sm transition-all duration-200"
+                  className="flex items-center justify-center w-11 h-11 rounded-xl bg-white text-slate-400 border border-slate-100 hover:border-rose-200 hover:bg-rose-50 hover:text-rose-600 shadow-sm transition-all duration-200"
                   title="Logout"
                 >
                   <span className="text-lg leading-none mt-[-2px]">⎋</span>
@@ -112,7 +272,7 @@ const DoctorDashboard = () => {
         </header>
 
         {/* ===== MAIN GRID ===== */}
-        <main className="py-10 grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-7xl mx-auto px-4">
+        <main className="py-8 sm:py-10 grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8 max-w-7xl mx-auto px-2 sm:px-4">
           {/* ===== STATUS ===== */}
           <section className="bg-white rounded-[2.5rem] p-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-100">
             <div className="flex items-center gap-2 mb-6">
@@ -126,8 +286,25 @@ const DoctorDashboard = () => {
               {statusOptions.map((opt) => (
                 <button
                   key={opt.id}
-                  onClick={() => setStatus(opt.id)}
-                  className={`px-6 py-4 rounded-2xl font-bold flex items-center gap-3 transition-all duration-300 whitespace-nowrap border-2
+                  onClick={async () => {
+                    setNotice("");
+                    setStatus(opt.id);
+                    if (doctorProfile?._id) {
+                      try {
+                        const response = await apiClient.patch(
+                          `/doctors/${doctorProfile._id}/status`,
+                          { status: opt.id },
+                        );
+                        setDoctorProfile(response.doctor || doctorProfile);
+                      } catch (error) {
+                        setStatus(doctorProfile.status);
+                        setNotice(
+                          error.message || "Unable to update doctor status.",
+                        );
+                      }
+                    }
+                  }}
+                  className={`min-h-11 px-5 sm:px-6 py-3 sm:py-4 rounded-2xl font-bold flex items-center gap-3 transition-all duration-300 whitespace-nowrap border-2
           ${
             status === opt.id
               ? `${opt.color} text-white shadow-[0_10px_20px_-5px_rgba(0,0,0,0.1)] border-transparent scale-[1.02]`
@@ -161,34 +338,22 @@ const DoctorDashboard = () => {
             </div>
 
             <div className="space-y-3">
-              {schedule.map((slot, i) => (
-                <div
-                  key={i}
-                  className="group bg-slate-50/50 p-5 rounded-2xl flex justify-between items-center border border-transparent hover:border-slate-200 hover:bg-white hover:shadow-md transition-all duration-300"
-                >
-                  <div className="flex items-center gap-4">
-                    <div className="text-center bg-white w-14 py-2 rounded-xl shadow-sm border border-slate-100">
-                      <p className="text-sm font-black text-slate-700">
-                        {slot.time}
-                      </p>
-                    </div>
-                    <div>
-                      <p className="text-xs font-bold text-slate-500 uppercase tracking-wide">
-                        {slot.slot}
-                      </p>
-                    </div>
-                  </div>
-
-                  {slot.waiting > 0 && (
-                    <div className="flex items-center gap-2 bg-amber-50 text-amber-700 px-4 py-2 rounded-xl border border-amber-100 shadow-sm">
-                      <span className="text-sm font-black">{slot.waiting}</span>
-                      <span className="text-[10px] font-bold uppercase tracking-tighter">
-                        Waiting
-                      </span>
-                    </div>
-                  )}
+              <div className="group bg-slate-50/50 p-5 rounded-2xl flex justify-between items-center border border-transparent hover:border-slate-200 hover:bg-white hover:shadow-md transition-all duration-300">
+                <div>
+                  <p className="text-xs font-bold text-slate-500 uppercase tracking-wide">
+                    Department
+                  </p>
+                  <p className="text-sm font-black text-slate-700 mt-1">
+                    {doctorProfile?.department || "Not set"}
+                  </p>
                 </div>
-              ))}
+                <div className="flex items-center gap-2 bg-amber-50 text-amber-700 px-4 py-2 rounded-xl border border-amber-100 shadow-sm">
+                  <span className="text-sm font-black">{queueTotal}</span>
+                  <span className="text-[10px] font-bold uppercase tracking-tighter">
+                    Waiting
+                  </span>
+                </div>
+              </div>
             </div>
           </section>
 
@@ -290,14 +455,14 @@ const DoctorDashboard = () => {
                 {[15, 30, 45, 60].map((m) => (
                   <button
                     key={m}
-                    disabled={delayNotified}
+                    disabled={delayNotified || broadcastingDelay}
                     onClick={() => setDelayMinutes(m)}
                     className={`relative py-5 rounded-2xl font-black transition-all duration-200 
             ${
               delayMinutes === m
                 ? "bg-slate-900 text-white shadow-xl scale-[1.05] ring-4 ring-slate-900/10"
                 : "bg-slate-50 text-slate-500 hover:bg-slate-100 border border-transparent"
-            } ${delayNotified && "opacity-40 grayscale"}`}
+            } ${(delayNotified || broadcastingDelay) && "opacity-40 grayscale"}`}
                   >
                     <span className="text-lg">{m}</span>
                     <span className="text-[10px] block opacity-60 uppercase tracking-tighter">
@@ -307,25 +472,38 @@ const DoctorDashboard = () => {
                 ))}
               </div>
 
+              {/* Inside the modal, just above the <div className="flex gap-3"> action buttons */}
+              {modalError && (
+                <div className="mb-4 rounded-xl border border-rose-200 bg-rose-50 text-rose-700 text-sm font-semibold px-4 py-3 text-center">
+                  {modalError}
+                </div>
+              )}
+
               {/* Action Buttons */}
               <div className="flex gap-3">
                 <button
                   onClick={() => {
                     setShowDelayModal(false);
-                    // logic to reset delayNotified after close if needed
+                    setDelayNotified(false);
+                    setModalError("");
                   }}
+                  disabled={broadcastingDelay}
                   className="flex-1 py-4 px-6 rounded-2xl text-slate-500 font-bold hover:bg-slate-50 transition-colors"
                 >
                   {delayNotified ? "Close" : "Cancel"}
                 </button>
 
                 {!delayNotified && (
+                  // ── Fix the Broadcast button — bg-linear-to-r → bg-gradient-to-r ──────
                   <button
                     onClick={handleNotifyDelay}
-                    disabled={!delayMinutes}
-                    className={`flex-[2.5] py-4 px-6 rounded-2xl font-black tracking-wide shadow-lg transition-all active:scale-95 flex items-center justify-center gap-2 bg-gradient-to-r from-teal-600 to-teal-500 text-white hover:shadow-teal-200/50 ${!delayMinutes && "opacity-50 cursor-not-allowed"}`}
+                    disabled={!delayMinutes || broadcastingDelay}
+                    className={`flex-[2.5] py-4 px-6 rounded-2xl font-black tracking-wide shadow-lg transition-all active:scale-95 flex items-center justify-center gap-2 bg-linear-to-r from-teal-600 to-teal-500 text-white ${
+                      (!delayMinutes || broadcastingDelay) &&
+                      "opacity-50 cursor-not-allowed"
+                    }`}
                   >
-                    Broadcast Update
+                    {broadcastingDelay ? "Broadcasting..." : "Broadcast Update"}
                   </button>
                 )}
 

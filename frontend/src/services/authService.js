@@ -1,22 +1,6 @@
+import apiClient from "./apiClient";
+
 const USER_STORAGE_KEY = 'user';
-const AUTH_TOKEN_KEY = 'authToken';
-const USERS_STORAGE_KEY = 'doctracker_users';
-
-// Get all registered users from localStorage (fallback / legacy)
-function getAllUsers() {
-  const users = localStorage.getItem(USERS_STORAGE_KEY);
-  return users ? JSON.parse(users) : [];
-}
-
-// Save all users to localStorage (fallback / legacy)
-function saveAllUsers(users) {
-  localStorage.setItem(USERS_STORAGE_KEY, JSON.stringify(users));
-}
-
-// Generate a simple token
-function generateToken(userId) {
-  return `token_${userId}_${Date.now()}`;
-}
 
 export function getStoredUser() {
   const raw = localStorage.getItem(USER_STORAGE_KEY);
@@ -31,19 +15,16 @@ export function getStoredUser() {
   }
 }
 
-export function storeSession({ user, token }) {
+export function storeSession({ user }) {
   if (user) {
     localStorage.setItem(USER_STORAGE_KEY, JSON.stringify(user));
-  }
-  if (token) {
-    localStorage.setItem(AUTH_TOKEN_KEY, token);
   }
   localStorage.setItem('isAuthenticated', 'true');
 }
 
 export function clearSession() {
+  apiClient.setAccessToken(null);
   localStorage.removeItem(USER_STORAGE_KEY);
-  localStorage.removeItem(AUTH_TOKEN_KEY);
   localStorage.removeItem('isAuthenticated');
 }
 
@@ -55,7 +36,6 @@ export async function login(credentials) {
       throw new Error('Email and password are required');
     }
 
-    const apiClient = (await import('./apiClient.js')).default;
     const data = await apiClient.post(
       '/auth/login',
       { email, password },
@@ -70,6 +50,7 @@ export async function login(credentials) {
     };
 
     const response = { user: userData, token };
+    apiClient.setAccessToken(token);
     storeSession(response);
     return response;
   } catch (error) {
@@ -91,7 +72,6 @@ export async function register(payload) {
       throw new Error('Password must be at least 8 characters long');
     }
 
-    const apiClient = (await import('./apiClient.js')).default;
     const data = await apiClient.post(
       '/auth/register',
       { name, email, password, role: role || 'patient' },
@@ -106,6 +86,7 @@ export async function register(payload) {
     };
 
     const response = { user: userData, token };
+    apiClient.setAccessToken(token);
     storeSession(response);
     return response;
   } catch (error) {

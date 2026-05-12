@@ -1,39 +1,31 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import authService, { getStoredUser } from "../services/authService";
+import apiClient from "../services/apiClient";
+import { getEtaLabel, getStatusMeta } from "../utils/statusConfig";
 
 const AdminDashboard = () => {
   const [user, setUser] = useState(null);
   const [doctors, setDoctors] = useState([]);
+  const [users, setUsers] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [notice, setNotice] = useState("");
   const [showAddDoctorForm, setShowAddDoctorForm] = useState(false);
-  const [selectedDoctor, setSelectedDoctor] = useState(null);
   const [newDoctor, setNewDoctor] = useState({
     name: "",
-    profession: "",
+    email: "",
+    password: "",
     specialty: "",
   });
   const navigate = useNavigate();
 
-  const handleAddDoctor = () => {
-    if (!newDoctor.name || !newDoctor.profession || !newDoctor.specialty) {
-      alert("Please fill all fields!");
-      return;
-    }
-    const newEntry = {
-      id: doctors.length + 1,
-      name: newDoctor.name,
-      specialty: newDoctor.specialty,
-      department: newDoctor.specialty,
-      status: "on_time",
-      eta: "5 min",
-      waitingPatients: 0,
-      nextSlot: "10:30 AM",
-    };
-    const updated = [...doctors, newEntry];
-    setDoctors(updated);
-    localStorage.setItem("doctors", JSON.stringify(updated));
-    setShowAddDoctorForm(false);
-    setNewDoctor({ name: "", profession: "", specialty: "" });
+  const loadDashboardData = async () => {
+    const [doctorRes, userRes] = await Promise.all([
+      apiClient.get("/doctors"),
+      apiClient.get("/users"),
+    ]);
+    setDoctors(doctorRes.doctors || []);
+    setUsers(userRes.users || []);
   };
 
   useEffect(() => {
@@ -42,59 +34,14 @@ const AdminDashboard = () => {
       navigate("/login");
       return;
     }
+    if (storedUser.role !== "admin") {
+      navigate("/login");
+      return;
+    }
     setUser(storedUser);
-
-    const stored = localStorage.getItem("doctors");
-    const data = stored
-      ? JSON.parse(stored)
-      : [
-          {
-            id: 1,
-            name: "Dr. Aman Kumar",
-            department: "Cardiology",
-            status: "on_time",
-            eta: "5 min",
-            waitingPatients: 8,
-            nextSlot: "10:30 AM",
-          },
-          {
-            id: 2,
-            name: "Dr. John Snow",
-            department: "Orthopedics",
-            status: "delayed",
-            eta: "25 min",
-            waitingPatients: 12,
-            nextSlot: "11:00 AM",
-          },
-          {
-            id: 3,
-            name: "Dr. Nikita Verma",
-            department: "Pediatrics",
-            status: "in_transit",
-            eta: "15 min",
-            waitingPatients: 5,
-            nextSlot: "10:45 AM",
-          },
-          {
-            id: 4,
-            name: "Dr. Ravi Gupta",
-            department: "Neurology",
-            status: "emergency",
-            eta: "N/A",
-            waitingPatients: 3,
-            nextSlot: "Cancelled",
-          },
-          {
-            id: 5,
-            name: "Dr. Priya Sharma",
-            department: "General Medicine",
-            status: "cancelled",
-            eta: "N/A",
-            waitingPatients: 0,
-            nextSlot: "—",
-          },
-        ];
-    setDoctors(data);
+    loadDashboardData()
+      .catch((error) => setNotice(error.message))
+      .finally(() => setLoading(false));
   }, [navigate]);
 
   const handleLogout = () => {
@@ -103,54 +50,21 @@ const AdminDashboard = () => {
   };
 
   const stats = {
-    onTime: doctors.filter(
-      (d) =>
-        d.status === "on_time" ||
-        d.status === "available" ||
-        d.status === "consulting",
-    ).length,
-    delayed: doctors.filter(
-      (d) => d.status === "delayed" || d.status === "in_transit",
-    ).length,
-    cancelled: doctors.filter((d) => d.status === "cancelled").length,
-    emergency: doctors.filter((d) => d.status === "emergency").length,
+    onTime: doctors.filter((d) => d.status === "arrived" || d.status === "consulting").length,
+    delayed: doctors.filter((d) => d.status === "delayed" || d.status === "in_transit").length,
+    inOt: doctors.filter((d) => d.status === "in_ot").length,
+    total: doctors.length,
   };
 
   const getStatusConfig = (status) => {
-    const map = {
-      on_time: {
-        label: "On Time",
-        bg: "bg-emerald-100",
-        text: "text-emerald-800",
-      },
-      available: {
-        label: "On Time",
-        bg: "bg-emerald-100",
-        text: "text-emerald-800",
-      },
-      consulting: {
-        label: "Consulting",
-        bg: "bg-emerald-100",
-        text: "text-emerald-800",
-      },
-      delayed: { label: "Delayed", bg: "bg-amber-100", text: "text-amber-800" },
-      in_transit: {
-        label: "In Transit",
-        bg: "bg-blue-100",
-        text: "text-blue-800",
-      },
-      cancelled: {
-        label: "Cancelled",
-        bg: "bg-slate-100",
-        text: "text-slate-600",
-      },
-      emergency: {
-        label: "In Emergency",
-        bg: "bg-red-100",
-        text: "text-red-800",
-      },
+    const meta = getStatusMeta(status);
+    const toneMap = {
+      success: { bg: "bg-emerald-100", text: "text-emerald-800" },
+      warning: { bg: "bg-amber-100", text: "text-amber-800" },
+      info: { bg: "bg-blue-100", text: "text-blue-800" },
+      muted: { bg: "bg-slate-100", text: "text-slate-700" },
     };
-    return map[status] || map.cancelled;
+    return { label: meta.label, ...(toneMap[meta.tone] || toneMap.muted) };
   };
 
   if (!user) {
@@ -164,31 +78,52 @@ const AdminDashboard = () => {
     );
   }
 
-  const handleUpdateStatus = (doctorId, newStatus) => {
-  const updatedDoctors = doctors.map((doc) => {
-    if (doc.id === doctorId) {
-      // Logic for specific status changes
-      let extraData = {};
-      if (newStatus === 'delayed') extraData = { eta: "30 min", nextSlot: "Delayed" };
-      if (newStatus === 'cancelled') extraData = { eta: "N/A", nextSlot: "Cancelled" };
-      
-      return { ...doc, status: newStatus, ...extraData };
+  const handleUpdateStatus = async (doctorId, newStatus) => {
+    try {
+      await apiClient.patch(`/doctors/${doctorId}/status`, { status: newStatus });
+      await loadDashboardData();
+    } catch (error) {
+      setNotice(error.message);
     }
-    return doc;
-  });
+  };
 
-  setDoctors(updatedDoctors);
-  localStorage.setItem("doctors", JSON.stringify(updatedDoctors));
-  
-  // Update the detail panel view
-  const updatedSelected = updatedDoctors.find(d => d.id === doctorId);
-  setSelectedDoctor(updatedSelected);
-};
+  const handleAddDelay = async (doctorId, currentEtaMinutes = 15) => {
+    try {
+      await apiClient.patch(`/doctors/${doctorId}/status`, { status: "delayed" });
+      await apiClient.patch(`/doctors/${doctorId}/eta`, { currentEtaMinutes: currentEtaMinutes + 15 });
+      await loadDashboardData();
+    } catch (error) {
+      setNotice(error.message);
+    }
+  };
 
-const handleAddDelay = (doctorId) => {
-  // Simple logic: add 15 mins to current ETA or set to delayed
-  handleUpdateStatus(doctorId, 'delayed');
-};
+  const handleAddDoctor = async () => {
+    if (!newDoctor.name || !newDoctor.email || !newDoctor.password || !newDoctor.specialty) {
+      setNotice("Please fill all fields.");
+      return;
+    }
+    try {
+      const registerRes = await apiClient.post(
+        "/auth/register",
+        {
+          name: newDoctor.name,
+          email: newDoctor.email,
+          password: newDoctor.password,
+          role: "doctor",
+        },
+        { auth: false }
+      );
+      await apiClient.post("/doctors", {
+        userId: registerRes.user.id || registerRes.user._id,
+        department: newDoctor.specialty,
+      });
+      setShowAddDoctorForm(false);
+      setNewDoctor({ name: "", email: "", password: "", specialty: "" });
+      await loadDashboardData();
+    } catch (error) {
+      setNotice(error.message);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-slate-50 font-sans">
@@ -244,7 +179,12 @@ const handleAddDelay = (doctorId) => {
         </div>
       </header>
 
-      <main className="max-w-7xl mx-auto p-6 space-y-8 bg-slate-50/50 min-h-screen">
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 py-6 space-y-6 sm:space-y-8 bg-slate-50/50 min-h-screen">
+        {notice && (
+          <div className="rounded-xl border border-amber-200 bg-amber-50 text-amber-800 text-sm font-semibold px-4 py-3">
+            {notice}
+          </div>
+        )}
         {/* Status Tiles */}
         <section className="grid grid-cols-2 lg:grid-cols-4 gap-4">
           {[
@@ -263,18 +203,18 @@ const handleAddDelay = (doctorId) => {
               shadow: "shadow-amber-100",
             },
             {
-              key: "cancelled",
-              label: "Cancelled",
-              value: stats.cancelled,
-              color: "bg-slate-400",
-              shadow: "shadow-slate-100",
+              key: "inOt",
+              label: "In OT",
+              value: stats.inOt,
+              color: "bg-violet-500",
+              shadow: "shadow-violet-100",
             },
             {
-              key: "emergency",
-              label: "In Emergency",
-              value: stats.emergency,
-              color: "bg-rose-500",
-              shadow: "shadow-rose-100",
+              key: "total",
+              label: "Total",
+              value: stats.total,
+              color: "bg-slate-600",
+              shadow: "shadow-slate-100",
             },
           ].map((tile) => (
             <div
@@ -299,8 +239,8 @@ const handleAddDelay = (doctorId) => {
         </section>
 
         {/* Doctor Table */}
-        <section className="bg-white rounded-[2rem] border border-slate-200 shadow-sm overflow-hidden">
-          <div className="px-8 py-6 border-b border-slate-100 flex flex-wrap justify-between items-center gap-4 bg-slate-50/30">
+        <section className="bg-white rounded-2xl sm:rounded-[2rem] border border-slate-200 shadow-sm overflow-hidden">
+          <div className="px-4 sm:px-8 py-5 sm:py-6 border-b border-slate-100 flex flex-wrap justify-between items-center gap-4 bg-slate-50/30">
             <div>
               <h2 className="text-lg font-black text-slate-800">
                 Doctors Overview
@@ -311,13 +251,36 @@ const handleAddDelay = (doctorId) => {
             </div>
             <button
               onClick={() => setShowAddDoctorForm(true)}
-              className="py-2.5 px-5 rounded-xl font-bold text-sm bg-slate-900 text-white hover:bg-teal-600 transition-all shadow-lg shadow-slate-200 flex items-center gap-2"
+              className="min-h-11 py-2.5 px-5 rounded-xl font-bold text-sm bg-slate-900 text-white hover:bg-teal-600 transition-all shadow-lg shadow-slate-200 flex items-center gap-2"
             >
               <span className="text-lg leading-none">+</span> Add Doctor
             </button>
           </div>
 
-          <div className="overflow-x-auto">
+          <div className="md:hidden p-4 space-y-3">
+            {!loading && doctors.map((doc) => {
+              const cfg = getStatusConfig(doc.status);
+              const doctorName = doc.userId?.name || "Doctor";
+              return (
+                <div key={doc._id} className="rounded-xl border border-slate-200 p-4 space-y-3">
+                  <div className="flex items-center justify-between gap-3">
+                    <p className="font-bold text-slate-800">{doctorName}</p>
+                    <span className={`inline-flex items-center px-2 py-1 rounded-full text-[10px] font-black uppercase ${cfg.bg} ${cfg.text}`}>
+                      {cfg.label}
+                    </span>
+                  </div>
+                  <p className="text-sm text-slate-600">Dept: {doc.department}</p>
+                  <p className="text-sm text-slate-600">ETA: {getEtaLabel(doc.currentEtaMinutes)}</p>
+                  <div className="flex gap-2">
+                    <button onClick={() => handleUpdateStatus(doc._id, "arrived")} className="min-h-10 px-3 rounded bg-emerald-100 text-emerald-700 text-xs font-bold">Arrived</button>
+                    <button onClick={() => handleAddDelay(doc._id, doc.currentEtaMinutes ?? 15)} className="min-h-10 px-3 rounded bg-amber-100 text-amber-700 text-xs font-bold">Delay</button>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+
+          <div className="overflow-x-auto hidden md:block">
             <table className="w-full text-sm">
               <thead>
                 <tr className="bg-white border-b border-slate-100 text-[11px] uppercase tracking-widest text-slate-400">
@@ -335,22 +298,18 @@ const handleAddDelay = (doctorId) => {
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-50">
-                {doctors.map((doc) => {
+                {!loading && doctors.map((doc) => {
                   const cfg = getStatusConfig(doc.status);
-                  const isActive = selectedDoctor?.id === doc.id;
+                  const doctorName = doc.userId?.name || "Doctor";
                   return (
-                    <tr
-                      key={doc.id}
-                      onClick={() => setSelectedDoctor(isActive ? null : doc)}
-                      className={`group cursor-pointer transition-colors ${isActive ? "bg-teal-50/50" : "hover:bg-slate-50/80"}`}
-                    >
+                    <tr key={doc._id} className="group transition-colors hover:bg-slate-50/80">
                       <td className="py-5 px-8">
                         <p className="font-bold text-slate-800 group-hover:text-teal-700 transition-colors">
-                          {doc.name}
+                          {doctorName}
                         </p>
                       </td>
                       <td className="py-5 px-8 text-slate-500 font-medium">
-                        {doc.department || doc.specialty}
+                        {doc.department}
                       </td>
                       <td className="py-5 px-8">
                         <span
@@ -363,134 +322,39 @@ const handleAddDelay = (doctorId) => {
                         </span>
                       </td>
                       <td className="py-5 px-8 text-slate-600 font-bold tabular-nums text-center">
-                        {doc.eta}
+                        {getEtaLabel(doc.currentEtaMinutes)}
                       </td>
                       <td className="py-5 px-8 text-center">
                         <span className="bg-slate-100 text-slate-700 px-2.5 py-1 rounded-lg font-bold text-xs">
-                          {doc.waitingPatients ?? doc.patients ?? 0}
+                          {doc.waitingPatients ?? 0}
                         </span>
                       </td>
                       <td className="py-5 px-8 text-slate-500 font-medium">
-                        {doc.nextSlot}
+                        {doc.nextSlot || "Not set"}
                       </td>
                       <td className="py-5 px-4">
-                        <div
-                          className={`transition-transform duration-300 ${isActive ? "rotate-90 text-teal-600" : "text-slate-300 group-hover:translate-x-1"}`}
-                        >
-                          <svg
-                            width="20"
-                            height="20"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                            strokeWidth="3"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                          >
-                            <path d="M9 18l6-6-6-6" />
-                          </svg>
+                        <div className="flex gap-2">
+                          <button onClick={() => handleUpdateStatus(doc._id, "arrived")} className="text-xs px-2 py-1 rounded bg-emerald-100 text-emerald-700">Arrived</button>
+                          <button onClick={() => handleAddDelay(doc._id, doc.currentEtaMinutes ?? 15)} className="text-xs px-2 py-1 rounded bg-amber-100 text-amber-700">Delay</button>
                         </div>
                       </td>
                     </tr>
                   );
                 })}
+                {!loading && doctors.length === 0 && (
+                  <tr>
+                    <td colSpan="7" className="py-6 text-center text-slate-500">No doctors found. Add a doctor to start tracking.</td>
+                  </tr>
+                )}
               </tbody>
             </table>
           </div>
         </section>
-
-        {/* Doctor Detail Panel */}
-        {selectedDoctor && (
-          <section className="bg-slate-900 rounded-[2rem] p-8 text-white shadow-xl animate-in slide-in-from-top-4 duration-300 relative overflow-hidden">
-            <div className="absolute top-0 right-0 w-64 h-64 bg-teal-500/10 rounded-full blur-3xl -mr-20 -mt-20 pointer-events-none" />
-
-            <div className="relative z-10">
-              <div className="flex justify-between items-center mb-8 pb-6 border-b border-white/10">
-                <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 bg-white/10 rounded-2xl flex items-center justify-center text-xl font-black">
-                    {selectedDoctor.name.charAt(0)}
-                  </div>
-                  <h2 className="text-2xl font-black tracking-tight">
-                    {selectedDoctor.name}
-                  </h2>
-                </div>
-                <button
-                  onClick={() => setSelectedDoctor(null)}
-                  className="w-10 h-10 rounded-full bg-white/5 hover:bg-white/10 flex items-center justify-center transition-colors"
-                >
-                  ✕
-                </button>
-              </div>
-
-              <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 mb-8">
-                {[
-                  {
-                    label: "Department",
-                    value:
-                      selectedDoctor.department || selectedDoctor.specialty,
-                  },
-                  {
-                    label: "Current Status",
-                    value: getStatusConfig(selectedDoctor.status).label,
-                    isBadge: true,
-                  },
-                  {
-                    label: "Active Waiting",
-                    value:
-                      selectedDoctor.waitingPatients ??
-                      selectedDoctor.patients ??
-                      0,
-                  },
-                  {
-                    label: "Next Scheduled Slot",
-                    value: selectedDoctor.nextSlot,
-                  },
-                ].map((info, idx) => (
-                  <div key={idx}>
-                    <p className="text-[10px] font-black uppercase tracking-[0.2em] text-teal-400 mb-2">
-                      {info.label}
-                    </p>
-                    {info.isBadge ? (
-                      <span
-                        className={`px-3 py-1 rounded-lg text-[10px] font-black uppercase ${getStatusConfig(selectedDoctor.status).bg} ${getStatusConfig(selectedDoctor.status).text}`}
-                      >
-                        {info.value}
-                      </span>
-                    ) : (
-                      <p className="text-lg font-bold text-slate-100">
-                        {info.value}
-                      </p>
-                    )}
-                  </div>
-                ))}
-              </div>
-
-              <div className="flex flex-wrap gap-3">
-                <button className="py-3 px-6 rounded-xl font-bold text-xs uppercase tracking-widest bg-white/10 hover:bg-rose-500/20 hover:text-rose-400 border border-white/5 transition-all"
-                onClick={() => handleUpdateStatus(selectedDoctor.id, 'canceled')}>
-                  Mark Cancelled
-                </button>
-                <button className="py-3 px-6 rounded-xl font-bold text-xs uppercase tracking-widest bg-amber-500 text-slate-900 hover:bg-amber-400 transition-all"
-                onClick={() => handleAddDelay(selectedDoctor.id)}>
-                  Add Delay
-                </button>
-                <button className="py-3 px-6 rounded-xl font-bold text-xs uppercase tracking-widest bg-white/10 hover:bg-white/20 border border-white/5 transition-all"
-                onClick={() => handleUpdateStatus(selectedDoctor.id, 'on_')}>
-                  Update Schedule
-                </button>
-              </div>
-            </div>
-          </section>
-        )}
-
-        {/* Quick Actions Footer */}
-        <section className="flex flex-wrap gap-4 pt-4">
-          <button className="group py-4 px-8 rounded-2xl font-black text-xs uppercase tracking-widest border-2 border-slate-200 bg-white text-slate-600 hover:border-slate-900 hover:text-slate-900 transition-all">
-            Create Schedule
-          </button>
-          <button className="group py-4 px-8 rounded-2xl font-black text-xs uppercase tracking-widest border-2 border-slate-200 bg-white text-slate-600 hover:border-slate-900 hover:text-slate-900 transition-all">
-            Bulk Reschedule
-          </button>
+        <section className="bg-white rounded-3xl p-5 border border-slate-200">
+          <h3 className="font-bold text-slate-700 mb-2">Doctor Users</h3>
+          <p className="text-sm text-slate-500">
+            Registered doctor accounts: {users.filter((u) => u.role === "doctor").length}
+          </p>
         </section>
       </main>
 
@@ -538,14 +402,14 @@ const handleAddDelay = (doctorId) => {
 
               <div className="group">
                 <label className="block text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-2 ml-1 group-focus-within:text-teal-600 transition-colors">
-                  Professional Title
+                  Email
                 </label>
                 <input
-                  type="text"
-                  placeholder="e.g. Senior Surgeon"
-                  value={newDoctor.profession}
+                  type="email"
+                  placeholder="doctor@example.com"
+                  value={newDoctor.email}
                   onChange={(e) =>
-                    setNewDoctor({ ...newDoctor, profession: e.target.value })
+                    setNewDoctor({ ...newDoctor, email: e.target.value })
                   }
                   className="w-full px-5 py-4 rounded-2xl bg-slate-50 border border-slate-100 text-slate-900 font-bold placeholder:text-slate-300 focus:bg-white focus:ring-4 focus:ring-teal-500/10 focus:border-teal-500 outline-none transition-all"
                 />
@@ -561,6 +425,21 @@ const handleAddDelay = (doctorId) => {
                   value={newDoctor.specialty}
                   onChange={(e) =>
                     setNewDoctor({ ...newDoctor, specialty: e.target.value })
+                  }
+                  className="w-full px-5 py-4 rounded-2xl bg-slate-50 border border-slate-100 text-slate-900 font-bold placeholder:text-slate-300 focus:bg-white focus:ring-4 focus:ring-teal-500/10 focus:border-teal-500 outline-none transition-all"
+                />
+              </div>
+
+              <div className="group">
+                <label className="block text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-2 ml-1 group-focus-within:text-teal-600 transition-colors">
+                  Initial Password
+                </label>
+                <input
+                  type="password"
+                  placeholder="minimum 8 characters"
+                  value={newDoctor.password}
+                  onChange={(e) =>
+                    setNewDoctor({ ...newDoctor, password: e.target.value })
                   }
                   className="w-full px-5 py-4 rounded-2xl bg-slate-50 border border-slate-100 text-slate-900 font-bold placeholder:text-slate-300 focus:bg-white focus:ring-4 focus:ring-teal-500/10 focus:border-teal-500 outline-none transition-all"
                 />

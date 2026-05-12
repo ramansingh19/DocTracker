@@ -33,8 +33,8 @@ const LandingPage = () => {
   };
 
   return (
-    <div className="font-sans bg-white text-gray-900 leading-relaxed overflow-x-hidden">
-      <nav className="fixed top-0 left-0 right-0  backdrop-blur-xl border-b border-slate-200/60 z-[1000] py-3 sm:py-4 shadow-sm">
+    <div className="font-sans text-gray-900 leading-relaxed overflow-x-hidden bg-[linear-gradient(135deg,#eef1ff_0%,#d7dcff_45%,#bcc6ff_100%)] min-h-screen">
+      <nav className="fixed top-0 left-0 right-0  backdrop-blur-xl border-b border-slate-200/60 z-1000 py-3 sm:py-4 shadow-sm">
         <div
           ref={navRef}
           className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center relative"
@@ -155,16 +155,6 @@ const LandingPage = () => {
 
       {/* main-page */}
       <section className="pt-28 sm:pt-32 pb-20 sm:pb-24 relative overflow-hidden min-h-[90vh]">
-        {/* ADD Background Image - PUT HERE */}
-        <div className="absolute inset-0">
-          <div
-            className="absolute inset-0 bg-cover bg-center bg-no-repeat bg-fixed"
-            style={{
-              backgroundImage: `linear-gradient(rgba(0,0,0,0.1), rgba(15,23,42,0.7)), 
-                          url('https://i.pinimg.com/1200x/b9/c1/94/b9c194b952dd9580bf06afe714bfac26.jpg')`,
-            }}
-          />
-        </div>
         {/* Animated Background Pattern */}
         <div className="absolute inset-0 opacity-10">
           <div className="absolute -top-40 -right-40 w-80 h-80 bg-indigo-300/20 rounded-full blur-3xl animate-pulse"></div>
@@ -263,11 +253,11 @@ const LandingPage = () => {
                     color: "from-purple-500 to-pink-600",
                     bg: "bg-purple-500/10",
                   },
-                ].map((role, i) => (
+                ].map((role) => (
                   <Link
                     key={role.title}
                     to={role.to}
-                    className={`group relative w-full p-8 bg-white/70 backdrop-blur-xl border-2 border-white/50 rounded-3xl shadow-2xl hover:shadow-3xl hover:-translate-y-3 hover:border-${role.color.replace("from-", "").replace("to-", "")} transform transition-all duration-500 overflow-hidden ${role.bg}`}
+                    className={`group relative w-full p-8 bg-white/70 backdrop-blur-xl border-2 border-white/50 rounded-3xl shadow-2xl hover:shadow-3xl hover:-translate-y-3 hover:border-indigo-400 transform transition-all duration-500 overflow-hidden ${role.bg}`}
                   >
                     <div
                       className={`absolute inset-0 bg-gradient-to-br ${role.color} opacity-0 group-hover:opacity-5 transition-opacity duration-500`}

@@ -1,74 +1,66 @@
 import React, { useEffect, useState } from 'react';
+import apiClient from '../services/apiClient';
 
 const NotificationSystem = ({ userRole = 'patient' }) => {
   const [notifications, setNotifications] = useState([]);
   const [isVisible, setIsVisible] = useState(false);
   const [unreadCount, setUnreadCount] = useState(0);
 
-  // Mock real-time notifications based on user role
   useEffect(() => {
-    const generateNotifications = () => {
-      const roleNotifications = {
-        doctor: [
-          { id: 1, type: 'urgent', title: 'Emergency Patient', message: 'Patient John Doe requires immediate attention', time: '2 min ago', read: false },
-          { id: 2, type: 'info', title: 'Schedule Update', message: 'Your next appointment is in 15 minutes', time: '5 min ago', read: false },
-          { id: 3, type: 'success', title: 'Patient Checked In', message: 'Sarah Wilson has arrived for her appointment', time: '10 min ago', read: true }
-        ],
-        patient: [
-          { id: 1, type: 'info', title: 'Queue Update', message: 'You are now position #3 in the queue', time: '1 min ago', read: false },
-          { id: 2, type: 'success', title: 'Doctor Available', message: 'Dr. Johnson is now available and will see you soon', time: '3 min ago', read: false },
-          { id: 3, type: 'warning', title: 'Appointment Reminder', message: 'Your appointment is in 30 minutes', time: '15 min ago', read: true }
-        ],
-        admin: [
-          { id: 1, type: 'urgent', title: 'System Alert', message: 'High patient volume detected in Emergency Department', time: '1 min ago', read: false },
-          { id: 2, type: 'info', title: 'Performance Report', message: 'Daily efficiency report is ready for review', time: '5 min ago', read: false },
-          { id: 3, type: 'success', title: 'System Update', message: 'All systems are running optimally', time: '1 hour ago', read: true }
-        ]
-      };
-
-      setNotifications(roleNotifications[userRole] || []);
-      setUnreadCount(roleNotifications[userRole]?.filter(n => !n.read).length || 0);
+    const loadNotifications = async () => {
+      try {
+        const data = await apiClient.get('/notifications');
+        const list = data.notifications || [];
+        setNotifications(list);
+        setUnreadCount(list.filter((n) => !n.read).length);
+      } catch (error) {
+        console.error("Notification fetch failed", {
+          message: error?.message,
+          role: userRole,
+        });
+        setNotifications([]);
+        setUnreadCount(0);
+      }
     };
 
-    generateNotifications();
+    loadNotifications();
 
-    // Simulate real-time updates
     const interval = setInterval(() => {
-      setNotifications(prev => {
-        const newNotification = {
-          id: Date.now(),
-          type: ['info', 'success', 'warning'][Math.floor(Math.random() * 3)],
-          title: 'Live Update',
-          message: `System update at ${new Date().toLocaleTimeString()}`,
-          time: 'Just now',
-          read: false
-        };
-        
-        const updated = [newNotification, ...prev.slice(0, 4)];
-        setUnreadCount(updated.filter(n => !n.read).length);
-        return updated;
-      });
-    }, 30000); // New notification every 30 seconds
+      loadNotifications();
+    }, 20000);
 
     return () => clearInterval(interval);
   }, [userRole]);
 
-  const markAsRead = (id) => {
-    setNotifications(prev => 
-      prev.map(notification => 
-        notification.id === id 
-          ? { ...notification, read: true }
-          : notification
-      )
-    );
-    setUnreadCount(prev => Math.max(0, prev - 1));
+  const markAsRead = async (id) => {
+    try {
+      await apiClient.patch(`/notifications/${id}/read`, {});
+      setNotifications((prev) =>
+        prev.map((notification) =>
+          notification._id === id ? { ...notification, read: true } : notification
+        )
+      );
+      setUnreadCount((prev) => Math.max(0, prev - 1));
+    } catch (error) {
+      console.error("Notification mark-read failed", {
+        notificationId: id,
+        message: error?.message,
+      });
+    }
   };
 
-  const markAllAsRead = () => {
-    setNotifications(prev => 
-      prev.map(notification => ({ ...notification, read: true }))
-    );
-    setUnreadCount(0);
+  const markAllAsRead = async () => {
+    const unread = notifications.filter((notification) => !notification.read);
+    await Promise.all(unread.map((notification) => markAsRead(notification._id)));
+  };
+
+  const handleViewAllNotifications = () => {
+    setIsVisible(true);
+    setUnreadCount(notifications.filter((n) => !n.read).length);
+    console.log("View all notifications clicked", {
+      total: notifications.length,
+      unread: notifications.filter((n) => !n.read).length,
+    });
   };
 
   const getNotificationIcon = (type) => {
@@ -94,7 +86,7 @@ const NotificationSystem = ({ userRole = 'patient' }) => {
   return (
     <div className="relative inline-block">
       <button 
-        className="relative bg-transparent border-0 cursor-pointer p-2 rounded-lg transition-all duration-300 text-slate-500 hover:bg-black/5 hover:text-gray-700"
+        className="relative bg-transparent border-0 cursor-pointer p-2.5 min-h-11 min-w-11 rounded-lg transition-all duration-300 text-slate-500 hover:bg-black/5 hover:text-gray-700 focus-visible:outline-2 focus-visible:outline-teal-500"
         onClick={() => setIsVisible(!isVisible)}
         aria-label="Notifications"
       >
@@ -108,7 +100,7 @@ const NotificationSystem = ({ userRole = 'patient' }) => {
       </button>
 
       {isVisible && (
-        <div className="absolute top-full right-0 w-[400px] max-w-[90vw] bg-white rounded-xl shadow-[0_20px_40px_rgba(0,0,0,0.15)] border border-black/5 z-[1000] mt-2 animate-[slideDown_0.3s_ease-out] md:w-[calc(100vw-2rem)]">
+        <div className="absolute top-full right-0 w-[calc(100vw-1rem)] max-w-md bg-white rounded-xl shadow-[0_20px_40px_rgba(0,0,0,0.15)] border border-black/5 z-[1000] mt-2 animate-[slideDown_0.3s_ease-out]">
           <div className="flex justify-between items-center p-6 border-b border-gray-200 bg-gradient-to-br from-slate-50 to-slate-200 rounded-t-xl">
             <h3 className="text-lg font-semibold text-gray-900 m-0">Notifications</h3>
             {unreadCount > 0 && (
@@ -127,9 +119,9 @@ const NotificationSystem = ({ userRole = 'patient' }) => {
             ) : (
               notifications.map(notification => (
                 <div 
-                  key={notification.id}
+                  key={notification._id}
                   className={`flex items-start gap-3 px-6 py-4 cursor-pointer transition-all duration-300 relative border-l-[3px] hover:bg-black/[0.02] ${notification.read ? 'border-transparent' : 'bg-blue-500/[0.02] border-blue-500 hover:bg-blue-500/5'}`}
-                  onClick={() => markAsRead(notification.id)}
+                  onClick={() => markAsRead(notification._id)}
                 >
                   <div className="text-xl w-6 h-6 flex items-center justify-center flex-shrink-0" style={{ color: getNotificationColor(notification.type) }}>
                     {getNotificationIcon(notification.type)}
@@ -137,7 +129,7 @@ const NotificationSystem = ({ userRole = 'patient' }) => {
                   <div className="flex-1 min-w-0">
                     <div className="text-sm font-semibold text-gray-900 mb-1 leading-snug">{notification.title}</div>
                     <div className="text-xs text-slate-500 mb-1 leading-snug break-words">{notification.message}</div>
-                    <div className="text-xs text-gray-400 font-medium">{notification.time}</div>
+                    <div className="text-xs text-gray-400 font-medium">{new Date(notification.createdAt).toLocaleString()}</div>
                   </div>
                   {!notification.read && <div className="absolute top-1/2 right-4 -translate-y-1/2 w-2 h-2 bg-blue-500 rounded-full animate-pulse"></div>}
                 </div>
@@ -146,7 +138,12 @@ const NotificationSystem = ({ userRole = 'patient' }) => {
           </div>
           
           <div className="p-6 border-t border-gray-200 bg-gradient-to-br from-slate-50 to-slate-200 rounded-b-xl">
-            <button className="w-full bg-gradient-to-br from-blue-500 to-blue-600 text-white border-0 py-3 px-4 rounded-lg font-semibold cursor-pointer transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_4px_15px_rgba(59,130,246,0.3)]">View All Notifications</button>
+            <button
+              onClick={handleViewAllNotifications}
+              className="w-full bg-gradient-to-br from-blue-500 to-blue-600 text-white border-0 py-3 px-4 rounded-lg font-semibold cursor-pointer transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_4px_15px_rgba(59,130,246,0.3)]"
+            >
+              View All Notifications
+            </button>
           </div>
         </div>
       )}
