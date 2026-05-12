@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+import mongoose from "mongoose";
 
 const refreshTokenSchema = new mongoose.Schema(
   {
@@ -7,24 +7,37 @@ const refreshTokenSchema = new mongoose.Schema(
       ref: "User",
       required: true,
     },
+
     tokenHash: {
       type: String,
       required: true,
       unique: true,
     },
+
     expiresAt: {
       type: Date,
       required: true,
     },
+
     revoked: {
       type: Boolean,
       default: false,
     },
   },
-  { timestamps: true }
+  {
+    timestamps: true,
+  }
 );
 
-// Auto-delete expired tokens so the collection stays clean
-refreshTokenSchema.index({ expiresAt: 1 }, { expireAfterSeconds: 0 });
+// Auto-delete expired tokens
+refreshTokenSchema.index(
+  { expiresAt: 1 },
+  { expireAfterSeconds: 0 }
+);
 
-module.exports = mongoose.model("RefreshToken", refreshTokenSchema);
+const RefreshToken = mongoose.model(
+  "RefreshToken",
+  refreshTokenSchema
+);
+
+export default RefreshToken;

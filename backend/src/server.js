@@ -1,13 +1,15 @@
-const http = require("http");
-const { Server } = require("socket.io");
-const app = require("./app");
-const env = require("./config/env");
-const { connectDatabase } = require("./config/db");
+import http from "http";
+import { Server } from "socket.io";
+
+import app from "./app.js";
+import env from "./config/env.js";
+import { connectDatabase } from "./config/db.js";
 
 async function startServer() {
   await connectDatabase();
 
   const server = http.createServer(app);
+
   const io = new Server(server, {
     cors: {
       origin: env.clientOrigin,
@@ -22,13 +24,13 @@ async function startServer() {
   app.set("io", io);
 
   server.listen(env.port, () => {
-    // eslint-disable-next-line no-console
-    console.log(`Backend running on http://localhost:${env.port}`);
+    console.log(
+      `Backend running on http://localhost:${env.port}`
+    );
   });
 }
 
 startServer().catch((error) => {
-  // eslint-disable-next-line no-console
   console.error("Failed to start server", error);
   process.exit(1);
 });

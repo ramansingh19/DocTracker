@@ -1,4 +1,4 @@
-const { z } = require("zod");
+import { z } from "zod";
 
 const checkInSchema = z.object({
   doctorId: z.string().min(1),
@@ -9,7 +9,7 @@ const updateQueueStatusSchema = z.object({
   status: z.enum(["waiting", "in_consult", "done", "cancelled"]),
 });
 
-module.exports = {
+export {
   checkInSchema,
   updateQueueStatusSchema,
 };

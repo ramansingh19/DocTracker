@@ -1,5 +1,6 @@
 function sanitizeUser(userDoc) {
   const user = userDoc.toObject ? userDoc.toObject() : userDoc;
+
   return {
     id: user._id?.toString() || user.id,
     _id: user._id?.toString() || user.id,
@@ -13,4 +14,4 @@ function sanitizeUser(userDoc) {
   };
 }
 
-module.exports = sanitizeUser;
+export default sanitizeUser;

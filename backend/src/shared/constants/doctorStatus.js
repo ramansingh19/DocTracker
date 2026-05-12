@@ -8,7 +8,7 @@ const DOCTOR_STATUS = {
 
 const doctorStatusValues = Object.values(DOCTOR_STATUS);
 
-module.exports = {
+export {
   DOCTOR_STATUS,
   doctorStatusValues,
 };

@@ -11,9 +11,10 @@ function validate(schema) {
           details: error.issues,
         });
       }
+
       return next(error);
     }
   };
 }
 
-module.exports = validate;
+export default validate;

@@ -1,9 +1,10 @@
-const User = require("../../modules/users/user.model");
-const { verifyAccessToken } = require("../utils/jwt");
+import User from "../../modules/users/user.model.js";
+import { verifyAccessToken } from "../utils/jwt.js";
 
 async function requireAuth(req, _res, next) {
   try {
     const authHeader = req.headers.authorization || "";
+
     const token = authHeader.startsWith("Bearer ")
       ? authHeader.slice(7)
       : null;
@@ -13,6 +14,7 @@ async function requireAuth(req, _res, next) {
     }
 
     const payload = verifyAccessToken(token);
+
     const user = await User.findById(payload.userId);
 
     if (!user || !user.isActive) {
@@ -45,7 +47,7 @@ function requireRole(...allowedRoles) {
   };
 }
 
-module.exports = {
+export {
   requireAuth,
   requireRole,
 };

@@ -1,15 +1,17 @@
-const Schedule = require("./schedule.model");
+import Schedule from "./schedule.model.js";
 
 // ─── List — paginated ─────────────────────────────────────────────────────────
 
 async function listSchedules(req, res, next) {
   try {
     const { doctorId, date } = req.query;
+
     const page = Math.max(1, parseInt(req.query.page) || 1);
     const limit = Math.min(100, Math.max(1, parseInt(req.query.limit) || 20));
     const skip = (page - 1) * limit;
 
     const query = {};
+
     if (doctorId) query.doctorId = doctorId;
     if (date) query.date = date;
 
@@ -36,6 +38,7 @@ async function listSchedules(req, res, next) {
 async function createSchedule(req, res, next) {
   try {
     const schedule = await Schedule.create(req.validatedBody);
+
     return res.status(201).json({ schedule });
   } catch (error) {
     return next(error);
@@ -69,6 +72,7 @@ async function bookSlot(req, res, next) {
     const { slotIndex } = req.validatedBody;
 
     const schedule = await Schedule.findById(req.params.id);
+
     if (!schedule) {
       return next({ status: 404, message: "Schedule not found" });
     }
@@ -78,8 +82,12 @@ async function bookSlot(req, res, next) {
     }
 
     const slot = schedule.slots[slotIndex];
+
     if (!slot) {
-      return next({ status: 404, message: `Slot at index ${slotIndex} not found` });
+      return next({
+        status: 404,
+        message: `Slot at index ${slotIndex} not found`,
+      });
     }
 
     if (slot.booked >= slot.capacity) {
@@ -112,7 +120,7 @@ async function bookSlot(req, res, next) {
   }
 }
 
-module.exports = {
+export {
   listSchedules,
   createSchedule,
   updateSchedule,

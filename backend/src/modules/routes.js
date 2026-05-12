@@ -1,11 +1,11 @@
-const express = require("express");
-const authRouter = require("./auth/auth.routes");
-const usersRouter = require("./users/users.routes");
-const doctorRouter = require("./doctors/doctor.routes");
-const scheduleRouter = require("./schedules/schedule.routes");
-const queueRouter = require("./queue/queue.routes");
-const notificationRouter = require("./notifications/notification.routes");
-const patientRouter = require("./patients/patient.routes");
+import express from "express";
+import authRouter from "./auth/auth.routes.js";
+import usersRouter from "./users/users.routes.js";
+import doctorRouter from "./doctors/doctor.routes.js";
+import scheduleRouter from "./schedules/schedule.routes.js";
+import queueRouter from "./queue/queue.routes.js";
+import notificationRouter from "./notifications/notification.routes.js";
+import patientRouter from "./patients/patient.routes.js";
 
 const apiRouter = express.Router();
 
@@ -21,4 +21,4 @@ apiRouter.use("/queue", queueRouter);
 apiRouter.use("/notifications", notificationRouter);
 apiRouter.use("/patients", patientRouter);
 
-module.exports = apiRouter;
+export default apiRouter;

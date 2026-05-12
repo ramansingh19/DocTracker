@@ -1,9 +1,10 @@
-const QueueEntry = require("./queue.model");
-const DoctorProfile = require("../doctors/doctor.model");
-const { ROLES } = require("../../shared/constants/roles");
+import QueueEntry from "./queue.model.js";
+import DoctorProfile from "../doctors/doctor.model.js";
+import { ROLES } from "../../shared/constants/roles.js";
 
 function emitQueueUpdated(req, payload) {
   const io = req.app.get("io");
+
   if (io) {
     io.emit("queue:updated", payload);
   }
@@ -14,6 +15,7 @@ function emitQueueUpdated(req, payload) {
 async function getDoctorQueue(req, res, next) {
   try {
     const { doctorId } = req.params;
+
     const entries = await QueueEntry.find({
       doctorId,
       status: { $in: ["waiting", "in_consult"] },
@@ -36,6 +38,7 @@ async function getDoctorQueue(req, res, next) {
 async function getPatientPosition(req, res, next) {
   try {
     const { doctorId, patientId } = req.params;
+
     const waitingEntries = await QueueEntry.find({
       doctorId,
       status: "waiting",
@@ -61,6 +64,7 @@ async function getPatientPosition(req, res, next) {
 async function checkInPatient(req, res, next) {
   try {
     const { doctorId, patientId: requestedPatientId } = req.validatedBody;
+
     const patientId =
       req.user.role === ROLES.PATIENT ? req.user.id : requestedPatientId;
 
@@ -110,6 +114,7 @@ async function updateQueueStatus(req, res, next) {
 
     // Fetch current state before update to decide whether to decrement
     const currentEntry = await QueueEntry.findById(req.params.id);
+
     if (!currentEntry) {
       return next({ status: 404, message: "Queue entry not found" });
     }
@@ -125,22 +130,20 @@ async function updateQueueStatus(req, res, next) {
     const wasActive =
       currentEntry.status === "waiting" ||
       currentEntry.status === "in_consult";
+
     const isNowTerminal = status === "done" || status === "cancelled";
 
     if (wasActive && isNowTerminal) {
       // Use $max via aggregation pipeline update to prevent going below 0
-      await DoctorProfile.findByIdAndUpdate(
-        entry.doctorId,
-        [
-          {
-            $set: {
-              waitingPatients: {
-                $max: [0, { $subtract: ["$waitingPatients", 1] }],
-              },
+      await DoctorProfile.findByIdAndUpdate(entry.doctorId, [
+        {
+          $set: {
+            waitingPatients: {
+              $max: [0, { $subtract: ["$waitingPatients", 1] }],
             },
           },
-        ]
-      );
+        },
+      ]);
     }
 
     emitQueueUpdated(req, {
@@ -155,7 +158,7 @@ async function updateQueueStatus(req, res, next) {
   }
 }
 
-module.exports = {
+export {
   getDoctorQueue,
   getPatientPosition,
   checkInPatient,

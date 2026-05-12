@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+import mongoose from "mongoose";
 
 const patientTrackingSchema = new mongoose.Schema(
   {
@@ -26,4 +26,4 @@ const patientTrackingSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-module.exports = mongoose.model("PatientTracking", patientTrackingSchema);
+export default mongoose.model("PatientTracking", patientTrackingSchema);

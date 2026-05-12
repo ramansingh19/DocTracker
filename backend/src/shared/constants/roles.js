@@ -4,6 +4,6 @@ const ROLES = {
   PATIENT: "patient",
 };
 
-module.exports = {
+export {
   ROLES,
 };

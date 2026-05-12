@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+import mongoose from "mongoose";
 
 const queueEntrySchema = new mongoose.Schema(
   {
@@ -33,4 +33,4 @@ const queueEntrySchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-module.exports = mongoose.model("QueueEntry", queueEntrySchema);
+export default mongoose.model("QueueEntry", queueEntrySchema);

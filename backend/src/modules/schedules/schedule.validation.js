@@ -1,4 +1,4 @@
-const { z } = require("zod");
+import { z } from "zod";
 
 const slotSchema = z.object({
   start: z.string().trim().min(1),
@@ -24,7 +24,7 @@ const bookSlotSchema = z.object({
   slotIndex: z.number().int().min(0),
 });
 
-module.exports = {
+export {
   createScheduleSchema,
   updateScheduleSchema,
   bookSlotSchema,

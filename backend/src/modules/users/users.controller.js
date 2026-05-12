@@ -1,5 +1,5 @@
-const User = require("./user.model");
-const sanitizeUser = require("../../shared/utils/sanitizeUser");
+import User from "./user.model.js";
+import sanitizeUser from "../../shared/utils/sanitizeUser.js";
 
 // ─── List — paginated (Fix #8) ────────────────────────────────────────────────
 
@@ -30,6 +30,7 @@ async function listUsers(req, res, next) {
 async function deleteUser(req, res, next) {
   try {
     const { id } = req.params;
+
     const user = await User.findByIdAndUpdate(
       id,
       { isActive: false },
@@ -49,7 +50,7 @@ async function deleteUser(req, res, next) {
   }
 }
 
-module.exports = {
+export {
   listUsers,
   deleteUser,
 };

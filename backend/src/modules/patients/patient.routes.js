@@ -1,17 +1,19 @@
-const express = require("express");
-const validate = require("../../shared/middleware/validate");
-const {
+import express from "express";
+import validate from "../../shared/middleware/validate.js";
+import {
   requireAuth,
   requireRole,
-} = require("../../shared/middleware/authMiddleware");
-const { ROLES } = require("../../shared/constants/roles");
-const { getMyTracking, upsertMyTracking } = require("./patient.controller");
-const { upsertTrackingSchema } = require("./patient.validation");
+} from "../../shared/middleware/authMiddleware.js";
+import { ROLES } from "../../shared/constants/roles.js";
+import { getMyTracking, upsertMyTracking } from "./patient.controller.js";
+import { upsertTrackingSchema } from "./patient.validation.js";
 
 const patientRouter = express.Router();
 
 patientRouter.use(requireAuth);
+
 patientRouter.get("/me/tracking", getMyTracking);
+
 patientRouter.put(
   "/me/tracking",
   requireRole(ROLES.PATIENT, ROLES.ADMIN),
@@ -19,4 +21,4 @@ patientRouter.put(
   upsertMyTracking
 );
 
-module.exports = patientRouter;
+export default patientRouter;

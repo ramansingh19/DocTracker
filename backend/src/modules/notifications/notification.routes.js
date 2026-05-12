@@ -1,22 +1,32 @@
-const express = require("express");
-const validate = require("../../shared/middleware/validate");
-const {
+import express from "express";
+
+import validate from "../../shared/middleware/validate.js";
+
+import {
   requireAuth,
   requireRole,
-} = require("../../shared/middleware/authMiddleware");
-const { ROLES } = require("../../shared/constants/roles");
-const {
+} from "../../shared/middleware/authMiddleware.js";
+
+import { ROLES } from "../../shared/constants/roles.js";
+
+import {
   broadcastNotification,
   listNotifications,
   markRead,
-} = require("./notification.controller");
-const { broadcastSchema } = require("./notification.validation");
+} from "./notification.controller.js";
+
+import {
+  broadcastSchema,
+} from "./notification.validation.js";
 
 const notificationRouter = express.Router();
 
 notificationRouter.use(requireAuth);
+
 notificationRouter.get("/", listNotifications);
+
 notificationRouter.patch("/:id/read", markRead);
+
 notificationRouter.post(
   "/broadcast",
   requireRole(ROLES.ADMIN, ROLES.DOCTOR),
@@ -24,4 +34,4 @@ notificationRouter.post(
   broadcastNotification
 );
 
-module.exports = notificationRouter;
+export default notificationRouter;

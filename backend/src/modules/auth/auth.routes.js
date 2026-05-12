@@ -1,11 +1,24 @@
-const express = require("express");
-const rateLimit = require("express-rate-limit");
-const validate = require("../../shared/middleware/validate");
-const { requireAuth } = require("../../shared/middleware/authMiddleware");
-const { login, register, refresh, logout } = require("./auth.controller");
-const { loginSchema, registerSchema, refreshTokenSchema } = require("./auth.validation");
+import express from "express";
+import rateLimit from "express-rate-limit";
+
+import validate from "../../shared/middleware/validate.js";
+import { requireAuth } from "../../shared/middleware/authMiddleware.js";
+
+import {
+  login,
+  register,
+  refresh,
+  logout,
+} from "./auth.controller.js";
+
+import {
+  loginSchema,
+  registerSchema,
+  refreshTokenSchema,
+} from "./auth.validation.js";
 
 const authRouter = express.Router();
+
 const authLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   max: 20,
@@ -17,9 +30,31 @@ const authLimiter = rateLimit({
   },
 });
 
-authRouter.post("/register", authLimiter, validate(registerSchema), register);
-authRouter.post("/login", authLimiter, validate(loginSchema), login);
-authRouter.post("/refresh", validate(refreshTokenSchema), refresh);
-authRouter.post("/logout", requireAuth, validate(refreshTokenSchema), logout);
+authRouter.post(
+  "/register",
+  authLimiter,
+  validate(registerSchema),
+  register
+);
 
-module.exports = authRouter;
+authRouter.post(
+  "/login",
+  authLimiter,
+  validate(loginSchema),
+  login
+);
+
+authRouter.post(
+  "/refresh",
+  validate(refreshTokenSchema),
+  refresh
+);
+
+authRouter.post(
+  "/logout",
+  requireAuth,
+  validate(refreshTokenSchema),
+  logout
+);
+
+export default authRouter;

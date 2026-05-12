@@ -5,4 +5,4 @@ function notFound(_req, _res, next) {
   });
 }
 
-module.exports = notFound;
+export default notFound;

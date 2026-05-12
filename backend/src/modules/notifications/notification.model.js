@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+import mongoose from "mongoose";
 
 const notificationSchema = new mongoose.Schema(
   {
@@ -7,32 +7,45 @@ const notificationSchema = new mongoose.Schema(
       ref: "User",
       default: null,
     },
+
     roleTarget: {
       type: String,
       default: null,
     },
+
     type: {
       type: String,
       required: true,
     },
+
     title: {
       type: String,
       required: true,
     },
+
     message: {
       type: String,
       required: true,
     },
+
     meta: {
       type: mongoose.Schema.Types.Mixed,
       default: {},
     },
+
     read: {
       type: Boolean,
       default: false,
     },
   },
-  { timestamps: true }
+  {
+    timestamps: true,
+  }
 );
 
-module.exports = mongoose.model("Notification", notificationSchema);
+const Notification = mongoose.model(
+  "Notification",
+  notificationSchema
+);
+
+export default Notification;

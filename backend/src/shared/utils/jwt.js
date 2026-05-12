@@ -1,15 +1,17 @@
-const jwt = require("jsonwebtoken");
-const env = require("../../config/env");
+import jwt from "jsonwebtoken";
+import env from "../../config/env.js";
 
 function signAccessToken(payload) {
-  return jwt.sign(payload, env.jwtSecret, { expiresIn: env.jwtExpiresIn });
+  return jwt.sign(payload, env.jwtSecret, {
+    expiresIn: env.jwtExpiresIn,
+  });
 }
 
 function verifyAccessToken(token) {
   return jwt.verify(token, env.jwtSecret);
 }
 
-module.exports = {
+export {
   signAccessToken,
   verifyAccessToken,
 };

@@ -1,4 +1,4 @@
-const { z } = require("zod");
+import { z } from "zod";
 
 const upsertTrackingSchema = z.object({
   assignedDoctorId: z.string().nullable().optional(),
@@ -8,6 +8,6 @@ const upsertTrackingSchema = z.object({
   notes: z.string().trim().nullable().optional(),
 });
 
-module.exports = {
+export {
   upsertTrackingSchema,
 };
